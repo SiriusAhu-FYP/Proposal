@@ -20,7 +20,15 @@
 作为开放式环境下的系统评测参考，我们采用基于\emph{procedural generation}的统一框架来度量\emph{VLA/VLM}在多步轨迹与OOD设定中的表现，并将\emph{架构/数据/输出后处理}作为可控变量纳入对比\cite{guruprasad2025benchmarking}。
 
 % Intro: Evaluation Preview / Scope 末尾（1–2句）
-我们参考 \emph{lmgame-Bench} 的“游戏→可靠评测”思路：以统一 \emph{Gym-style API} 与轻量 \emph{perception/memory scaffolds} 控制\emph{提示方差（prompt variance）}与\emph{污染（contamination）}，并度量跨游戏与多步任务的\emph{泛化（generalization）}表现；实现上我们仍\textbf{统一采用 GUI 执行}，\emph{MCP-style} 仅用于内部\emph{技能编排（skill bus）}\cite{hu2505lmgame}.
+我们参考 \emph{lmgame-Bench} 的“游戏→可靠评测”思路：以统一 \emph{Gym-style API} 与轻量 \emph{perception/memory scaffolds} 控制\emph{提示方差（prompt variance）}与\emph{污染（contamination）}，并度量跨游戏与多步任务的\emph{泛化（generalization）}表现；实现上我们仍\textbf{统一采用 GUI 执行}，\emph{MCP-style} 仅用于内部\emph{技能编排（skill bus）}\cite{lmgame}.
+
+\paragraph{Screenshot-only navigation (GUI).}
+我们将“GUI通道”具体化为纯截图输入与结构化动作输出的端到端导航设定。近期工作显示，\emph{不依赖planner或A11y树，仅凭截图}亦可在真实平台上取得SOTA（如UI-Venus在AndroidWorld达\;65.9\%\,pass@1，并在ScreenSpot-V2/Pro上
+达到\;95.3\%/61.9\%）\cite{ui-venus}.
+
+% Intro 1.2（末尾）— 纯背景一句
+作为视觉中心评测的代表性工作，V\!-MAGE 以 \emph{visual-only/continuous-space} 的游戏设定
+系统考察定位、轨迹、时机与视觉记忆等要素，并使用 Elo 风格排名报告相对强度\cite{v-mage}.
 
 
 \subsection{Key Challenges}
@@ -31,10 +39,9 @@
 % > 立场：GUI/GCC；MCP用于内部技能/模块编排；不做API适配但讨论其潜在收益；提出伴随式评测协议。
 \todo{(1) \textbf{GUI/GCC} 的伴随式助手原型；(2) 以 \textbf{MCP} 作为“技能/工具总线”统一规划/记忆/反思/技能组并落到GUI执行；(3) 提出\emph{advice adoption, voice RTT, macro success}等伴随式指标与统一评测设置；(4) 讨论API接入的潜在收益但不纳入本文范围。}
 
+我们借鉴\emph{动作粒度的结构化输出}思想（format/type/coord/content），以严格schema减少无效动作与走偏坐标；同时在评测中引入“宏技能成功率（macro success/recall）”以覆盖稀疏关键动作\cite{ui-venus}.
+
+
 \subsection{Design Principles \& System Preview}
 % > 系统预告：screen/audio → VLM → LLM/agentic modules → MCP-skill bus → GUI (kb/mouse) → safety guard。详图放方法章节。
 \todo{一句话系统流：\emph{screen/audio} → \emph{VLM} → \emph{LLM/agentic}（planning/memory/reflection）→ \emph{MCP-skill bus}（技能注册/路由）→ \emph{GUI执行}（kb/mouse）→ \emph{safety}（permissions, rollback, kill-switch）。}
-
-\subsection{Summary of Findings (Optional)}
-% > 文献趋势与本文选择：文献存在向API/MCP确定性倾斜的趋势；本文基于成本/可移植性聚焦GUI，并以MCP做内部编排。
-\todo{趋势：部分工作转向API/MCP以换取确定性与速度；选择：本文因工程成本与可迁移性\emph{聚焦GUI}，并以\emph{MCP}完成内部技能/模块编排；未来可探索有限API接入的收益。}
