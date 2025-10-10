@@ -9,6 +9,24 @@
 > 说明：动作接口对比的核心小节，放Cradle。涉及2.6-2.7。
 \todo{定义GCC：screen-in, keyboard/mouse-out。代表作：\textbf{Cradle}（GUI-only，skill curation/registry, reflection/memory）。优点：通用性（generality）、可迁移性（portability）；缺点：确定性/延迟。API/MCP：确定性高、速度快、但依赖适配。本文策略：GUI-first + API/MCP作为加速通道，GUI兜底。附一句对比表指引。}
 
+
+\paragraph{GUI-only via GCC: \emph{Cradle}}
+% > 说明：用4-6句讲清机制、作者声称与局限；末尾连到本文立场。
+\textbf{接口范式}：提出统一的\emph{General Computer Control (GCC)}设定（\emph{screen-in, keyboard/mouse-out}），避免应用专用API，强调通用性（generality）与可迁移性（portability）。%
+\ \textbf{系统机制}：规划（planning）\,$\rightarrow$\,技能整理与注册（skill curation/registry）\,$\rightarrow$\,自我反思（self-reflection）\,$\rightarrow$\,记忆（memory）的管线，降低长链路任务的错误累积。%
+\ \textbf{作者声称（claimed novelty）}：首次系统化提出\emph{GCC}作为统一接口，并展示了商业游戏与桌面软件上的长时序任务可行性（长时间连续操作）。%
+\ \textbf{优势/局限}：\emph{GUI-only}具通用性强，但在确定性（determinism）、延迟（latency）与复杂UI鲁棒性上受限。%
+\ \textbf{与本文关系}：我们采纳其\emph{skills/macros + reflection + memory}思想，以\emph{GUI-first}保证覆盖面，同时在可用时接入\emph{API/MCP}通道以提速与稳态（保持GUI兜底）。
+
+\paragraph{API/MCP tool-use（简述以对比）}
+API/MCP路径通过结构化接口获得高确定性与较低延迟，但需要适配成本（porting cost）与接口可得性（availability）。本文选择\emph{GUI-first + API/MCP as accelerator}的折中策略。
+
+在动作接口上，\emph{GUI-only} 的 \emph{General Computer Control (GCC)} 强调以“screen-in, keyboard/mouse-out”的人类同态通道获取最大通用性（代表作如 \emph{Cradle}），而 \emph{API/MCP} 路径则以结构化接口换取更强的确定性与更低的延迟（例如 MCP 的\emph{plug-and-play}对接与模块化评测）。两者形成“通用性—确定性”的互补光谱：本文采取\emph{GUI-first}以保证覆盖面，并在可用时以\emph{API/MCP}加速关键路径，同时保持 GUI 兜底以应对接口缺失与版本漂移。 
+
+
+\paragraph{Takeaway}
+GUI-only（GCC）与API/MCP形成\emph{通用性–确定性}（generality–determinism）的互补；面向实时伴随式助手（companion-style），折中方案更契合我们的延迟与稳定性目标。
+
 \subsection{Agentic Modules: Planning, Memory, Reflection, Skills}
 > 说明：机制视角。涉及2.1, 2.2, 2.4。
 \todo{规划（planning）、记忆（memory, 用户偏好/历史）、反思（self-reflection, 纠错/风格一致）、技能库（skills/macros, 原子→复合）。说明这些机制如何提升长链路成功率与体验一致性。与本文：直接采纳skills+reflection+memory组合。}
@@ -20,6 +38,13 @@
 \subsection{Benchmarks \& Datasets (OS-like, Games, Desktop)}
 > 说明：基准版图。涉及2.6。
 \todo{按类型分：桌面/操作系统类（如OSWorld系）、游戏/模拟器类（如ALE等）与自建任务脚本。指出覆盖能力与缺口：缺少“伴随式建议/语音互动”的评测。与本文：定义我们的小型、可复现实验设置与演示脚本。}
+
+
+面向真实游戏场景的评测正在从“单一玩法/小游戏”转向“跨类型、可扩展”的统一框架：\emph{Orak} 以\emph{Model Context Protocol (MCP)}提供\emph{plug-and-play}式对接，使代理（agent）与环境的连接解耦，并在统一配置下考察\emph{planning / reflection / memory / tool-use}等\emph{agentic modules}对性能的边际贡献（ablation）。这类基准不仅有助于横向比较（不同模型/模态），也便于纵向分析（同一模型的模块策略差异），从而把“机制—性能—可复现配置（reproducibility）”串到一起。本文在伴随式场景（companion-style）中借鉴其“统一评测维度 + 模块消融”的体例，但更强调低延迟与语音互动的用户体验指标（例如\emph{advice adoption}与\emph{voice RTT}）。\cite{park2025orak}
+
+
+\paragraph{Placement note（放置说明）}
+将 Orak 置于“Benchmarks \& Datasets”主位；在“Action Interfaces: GUI vs.\ API/MCP”小节中\emph{一句话}指出其采用 \emph{MCP} 的\emph{plug-and-play} 思路以支撑模块化评测。
 
 \subsection{Evaluation Protocols \& Metrics}
 > 说明：强烈关联本文贡献。涉及2.2, 2.7。
