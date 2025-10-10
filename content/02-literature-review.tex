@@ -1,63 +1,59 @@
 \section{Literature Review}
-> 说明：采用taxonomy组织而非按时间；每小节末给1-2句“与本文关系”。Cradle放到2.2（GUI-only/GCC）而非开头。涉及了2.1-2.9。
+% > 说明：按taxonomy组织；每小节末有“与本文关系”。Cradle放在2.2（GUI/GCC）。涉及了2.1-2.9。
 
 \subsection{Perception: Modalities \& Grounding}
-> 说明：输入模态与定位。涉及2.3-2.4。
-\todo{视觉为主（screen/video）+可选音频（audio）；VLM能力：检测/描述/grounding；提一嘴VLA（如果动作权重内生）与传统VLM+tool的差别。与本文：我们选轻量VLM，优先本地（on-device）与流式ASR/TTS。}
+% > 输入模态与定位。涉及2.3-2.4。
+\todo{视觉为主（screen/video）+ 可选音频（audio）；VLM能力：检测/描述/grounding；可简单对照VLA（直接产出action tokens）与VLM+tool的差别。
+与本文：选轻量VLM，优先本地（on-device）与流式ASR/TTS。}
 
-\subsection{Action Interfaces: GUI-only (GCC) vs API/MCP}
-> 说明：动作接口对比的核心小节，放Cradle。涉及2.6-2.7。
-\todo{定义GCC：screen-in, keyboard/mouse-out。代表作：\textbf{Cradle}（GUI-only，skill curation/registry, reflection/memory）。优点：通用性（generality）、可迁移性（portability）；缺点：确定性/延迟。API/MCP：确定性高、速度快、但依赖适配。本文策略：GUI-first + API/MCP作为加速通道，GUI兜底。附一句对比表指引。}
-
-
-\paragraph{GUI-only via GCC: \emph{Cradle}}
-% > 说明：用4-6句讲清机制、作者声称与局限；末尾连到本文立场。
-\textbf{接口范式}：提出统一的\emph{General Computer Control (GCC)}设定（\emph{screen-in, keyboard/mouse-out}），避免应用专用API，强调通用性（generality）与可迁移性（portability）。%
-\ \textbf{系统机制}：规划（planning）\,$\rightarrow$\,技能整理与注册（skill curation/registry）\,$\rightarrow$\,自我反思（self-reflection）\,$\rightarrow$\,记忆（memory）的管线，降低长链路任务的错误累积。%
-\ \textbf{作者声称（claimed novelty）}：首次系统化提出\emph{GCC}作为统一接口，并展示了商业游戏与桌面软件上的长时序任务可行性（长时间连续操作）。%
-\ \textbf{优势/局限}：\emph{GUI-only}具通用性强，但在确定性（determinism）、延迟（latency）与复杂UI鲁棒性上受限。%
-\ \textbf{与本文关系}：我们采纳其\emph{skills/macros + reflection + memory}思想，以\emph{GUI-first}保证覆盖面，同时在可用时接入\emph{API/MCP}通道以提速与稳态（保持GUI兜底）。
-
-\paragraph{API/MCP tool-use（简述以对比）}
-API/MCP路径通过结构化接口获得高确定性与较低延迟，但需要适配成本（porting cost）与接口可得性（availability）。本文选择\emph{GUI-first + API/MCP as accelerator}的折中策略。
-
-在动作接口上，\emph{GUI-only} 的 \emph{General Computer Control (GCC)} 强调以“screen-in, keyboard/mouse-out”的人类同态通道获取最大通用性（代表作如 \emph{Cradle}），而 \emph{API/MCP} 路径则以结构化接口换取更强的确定性与更低的延迟（例如 MCP 的\emph{plug-and-play}对接与模块化评测）。两者形成“通用性—确定性”的互补光谱：本文采取\emph{GUI-first}以保证覆盖面，并在可用时以\emph{API/MCP}加速关键路径，同时保持 GUI 兜底以应对接口缺失与版本漂移。 
-
+\subsection{Action Interfaces: GUI (GCC) \& MCP}
+% > 动作接口核心小节，放Cradle作“GUI可行性”的代表；并解释MCP作为模块化编排思想。涉及2.6-2.7。
+在动作接口上，\textbf{GUI} 路线以 \textbf{General Computer Control (GCC)} 为统一通道（\emph{screen-in, keyboard/mouse-out}），强调对不同应用/游戏的可迁移性（portability）与统一的人类同态交互（human-homomorphic interface）。代表性工作 \emph{Cradle} 显示出在不依赖应用专用接口的前提下，仍可通过\emph{规划—技能整理（skill curation/registry）—反思—记忆}的管线完成长链路任务（desktop/games），从而为\emph{GUI} 的可行性提供了强证据（evidence）。与此同时，\textbf{MCP}（Model Context Protocol）为\emph{模块注册/编排（module registration/orchestration）}提供协议化思路：在不改变输出仍为\emph{GUI}的前提下，可将\emph{skills/macros、planning、memory、reflection}等以统一接口组织起来，便于系统性消融与复用（plug-and-play）。与本文：我们采用\emph{GUI（GCC）}作为唯一执行通道，并借鉴\emph{MCP} 的注册/编排思想作为内部“技能总线（skill bus）”，统一路由与调用\emph{skills/macros} 等模块。\cite{tan2024cradle,park2025orak}
 
 \paragraph{Takeaway}
-GUI-only（GCC）与API/MCP形成\emph{通用性–确定性}（generality–determinism）的互补；面向实时伴随式助手（companion-style），折中方案更契合我们的延迟与稳定性目标。
+基于文献可见：\emph{GUI（GCC）}为跨应用/跨游戏提供了统一接口与较低的移植门槛；协议化编排（如\emph{MCP}）可在\emph{不更改GUI输出}的条件下提升模块化与可复现性。与本文：坚持\emph{GUI}输出，内部采用\emph{MCP-style} 编排以获得结构化、可消融的系统形态。
 
 \subsection{Agentic Modules: Planning, Memory, Reflection, Skills}
-> 说明：机制视角。涉及2.1, 2.2, 2.4。
-\todo{规划（planning）、记忆（memory, 用户偏好/历史）、反思（self-reflection, 纠错/风格一致）、技能库（skills/macros, 原子→复合）。说明这些机制如何提升长链路成功率与体验一致性。与本文：直接采纳skills+reflection+memory组合。}
+% > 机制视角。涉及2.1, 2.2, 2.4。
+\todo{规划（planning）、记忆（memory, 用户偏好/历史）、反思（self-reflection, 纠错/风格一致）、技能库（skills/macros, 原子→复合）。
+与本文：直接采纳skills+reflection+memory组合，并通过“技能总线”统一管理。}
 
 \subsection{Learning Paradigms: Zero-shot, RAG, Finetune, IL/RL, Distillation}
-> 说明：训练与推理范式。涉及2.1, 2.3。
-\todo{列常见范式及成本/收益：零样本与提示工程、检索增强（RAG for UI schema/FAQ）、轻量微调（LoRA）、模仿/强化（IL/RL）、蒸馏到小模型。与本文：优先零样本+RAG，必要时小规模LoRA以稳UI。}
+% > 训练与推理范式。涉及2.1, 2.3。
+\todo{零样本/提示工程、检索增强（RAG for UI schema/FAQ）、轻量微调（LoRA）、模仿/强化（IL/RL）、蒸馏到小模型。
+与本文：优先零样本+RAG，必要时小规模LoRA以稳UI。}
 
 \subsection{Benchmarks \& Datasets (OS-like, Games, Desktop)}
-> 说明：基准版图。涉及2.6。
-\todo{按类型分：桌面/操作系统类（如OSWorld系）、游戏/模拟器类（如ALE等）与自建任务脚本。指出覆盖能力与缺口：缺少“伴随式建议/语音互动”的评测。与本文：定义我们的小型、可复现实验设置与演示脚本。}
+% > 基准版图。涉及2.6。
+以真实多类型游戏为对象的统一评测框架正在兴起：\emph{Orak} 通过 \emph{MCP} 实现\emph{plug-and-play} 的代理—环境解耦，并在统一配置下检验 \emph{planning / reflection / memory / skills} 等\emph{agentic modules} 的边际贡献（ablation），配套 \emph{Leaderboard/Battle Arena} 的对比体例与用于训练的轨迹数据（fine-tuning trajectories）。这类框架的价值在于：\emph{机制—性能—配置}三者被一体化呈现，既利于横向（模型/模态）又利于纵向（策略/模块）比较。与本文：我们借鉴其“统一评测 + 消融”的组织方式，但将\emph{输出统一为GUI}，并用\emph{MCP-style} 在内部完成技能与模块的注册/编排。\cite{park2025orak}
 
+% > 说明：该文提供“程序生成→开放式→统一对比”的方法学参考；与GUI并不冲突。
+与以真实多类型游戏构建统一评测与消融的框架相互补充，一条重要的发展脉络是基于\emph{procedural generation}的开放式评测：在可控生成下构造\emph{OOD}与多步任务压力，统一比较\emph{VLA/VLM}在\emph{架构/训练数据/输出后处理}等变量下的泛化与稳健性，并配套可复用的工具链以保证\emph{reproducibility}。我们采纳其“\emph{协议一致、变量可控}”的组织方式，但将动作执行统一为\emph{GUI}，并用\emph{MCP-style}在内部编排\emph{skills/macros}与\emph{agentic modules}以适配我们的场景需求\cite{guruprasad2025benchmarking}.
 
-面向真实游戏场景的评测正在从“单一玩法/小游戏”转向“跨类型、可扩展”的统一框架：\emph{Orak} 以\emph{Model Context Protocol (MCP)}提供\emph{plug-and-play}式对接，使代理（agent）与环境的连接解耦，并在统一配置下考察\emph{planning / reflection / memory / tool-use}等\emph{agentic modules}对性能的边际贡献（ablation）。这类基准不仅有助于横向比较（不同模型/模态），也便于纵向分析（同一模型的模块策略差异），从而把“机制—性能—可复现配置（reproducibility）”串到一起。本文在伴随式场景（companion-style）中借鉴其“统一评测维度 + 模块消融”的体例，但更强调低延迟与语音互动的用户体验指标（例如\emph{advice adoption}与\emph{voice RTT}）。\cite{park2025orak}
+% Lit. Review: Benchmarks & Datasets（与 Orak 并列）
+与面向真实多类型游戏的统一评测/消融框架互补，\emph{lmgame-Bench} 将“\emph{游戏→评测}”系统化：用 \emph{Gym-style} 接口与\emph{perception/memory scaffolds} 稳定\emph{prompt}、剔除\emph{污染}，在多模型下获得良好分离度，并通过\emph{相关性分析（correlation analysis）}展示“各游戏探测的能力混合并不相同”；进一步，单一游戏的 \emph{RL} 训练对\emph{未见游戏}与\emph{外部规划任务}出现迁移（transfer）。本文沿用其“\emph{协议一致、变量可控}”的评测方法学，但\textbf{执行端统一为 GUI}，并以 \emph{MCP-style} 在内部编排 \emph{skills/macros} 与 \emph{planning/memory/reflection} 以做可复现实验\cite{hu2505lmgame}.
 
-
-\paragraph{Placement note（放置说明）}
-将 Orak 置于“Benchmarks \& Datasets”主位；在“Action Interfaces: GUI vs.\ API/MCP”小节中\emph{一句话}指出其采用 \emph{MCP} 的\emph{plug-and-play} 思路以支撑模块化评测。
 
 \subsection{Evaluation Protocols \& Metrics}
-> 说明：强烈关联本文贡献。涉及2.2, 2.7。
-\todo{客观：success rate, time-to-completion, no-misclick/rollback rate, latency（voice RTT, frame→hint时间）；主观：advice adoption, user satisfaction。与本文：将新增advice adoption与macro success作核心指标。}
+% > 强关联本文贡献。涉及2.2, 2.7。
+\todo{客观：success rate, time-to-completion, no-misclick/rollback rate, latency（voice RTT, frame→hint时间）；主观：advice adoption, user satisfaction。
+与本文：将advice adoption与macro success设为核心指标，配套延迟与稳定性度量。}
+
+% > 说明：把“输出后处理（post-processing）”归入可控变量，便于可复现实验。
+为避免实现细节带来的不可比性，我们将输出结构化与解码约束（structured output \& constrained decoding）纳入统一协议：动作以 JSON Schema 与白名单规范，经 MCP-style skill bus 路由后由 GUI 执行；并以 Invalid Action Rate 作为守门指标（目标近零）。在效果度量上，我们采用跨技能均值（macro-averaged success/recall）为主视角，辅以 micro 指标；对稀疏/时序敏感技能，额外报告机会归一化成功率（OAS）、\textbf{反应时延（RT）与每次机会尝试数（APO）}以刻画稳定性与可用性。\cite{guruprasad2025benchmarking}
+
+我们将“\emph{输出后处理（post-processing）}”（如技能解码、重试/回滚策略）显式纳入可控变量，配合\emph{稳定 prompt 与污染控制}的协议，减少实现细节对可比性的干扰\cite{hu2505lmgame}.
 
 \subsection{Deployment \& Real-time Considerations}
-> 说明：工程现实。涉及2.2, 2.6。
-\todo{本地/云混合、量化（INT4/FP8）、流式解码、语音中断（barge-in）、资源占用与帧率影响。与本文：给出延迟预算（如$\leq$ 500ms提示、$\leq$ 1.5s语音回路）。}
+% > 工程现实。涉及2.2, 2.6。
+\todo{本地/云混合、量化（INT4/FP8）、流式解码、语音中断（barge-in）、资源占用与帧率影响。
+与本文：给出延迟预算（如 $\leq 500$ms 提示、$\leq 1.5$s 语音回路）。}
 
 \subsection{Safety, Permissions \& Robustness}
-> 说明：安全边界。涉及2.2。
-\todo{权限模型（whitelist, scope）、操作确认、影子模式（shadow mode）先预测后执行、回滚/急停。与本文：作为系统必要模块。}
+% > 安全边界。涉及2.2。
+\todo{权限模型（whitelist, scope）、操作确认、影子模式（shadow mode）先预测后执行、回滚/急停。
+与本文：作为系统必要模块并与“技能总线”联动。}
 
 \subsection{Synthesis: Trends, Gaps \& Our Niche}
-> 说明：综述收束到本文位置。关联全篇。
-\todo{趋势：GUI-only通用→API/MCP混合确定性；机制：从对话到任务化/技能化；缺口：缺少“伴随式建议+语音”的统一评测与低延迟实现。本文niche：针对实时游戏的companion-style助手，提供可复现小型协议与演示。}
+% > 综述收束到本文位置。关联全篇。
+当前趋势是在\emph{GUI（GCC）}的统一通道上引入\emph{协议化/模块化}的编排（如\emph{MCP-style}），以便做机制消融与可复现实验；真实多类型游戏的统一评测（如\emph{Orak}）正在成为共识。缺口在于：\emph{实时伴随式（companion-style）}场景仍缺乏围绕语音互动与低延迟体验的专门指标与协议。与本文：我们将以\emph{GUI}为唯一执行通道，结合\emph{MCP-style} 编排与伴随式指标，给出可复现的小型协议与演示设置。

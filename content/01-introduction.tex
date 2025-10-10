@@ -1,38 +1,40 @@
 \section{Introduction}
-> 说明：交代问题空间（游戏伴随式助手，companion-style game agent）、范围（scope）、研究缺口（gap）、本文立场与贡献（positioning \& contributions）。涉及了2.1-2.4和2.6-2.7。
+% > 说明：交代问题空间（companion-style game agent）、范围（scope）、研究缺口（gap）、本文立场与贡献（positioning & contributions）。涉及了2.1-2.4和2.6-2.7。
 
 \subsection{Problem Setting \& Motivation}
-\todo{背景：实时游戏场景（real-time gaming），玩家需要事件提示（event spotting）、策略建议（tactical guidance）、低延迟语音交互（voice loop）。动机：现有VLM/VLA在桌面/游戏的落地与稳定性存在鸿沟。}
-
-近年来，面向玩家的智能交互快速涌现：从\emph{AI游戏主播/虚拟角色}到\emph{LLM驱动的NPC/插件}，社区与产业侧案例表明``大模型+游戏交互''具备显著关注度与潜在影响（game changer potential）。然而，这些案例多为定制工程，缺乏统一接口与可复现实验协议。本文聚焦\emph{伴随式（companion-style）}实时助手，围绕\emph{统一动作接口}与\emph{低延迟体验}提供可复现的方法与评测。
+% > 背景：实时游戏场景需要事件提示（event spotting）、策略建议（tactical guidance）、低延迟语音交互（voice loop）。动机：VLM/VLA在真实桌面/游戏的落地与稳定性存在鸿沟。
+近年来，面向玩家的智能交互快速涌现：从\emph{AI游戏主播/虚拟角色}到\emph{LLM驱动的NPC/插件}，社区与产业侧案例表明“\emph{大模型×游戏交互}”具备显著关注度与潜在影响（game changer potential）。然而，这些案例多为定制工程，缺乏统一接口与可复现实验协议。本文聚焦\emph{伴随式（companion-style）}实时助手，在\emph{统一动作接口}与\emph{低延迟体验}的约束下，探索一条\emph{仅基于GUI（GCC）}即可落地、并具备可复现性的系统路径。
 
 \paragraph{Industry/Community Signals}
-
-除学术工作外，社区与产业侧的``AI$\times$ 游戏/直播''案例为本研究提供了现实动机。例如 \emph{Neuro-sama} 及其开源复刻框架\cite{neurosama_youtube,open_llm_vtuber,kimjammer_neuro,airi_project}，以及叙事解谜作品 \emph{AI2U: With You 'Til The End}\cite{ai2u_game} 展示了``对话即操作''（dialogue-as-action）与高交互度（LLM-controlled NPCs）的设计可能性。我们据此聚焦于``游戏 + 大模型交互''的可复现路径，但在本文中\emph{不将这些案例视为方法有效性的学术证据}，而是将研究问题落在\emph{统一动作接口}（action interface：GUI-only/GCC vs.\ API/MCP）、\emph{低延迟体验}（low-latency）与\emph{评测协议}（evaluation protocols）上。
-
-
+% > 产业/社区信号仅作动机，不作为学术证据。
+除学术工作外，社区与产业侧的“AI$\times$游戏/直播”案例为本研究提供现实动机。例如 \emph{Neuro-sama} 及其开源复刻框架\cite{neurosama_youtube,open_llm_vtuber,kimjammer_neuro,airi_project}，以及叙事解谜作品 \emph{AI2U: With You \textquotesingle Til The End}\cite{ai2u_game} 展示了“对话即操作”（dialogue-as-action）与高交互度（LLM-controlled NPCs）的设计可能性。我们据此聚焦“\emph{游戏 + 大模型交互}”的可复现路径；这些案例\emph{不作为方法有效性的学术证据}，研究问题将落在\emph{统一动作接口（GUI/GCC）}、\emph{低延迟}与\emph{评测协议}上。
 
 \subsection{Scope \& Working Definitions}
-\todo{给出工作定义（working definitions）：多模态（multimodal）、动作接口（action interface: GUI-only vs API/MCP），伴随式助手（companion-style），短时托管（autopilot/macros），评测术语（success rate, latency, advice adoption）。}
+% > 定义术语：多模态、动作接口（本文聚焦GUI/GCC）、伴随式助手、短时托管（autopilot/macros）、评测术语（success rate, latency, advice adoption）。
+我们采用\textbf{General Computer Control (GCC)} 的\emph{GUI}范式：\emph{screen-in, keyboard/mouse-out}的人类同态接口（human-homomorphic interface）。代表作 \emph{Cradle} 证明了在不依赖应用API的前提下完成长链路桌面/游戏任务的可行性\cite{tan2024cradle}。在此基础上，\textbf{本文明确聚焦GUI}，\emph{不进行应用API的单独适配}（尽管在可行时API可能进一步提升\emph{determinism \& efficiency}，但其工程成本与维护负担超出本文范围）。相应地，我们\textbf{以 \emph{Model Context Protocol (MCP)} 作为内部“技能/工具总线”}：将\emph{GUI技能（skills/macros）}、\emph{规划/记忆/反思（planning/memory/reflection）}等模块以\emph{MCP风格}进行注册与编排，统一在GCC通道上执行。
 
-我们将\textbf{动作接口}（action interface）划分为\emph{GUI-only}与\emph{API/MCP}两类。
+% > 与评测设置相关的代表性工作引用与对齐（段末合并引用）。
+作为与本文评测设置相关的代表性工作，\emph{Orak} 提供覆盖多类型真实电子游戏的统一基准，并以 \emph{MCP} 实现\emph{plug-and-play} 的代理—环境对接；其 \emph{Leaderboard/Battle Arena} 与\emph{agentic modules} 消融，为比较不同模块与输入模态提供了统一框架\cite{park2025orak}。我们参考其“统一评测—模块消融—可复现配置”的思路，但\emph{将输出接口限定为GUI（GCC）}，并把 \emph{MCP} 用作\emph{内部技能编排协议}而非外部应用API适配层。
 
-\textbf{GUI-only}以\textbf{General Computer Control (GCC)}为代表：\emph{screen-in, keyboard/mouse-out}的人类同态接口（human-homomorphic interface）。代表作\emph{Cradle}展示了在不依赖应用API的前提下完成长链路桌面/游戏任务的可行性；本文在此基础上采取\emph{GUI-first}并\emph{机会主义接入API/MCP}以提升确定性与效率（determinism \& efficiency）。\cite{tan2024cradle}
+% > 程序生成/开放式评测参考，强调OOD与过程变量。
+作为开放式环境下的系统评测参考，我们采用基于\emph{procedural generation}的统一框架来度量\emph{VLA/VLM}在多步轨迹与OOD设定中的表现，并将\emph{架构/数据/输出后处理}作为可控变量纳入对比\cite{guruprasad2025benchmarking}。
 
-% Intro: Scope & Working Definitions / 或 Evaluation Preview 末尾一段（3句以内）
-作为与本文评测设置相关的代表性工作，\emph{Orak} 提供了覆盖 12 款真实电子游戏、跨 6 大类型的训练与评测基准，并以 \emph{Model Context Protocol (MCP)} 实现\emph{plug-and-play} 的代理与环境对接；其\emph{Leaderboard/Battle Arena}与\emph{agentic modules}消融，为比较不同模块与输入模态（text/vision）提供了统一框架. \cite{park2025orak}我们在本文中参考其“统一评测—模块消融—可复现配置”的思路，结合本场景的实时性需求构建更贴合“伴随式助手（companion-style）”的评测协议。
-
-作为开放式环境下的系统评测参考，我们采用基于\emph{procedural generation}的统一框架来度量\emph{VLA/VLM}在多步轨迹与OOD设定中的表现，并将\emph{架构/数据/输出后处理}作为可控变量纳入对比\cite{guruprasad2025benchmarkingvisionlanguage}. 
+% Intro: Evaluation Preview / Scope 末尾（1–2句）
+我们参考 \emph{lmgame-Bench} 的“游戏→可靠评测”思路：以统一 \emph{Gym-style API} 与轻量 \emph{perception/memory scaffolds} 控制\emph{提示方差（prompt variance）}与\emph{污染（contamination）}，并度量跨游戏与多步任务的\emph{泛化（generalization）}表现；实现上我们仍\textbf{统一采用 GUI 执行}，\emph{MCP-style} 仅用于内部\emph{技能编排（skill bus）}\cite{hu2505lmgame}.
 
 
 \subsection{Key Challenges}
-\todo{长链路稳定性（long-horizon stability）、UI变化鲁棒（robustness）、延迟预算（latency budget）、权限安全（permissions/rollback）、跨游戏迁移（generality/portability）。}
+% > 长链路稳定性（long-horizon stability）、UI变化鲁棒（robustness）、延迟预算（latency budget）、权限安全（permissions/rollback）、跨游戏迁移（generality/portability）。
+\todo{长链路稳定性、UI变化鲁棒、延迟预算、权限安全与回滚、跨游戏迁移；并注明我们仅依赖GUI控制带来的特定挑战（如确定性与重试策略）。}
 
 \subsection{Our Positioning \& Contributions}
-\todo{工程立场：GUI-first + 机会主义API/MCP；引入skills/macros、planning/memory/reflection、语音链路；提出面向伴随式助手的评测协议（advice adoption, voice RTT, macro success）。可列1-3条要点。}
+% > 立场：GUI/GCC；MCP用于内部技能/模块编排；不做API适配但讨论其潜在收益；提出伴随式评测协议。
+\todo{(1) \textbf{GUI/GCC} 的伴随式助手原型；(2) 以 \textbf{MCP} 作为“技能/工具总线”统一规划/记忆/反思/技能组并落到GUI执行；(3) 提出\emph{advice adoption, voice RTT, macro success}等伴随式指标与统一评测设置；(4) 讨论API接入的潜在收益但不纳入本文范围。}
 
 \subsection{Design Principles \& System Preview}
-\todo{一句话系统图预告：screen/audio→VLM→LLM/agentic modules→(GUI kb/mouse | API/MCP)→safety guard（permissions, rollback, kill-switch）。把详图留到方法章节。}
+% > 系统预告：screen/audio → VLM → LLM/agentic modules → MCP-skill bus → GUI (kb/mouse) → safety guard。详图放方法章节。
+\todo{一句话系统流：\emph{screen/audio} → \emph{VLM} → \emph{LLM/agentic}（planning/memory/reflection）→ \emph{MCP-skill bus}（技能注册/路由）→ \emph{GUI执行}（kb/mouse）→ \emph{safety}（permissions, rollback, kill-switch）。}
 
 \subsection{Summary of Findings (Optional)}
-\todo{一句话总结文献趋势：从GUI-only通用性到API/MCP确定性，从对话式感知到任务化（taskification）与技能化（skills）。可选，若版面紧张可删。}
+% > 文献趋势与本文选择：文献存在向API/MCP确定性倾斜的趋势；本文基于成本/可移植性聚焦GUI，并以MCP做内部编排。
+\todo{趋势：部分工作转向API/MCP以换取确定性与速度；选择：本文因工程成本与可迁移性\emph{聚焦GUI}，并以\emph{MCP}完成内部技能/模块编排；未来可探索有限API接入的收益。}
