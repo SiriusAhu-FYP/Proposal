@@ -1,0 +1,20 @@
+\section{Introduction}
+> 说明：交代问题空间（游戏伴随式助手，companion-style game agent）、范围（scope）、研究缺口（gap）、本文立场与贡献（positioning \& contributions）。涉及了2.1-2.4和2.6-2.7。
+
+\subsection{Problem Setting \& Motivation}
+\todo{背景：实时游戏场景（real-time gaming），玩家需要事件提示（event spotting）、策略建议（tactical guidance）、低延迟语音交互（voice loop）。动机：现有VLM/VLA在桌面/游戏的落地与稳定性存在鸿沟。}
+
+\subsection{Scope \& Working Definitions}
+\todo{给出工作定义（working definitions）：多模态（multimodal）、动作接口（action interface: GUI-only vs API/MCP），伴随式助手（companion-style），短时托管（autopilot/macros），评测术语（success rate, latency, advice adoption）。}
+
+\subsection{Key Challenges}
+\todo{长链路稳定性（long-horizon stability）、UI变化鲁棒（robustness）、延迟预算（latency budget）、权限安全（permissions/rollback）、跨游戏迁移（generality/portability）。}
+
+\subsection{Our Positioning \& Contributions}
+\todo{工程立场：GUI-first + 机会主义API/MCP；引入skills/macros、planning/memory/reflection、语音链路；提出面向伴随式助手的评测协议（advice adoption, voice RTT, macro success）。可列1-3条要点。}
+
+\subsection{Design Principles \& System Preview}
+\todo{一句话系统图预告：screen/audio→VLM→LLM/agentic modules→(GUI kb/mouse | API/MCP)→safety guard（permissions, rollback, kill-switch）。把详图留到方法章节。}
+
+\subsection{Summary of Findings (Optional)}
+\todo{一句话总结文献趋势：从GUI-only通用性到API/MCP确定性，从对话式感知到任务化（taskification）与技能化（skills）。可选，若版面紧张可删。}

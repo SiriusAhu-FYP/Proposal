@@ -1,0 +1,115 @@
+% fyp_proposal_settings.tex
+% -------------------------------------------------------------------
+%   XJTLU FYP Proposal - Custom Configuration for FAST Template
+% -------------------------------------------------------------------
+
+% === 1. 字体和行距设置 ===
+% 加载 Times New Roman 字体宏包
+\usepackage{newtxtext, newtxmath}
+% 设置全局行距为 1.5 倍
+\onehalfspacing
+% 两端对齐
+\usepackage{ragged2e}
+
+% === 2. 章节标题格式化 (核心要求) ===
+% 使用 titlesec 宏包重新定义章节标题样式
+% \section 对应一级标题 (Introduction), 设置为 20pt
+\titleformat{\section}
+    {\normalfont\bfseries\fontsize{20}{24}\selectfont} % 格式
+    {\thesection} % 标签
+    {1em} % 标签与标题之间的距离
+    {} % 标题前的代码
+
+% \subsection 对应二级标题 (Introduction, Background), 设置为 16pt
+\titleformat{\subsection}
+    {\normalfont\bfseries\fontsize{16}{19}\selectfont}
+    {\thesubsection}
+    {1em}
+    {}
+
+% \subsubsection 对应三级标题 (Motivation, Objectives), 设置为 14pt
+\titleformat{\subsubsection}
+    {\normalfont\bfseries\fontsize{14}{17}\selectfont}
+    {\thesubsubsection}
+    {1em}
+    {}
+
+% 确保标题后的第一段也进行首行缩进
+\usepackage{indentfirst}
+
+\providecommand{\TemplateSupervisorName}{}
+
+% === 3. 封面页定制 ===
+% 移除 FAST 模板默认的 \maketitle 命令，我们将手动构建封面
+% \renewcommand{\maketitle}{}
+
+% 创建一个新的命令来生成符合 FYP 要求的封面
+\renewcommand{\maketitle}{
+    \begin{titlepage}
+        \centering
+        % XJTLU Logo
+        \includegraphics[width=0.8\textwidth]{assets/images/xjtlu-title.png}\par
+        \vspace{2cm}
+        {\huge\bfseries \TemplateModuleCode~FINAL YEAR PROJECT}\par
+        \vspace{2cm}
+        {\Huge \textit{\TemplateReportTitle}}\par % 报告标题
+        \vspace{2cm}
+        {\LARGE \textbf{Proposal Report}}\par
+        \vfill
+        {\large In Partial Fulfillment}\par
+        {\large of the Requirements for the Degree of}\par
+        {\large Bachelor of Engineering}\par
+        \vspace{2cm}
+        % 学生信息
+        \large
+        \begin{tabular}{|ll|p{0.4\textwidth}|}
+            \hline
+            Student Name & : & \TemplateAuthorName \\
+            \hline
+            Student ID   & : & \TemplateAuthorID \\
+            \hline
+            Supervisor   & : & \TemplateSupervisorName \\
+            \hline
+        \end{tabular}\par
+        \vfill
+        {\large School of AI and Advanced Computing}\par
+        {\large Xi’an Jiaotong-Liverpool University}\par
+        November 2025
+    \end{titlepage}
+}
+
+% === 4. 页眉页脚调整 (可选) ===
+% 如果需要，可以在这里调整页眉页脚以符合特定要求
+% 示例：移除页眉，仅保留页脚的页码和学生信息
+\pagestyle{fancy}
+\fancyhf{} % 清空所有页眉页脚
+\fancyfoot[C]{\thepage} % 中间页码
+\renewcommand{\headrulewidth}{0pt} % 移除页眉横线
+\renewcommand{\footrulewidth}{0pt} % 移除页脚横线
+
+% === 5. 附录仅在 appendices 环境内生效的样式 ===
+% 1) 不自动生成“Appendices”单独页面 → 绝对不要用 [page] 选项
+\usepackage{appendix}
+
+% 2) 需要控制标题与目录格式
+\usepackage{titlesec}
+\usepackage{tocloft}
+\usepackage{etoolbox}  % 提供 \AtBeginEnvironment
+
+% 仅在进入 \begin{appendices} ... \end{appendices} 内修改样式
+\AtBeginEnvironment{appendices}{%
+  % 全局正文不受影响
+  \titleformat{\section}[block]
+    {\normalfont\bfseries\fontsize{18}{22}\selectfont}
+    {Appendix~\Alph{section}.}{1em}{}
+  \titleformat{\subsection}[block]
+    {\normalfont\bfseries\fontsize{16}{19}\selectfont}
+    {\Alph{section}.\arabic{subsection}}{1em}{}
+
+  % ---------- 目录格式：让 TOC 显示为 “Appendix A. Title of Appendix” ----------
+  % 这三行通过把命令写进 .toc，只影响从现在起写入目录的“附录”条目
+  \addtocontents{toc}{\protect\renewcommand{\protect\cftsecpresnum}{Appendix~}}
+  \addtocontents{toc}{\protect\renewcommand{\protect\cftsecaftersnum}{.\space}}
+  % 给“Appendix A.”预留更宽的编号区，避免压到标题；可按需要调大/调小
+  \addtocontents{toc}{\protect\setlength{\protect\cftsecnumwidth}{7em}}
+}

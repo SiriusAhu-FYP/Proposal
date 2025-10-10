@@ -1,0 +1,72 @@
+% -------------------------------------------------------------------
+% FAST Coursework Template - Core package imports
+% -------------------------------------------------------------------
+% This file centralises package loading so higher-level options can stay inside options.tex. Only adjust these settings when you need to add or remove functionality for the whole project.
+
+% Engine guard: FAST targets pdfLaTeX workflows (local + Overleaf).
+\usepackage{ifxetex}
+\usepackage{ifluatex}
+\ifxetex
+  \PackageError{fast-template}{FAST targets pdfLaTeX only}{Switch your compiler to pdfLaTeX (pdflatex) when building this project.}
+\fi
+\ifluatex
+  \PackageError{fast-template}{FAST targets pdfLaTeX only}{Switch your compiler to pdfLaTeX (pdflatex) when building this project.}
+\fi
+
+% Encoding, fonts, and language handling tuned for pdfLaTeX.
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\ifTemplateChineseSupport
+  \usepackage{CJKutf8}
+\fi
+
+\usepackage[english]{babel}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{csquotes}
+
+% Page geometry and spacing
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{setspace}
+\onehalfspacing
+\ifTemplateWordLikeLayout
+  \usepackage{parskip} % Relaxed spacing when mimicking word-processor layout.
+\fi
+\usepackage{indentfirst} % Ensure first paragraph after headings respects indentation.
+
+% Mathematics and tables
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{booktabs}
+
+% Graphics and floats
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{pdfpages}
+
+% Code listings and numeric formatting
+\usepackage{listings}
+\usepackage{siunitx}
+
+% Hyperlinks and clever referencing
+\usepackage{hyperref}
+\usepackage{cleveref}
+
+% Header/footer and title formatting
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{enumitem}
+
+% Bibliography
+\usepackage{biblatex}
+\addbibresource{bib/references.bib}
+
+% Activate Chinese typesetting for the entire document when running pdfLaTeX.
+\ifTemplateChineseSupport
+  \AtBeginDocument{\begin{CJK*}{UTF8}{gbsn}}
+  \AtEndDocument{\end{CJK*}}
+\fi

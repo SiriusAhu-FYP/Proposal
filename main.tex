@@ -1,0 +1,60 @@
+\documentclass[12pt,a4paper]{article}
+
+% === Template Options ===
+% 调整全局主题、代码样式、黑白模式、Word 风段落等快速开关。
+\input{options}
+
+% === Core Configuration ===
+% 统一加载宏包、视觉样式以及自定义命令。
+\input{config/preamble}
+\input{config/style}
+\input{config/commands}
+
+% === FYP Custom Configuration ===
+\input{config/fyp_settings}
+
+\begin{document}
+
+\pagenumbering{gobble}
+
+% === Front Matter ===
+% meta.tex 汇总课程信息、封面、摘要等可选模块。
+\input{meta}
+\TemplateRenderCoverPDF
+\maketitle
+\TemplateRenderCoverImage
+\TemplateAbstract
+\clearpage
+
+\input{content/00-abstract}
+\newpage
+\tableofcontents
+\clearpage
+
+\pagenumbering{arabic}
+
+% === Main Content ===
+% 正文按章节拆分在 content/ 目录，可按需增删或重排。
+\input{content/01-introduction}
+\newpage
+\input{content/02-literature-review}
+\newpage
+\input{content/03-project-plan}
+\newpage
+\input{content/04-conclusion}
+
+% === References & Appendix ===
+\newpage
+\phantomsection
+\addcontentsline{toc}{section}{References}
+\printbibliography
+
+\clearpage
+\appendix
+\pagenumbering{Roman}
+\begin{appendices}
+    \input{content/Appendix-A}
+    \input{content/Appendix-B}
+\end{appendices}
+
+\end{document}

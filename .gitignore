@@ -1,0 +1,33 @@
+# Compiled LaTeX artifacts
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.lof
+*.log
+*.lot
+*.out
+*.run.xml
+*.synctex.gz
+*.toc
+
+# Legacy build outputs
+output/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Backup and temp files
+*~
+*.bak
+*.swp
+*.swo
+
+# Temporary folder
+tmp/
+
+# Docs（暂不发布）
+docs/

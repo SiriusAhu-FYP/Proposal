@@ -1,0 +1,38 @@
+\section{Literature Review}
+> 说明：采用taxonomy组织而非按时间；每小节末给1-2句“与本文关系”。Cradle放到2.2（GUI-only/GCC）而非开头。涉及了2.1-2.9。
+
+\subsection{Perception: Modalities \& Grounding}
+> 说明：输入模态与定位。涉及2.3-2.4。
+\todo{视觉为主（screen/video）+可选音频（audio）；VLM能力：检测/描述/grounding；提一嘴VLA（如果动作权重内生）与传统VLM+tool的差别。与本文：我们选轻量VLM，优先本地（on-device）与流式ASR/TTS。}
+
+\subsection{Action Interfaces: GUI-only (GCC) vs API/MCP}
+> 说明：动作接口对比的核心小节，放Cradle。涉及2.6-2.7。
+\todo{定义GCC：screen-in, keyboard/mouse-out。代表作：\textbf{Cradle}（GUI-only，skill curation/registry, reflection/memory）。优点：通用性（generality）、可迁移性（portability）；缺点：确定性/延迟。API/MCP：确定性高、速度快、但依赖适配。本文策略：GUI-first + API/MCP作为加速通道，GUI兜底。附一句对比表指引。}
+
+\subsection{Agentic Modules: Planning, Memory, Reflection, Skills}
+> 说明：机制视角。涉及2.1, 2.2, 2.4。
+\todo{规划（planning）、记忆（memory, 用户偏好/历史）、反思（self-reflection, 纠错/风格一致）、技能库（skills/macros, 原子→复合）。说明这些机制如何提升长链路成功率与体验一致性。与本文：直接采纳skills+reflection+memory组合。}
+
+\subsection{Learning Paradigms: Zero-shot, RAG, Finetune, IL/RL, Distillation}
+> 说明：训练与推理范式。涉及2.1, 2.3。
+\todo{列常见范式及成本/收益：零样本与提示工程、检索增强（RAG for UI schema/FAQ）、轻量微调（LoRA）、模仿/强化（IL/RL）、蒸馏到小模型。与本文：优先零样本+RAG，必要时小规模LoRA以稳UI。}
+
+\subsection{Benchmarks \& Datasets (OS-like, Games, Desktop)}
+> 说明：基准版图。涉及2.6。
+\todo{按类型分：桌面/操作系统类（如OSWorld系）、游戏/模拟器类（如ALE等）与自建任务脚本。指出覆盖能力与缺口：缺少“伴随式建议/语音互动”的评测。与本文：定义我们的小型、可复现实验设置与演示脚本。}
+
+\subsection{Evaluation Protocols \& Metrics}
+> 说明：强烈关联本文贡献。涉及2.2, 2.7。
+\todo{客观：success rate, time-to-completion, no-misclick/rollback rate, latency（voice RTT, frame→hint时间）；主观：advice adoption, user satisfaction。与本文：将新增advice adoption与macro success作核心指标。}
+
+\subsection{Deployment \& Real-time Considerations}
+> 说明：工程现实。涉及2.2, 2.6。
+\todo{本地/云混合、量化（INT4/FP8）、流式解码、语音中断（barge-in）、资源占用与帧率影响。与本文：给出延迟预算（如$\leq$ 500ms提示、$\leq$ 1.5s语音回路）。}
+
+\subsection{Safety, Permissions \& Robustness}
+> 说明：安全边界。涉及2.2。
+\todo{权限模型（whitelist, scope）、操作确认、影子模式（shadow mode）先预测后执行、回滚/急停。与本文：作为系统必要模块。}
+
+\subsection{Synthesis: Trends, Gaps \& Our Niche}
+> 说明：综述收束到本文位置。关联全篇。
+\todo{趋势：GUI-only通用→API/MCP混合确定性；机制：从对话到任务化/技能化；缺口：缺少“伴随式建议+语音”的统一评测与低延迟实现。本文niche：针对实时游戏的companion-style助手，提供可复现小型协议与演示。}

@@ -1,0 +1,35 @@
+% -------------------------------------------------------------------
+% FAST Coursework Template - User-Facing Options
+% -------------------------------------------------------------------
+% Put project-level switches and light defaults here. Keep this file small
+
+% --- Appearance / listing selectors ---
+\providecommand{\TemplateColorTheme}{fastprimary}
+\providecommand{\TemplateCodeListingStyle}{githubLight}
+
+% --- Bibliography style (friendly names) ---
+\providecommand{\TemplateBibStyle}{ieee} % public-friendly name: ieee, apa7, ...
+\usepackage{xstring}
+\providecommand{\TemplateBibLaTeXStyleName}{ieee}
+\IfStrEq{\TemplateBibStyle}{apa7}{\renewcommand{\TemplateBibLaTeXStyleName}{apa}}{}
+\PassOptionsToPackage{backend=biber,sorting=none,style=\TemplateBibLaTeXStyleName}{biblatex}
+
+% Theme toggles (true = enable, false = disable).
+\newif\ifTemplateMonochromeTheme
+\TemplateMonochromeThemefalse
+
+% Chinese language support toggle (true = enable, false = disable).
+% Enabling Chinese support will increase compilation time.
+\newif\ifTemplateChineseSupport
+\TemplateChineseSupporttrue
+
+% Header/footer rules (true = show rule, false = remove rule).
+\newif\ifTemplateHeadRule
+\TemplateHeadRuletrue
+\newif\ifTemplateFootRule
+\TemplateFootRuletrue
+
+% Layout modes. true mimics a word-processor layout (no indent + relaxed
+% spacing). false retains classic LaTeX paragraph spacing.
+\newif\ifTemplateWordLikeLayout
+\TemplateWordLikeLayoutfalse
