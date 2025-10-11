@@ -7,6 +7,7 @@
 \subsection{Perception: Modalities \& Grounding}
 % > 输入模态与定位；本节仅界定输入模态与 grounding 能力的术语背景。不涉及实现选择。涉及 2.3–2.4。
 该方向通常以屏幕帧（screen frames）或短视频（video clips）为主输入，辅以窗口/坐标等轻量上下文；可选接入音频（audio）以形成语音闭环（ASR/TTS）。多模态模型承担检测/描述/定位（detection/description/grounding）、UI 元素识别与状态读出等能力；相较直接产出动作的 \emph{VLA}，\emph{VLM+tool} 将视觉理解与动作执行解耦，通过\emph{结构化调用（structured tool calls）}或\emph{技能库（skills/macros）}闭环。代表实践包括：\emph{UI-Venus} 在 \emph{screenshot-only} 条件下以\emph{结构化动作}实现端到端导航\cite{ui-venus}；\emph{V\!-MAGE} 强调 \emph{visual-only/continuous-space} 设定下的定位、时机与视觉记忆压力\cite{v-mage}；\emph{lmgame} 提供感知/记忆脚手架（scaffolds）以稳定交互与提示方差\cite{lmgame}。上述脉络共同勾勒了输入模态与 \emph{grounding} 能力的术语与范围。\cite{ui-venus,v-mage,lmgame}
+另外，也有从视频侧直接推断 PX 的做法，为交互或评测中的“机会对齐”提供情绪/投入度的代理\cite{letsplay-px}.
 
 \paragraph{Agent AI（multimodal interaction survey）}
 该综述以“\emph{Agent AI}”为工作定义：感知多模态输入（视觉/语言/环境信号）并在具身或虚拟环境中产生动作（embodied actions）的交互系统；作者从“下一步具身动作预测（next-embodied action prediction）”出发，讨论外部知识（external knowledge）、多传感输入（multi-sensory inputs）与人类反馈（human feedback）在 \emph{grounded} 场景下的作用，并建议以虚拟/模拟环境加速研究进展\cite{agent-ai}。该视角为“感知—定位—交互”的表述提供了概念锚点。
@@ -57,13 +58,17 @@
 {Imagine an agent learning to play Palworld. (1) The agent exhibits confusion when only relying on textual guidance. (2) The agent is confused when presented with images of a Pal sphere and a Pal. (3) The agent understands how to catch a pet through \emph{multimodal guidance}, which combines textual guidance with images of the Pal sphere and Pal \cite{r2-play}.}
 {fig:r2play-motivation}
 
-\picHere{./assets/images/from-papers/r2-play02.jpg}{0.9\linewidth}
+\picHere{./assets/images/from-papers/r2-play02.jpg}{0.7\linewidth}
 {An illustrative example of \emph{multimodal game instructions (MGI)}. Each instruction consists of three sections: \emph{game description}, \emph{game trajectory}, and \emph{game guidance} (including action, language guidance, and the position of key elements) \cite{r2-play}.}
 {fig:r2play-mgi}
 
 \paragraph{RFT（GRPO）与动作粒度奖励}
 将奖励拆分为\emph{格式/动作类型/坐标/内容}四部分并加权，以同时度量\emph{结构化输出合规性}与\emph{细粒度定位/文本输入}正确性，作为 GUI 导航中 RL-finetune 的代表做法之一\cite{uivenus_rft}。\par
 另一方面，“工具增强型 MLLM（tool-augmented MLLM）”的综述从“数据—任务—评测”三条主线梳理外部工具（API、专家模型、知识库等）的作用边界：任务侧涵盖多模态 RAG、推理、幻觉、安全、代理与视频感知，流程侧以 MRAG 的“检索—重排—整合”三段式为例，评测侧指出既有指标难以全面刻画多模态生成与对齐\cite{tool-aug-mllm}。这些观察为讨论学习范式与评测要素提供了方法学参考。
+
+更广泛的综述从方法、应用与挑战三方面回顾了 \emph{LLM×游戏} 的研究脉络，涵盖从零样本/检索增强到
+模仿/强化学习及\emph{planning/memory/reflection} 与工具调用（tool-use/MCP-style）的组合，并串联环境类型、
+输入模态与动作接口以对齐评测与基准的讨论\cite{game-agents-large-models}.
 
 % ==========
 % 2.5
@@ -73,7 +78,11 @@
 \paragraph{ORAK（统一评测/消融/MCP 思想）}
 \emph{ORAK} 通过 MCP 实现 \emph{plug-and-play} 的代理—环境解耦，并在统一配置下检验
 \emph{planning / reflection / memory / skills} 等 \emph{agentic modules} 的边际贡献（ablation），配套
+
 \emph{Leaderboard/Battle Arena} 与训练轨迹数据（fine-tuning trajectories），将\emph{机制—性能—配置}一体化呈现\cite{ORAK}。该体例凸显了“统一评测—模块消融”的可比性价值。
+
+该综述亦梳理了多样基准与评测设置，提示跨游戏可比性与协议一致的重要性\cite{game-agents-large-models}.
+
 
 \paragraph{Procedural-generation（OOD 方法学）}
 以\emph{procedural generation} 构造 OOD 与多步任务压力，统一比较 \emph{VLA/VLM} 在\emph{架构/训练数据/输出后处理}等变量下的稳健性，并配套工具链保证\emph{reproducibility}\cite{Benchmarking-VLA-VLM}。这是“变量可控—开放式难度”方向的典型方法学线索。
@@ -102,12 +111,22 @@
 % > 指标与协议的文献回顾；不作实现承诺。
 常见\emph{客观指标}：任务成功率（\emph{success/pass@k}）、完成时间（\emph{time-to-completion}）、误操作/回滚（\emph{misclick/rollback rate}）与延迟（\emph{latency}，如语音往返 \emph{voice RTT}）；\emph{主观/行为指标}：采纳程度（\emph{advice adoption}）与满意度等\cite{ORAK,lmgame,Benchmarking-VLA-VLM}。在类别分布不均（class imbalance）情形，\emph{macro-averaged} 与 \emph{micro} 指标并举以减轻多数类偏置\cite{Benchmarking-VLA-VLM}。协议层面，文献强调\emph{结构化输出与约束解码（structured output \& constrained decoding）}以降低无效动作与坐标偏差，也有将\emph{无效动作率}纳入评估与训练信号设计（动作拆分为\emph{格式/类型/坐标/内容}四粒度）的做法\cite{ui-venus}；“游戏→可靠评测”路线强调记录\emph{后处理/解码策略（post-processing）}、\emph{提示方差}与\emph{污染}控制，以减少实现细节对可比性的影响\cite{lmgame}。跨任务比较上，\emph{Elo 风格排名（Elo-style ranking）}可缓解关卡难度不均与多任务汇总问题\cite{v-mage}；而\emph{procedural generation} 的方法学将\emph{架构/数据/后处理}视作可控变量进行统一对比，强调 OOD 稳健性与可复现性\cite{Benchmarking-VLA-VLM}。以上做法为后续指标与协议的组织提供了参考图谱。
 
+\paragraph{Label-free PX proxies from Let’s Play videos}
+除任务成功与时延外，亦有工作直接从 \emph{Let’s Play} 视频构建\emph{无标签（label-free）}玩家体验（PX）
+的代理信号：以画面、解说音频等多模态特征弱/自监督提炼 \emph{arousal/valence/engagement}
+并与小规模人工评分/高激励事件对齐，用于机会窗口（opportunity windows）与提示时机（hint timing）的度量\cite{letsplay-px}.
+
+
 % ==========
 % 2.7
 % ==========
 \subsection{Deployment \& Real-time Considerations}
 % > 工程现实回顾：资源/时延/交互链路；不给实现承诺。涉及 2.2, 2.6。
 部署相关研究聚焦资源与实时性约束：\emph{本地—云混合（local–cloud hybrid）}与\emph{推理量化（inference quantization，INT4/FP8）}降低时延与成本；\emph{流式解码（streaming decoding）}与\emph{语音中断（barge-in）}缩短交互回路；并评估对帧率与 CPU/GPU 占用的影响。为保证可比性，协议侧采用固定提示、记录 \emph{post-processing} 与环境版本；在真实设备/平台的在线评测亦逐步增多（如 AndroidWorld 与脚手架化交互）\cite{lmgame,ui-venus}。这些观察勾勒出“实时—资源—协议”三方面的工程边界。
+
+部署层面，on-device LMs 的综合回顾强调\emph{量化（INT4/FP8）}、\emph{蒸馏/适配}、\emph{KV 缓存与分页注意力}
+以及\emph{speculative/streaming 解码}等路径以降低时延与能耗，并讨论端侧资源约束下的稳定性折中与隐私优势\cite{ondevice-llm}.
+
 
 % ==========
 % 2.8
