@@ -1,70 +1,81 @@
+% ===== 段内小节（run-in）小宏：标题与正文同一行 =====
+\newcommand{\phead}[1]{\par\smallskip\noindent\textbf{#1}\quad}
+% 若想让小标题独占一行，则改为：
+% \newcommand{\phead}[1]{\par\smallskip\noindent\textbf{#1}\par\smallskip}
+
 \section{Introduction}
-% > 作用：用“产品向Proposal”的写法交代问题场景（companion-style agent）、范围（scope）、研究缺口（gap）、本文定位（positioning）。
-% > 对标C.1模板：对应 1.1 Introduction/Background 与 1.2 Scope/Objectives 的“背景+范围”部分；不在此承诺实现/实验参数。
+% > 作用：以“产品向 Proposal”口吻交代问题场景、范围（scope）、现有缺口（gap）与项目定位（positioning）。
+% > 对标C.1模板的 1.1 Introduction/Background 与 1.2 Scope/Objectives；不在此承诺训练/参数等实现细节。
 
 % ==========
 % 1.1
 % ==========
 \subsection{Problem Setting \& Motivation}
-% > 背景：实时游戏场景（real-time gaming）中的伴随式助手（companion-style）需求：事件提示（event spotting）、策略建议（tactical guidance）、低延迟语音交互（voice loop）。
-% > Gap：目前多为定制工程，缺少统一接口与可复现实验协议；相关研究正探索统一评测/消融与污染控制等方向（纯回顾语气）。
-近年来，面向玩家的智能交互快速涌现：从\emph{AI游戏主播/虚拟角色}到\emph{LLM驱动的NPC/插件}，社区与产业案例显示“\emph{大模型×游戏交互}”具备关注度与潜在影响（game changer potential）。然而，这些实践多依赖场景定制，缺乏\emph{统一动作接口}与\emph{可复现实验协议}；相应研究正在通过\emph{统一评测/模块消融}与\emph{污染控制/协议一致}等方法学加以弥合\cite{ORAK,lmgame}。本文讨论\emph{伴随式（companion-style）}实时助手，并将相关问题置于\emph{仅基于GUI（GCC）}与\emph{低延迟体验}的工作设定下加以界定。
-
-\paragraph{Industry/Community Signals}
-% > 仅作动机与生态线索（signals），不作为学术证据。
-在社区层面，\emph{Neuro-sama} 的\emph{AI 游戏主播（AI streamer）}现象展示了大模型驱动的持续互动与情绪共鸣能力\cite{neurosama_youtube}；同时，叙事解谜作品 \emph{AI2U: With You \textquotesingle Til The End} 体现了“\emph{对话即操作（dialogue-as-action）}”与高交互度（LLM-controlled NPCs）的设计潜力\cite{ai2u_game}。围绕该方向的开源复现与二次开发——如 \emph{Open LLM VTuber}、\emph{Airi Project}、\emph{Kimjammer-Neuro} 等——持续出现，反映出应用生态的活跃\cite{open_llm_vtuber,airi_project,kimjammer_neuro}。上述社区与产业案例\emph{仅作为动机与生态线索}，并不作为本文方法有效性的学术证据。
-
-作为市场信号，AI VTuber（以 \emph{Neuro-sama} 为代表）已在主流平台获得大规模关注：其在 2025 年 1 月创造 Twitch \emph{Hype Train} 世界纪录（Level 111，\,$\sim$85K 付费订阅、$\sim$1.2M bits），相关媒体与行业统计均有报道；其频道长期维持数十万粉丝规模与高并发活跃\cite{neurosama_hype_streamscharts_2025,pcgamesn_record_2025,vedal_twitchtracker,bloomberg_neurosama_2023}。同时，直播总体观看时长处于高位（如 Twitch 2024 年全年约 $18.5$–$20.8$\,B 小时；2024\,Q4 全行业约 $21$\,B 小时），显示“AI×直播/游戏”具备现实受众与可观市场体量\cite{streamelements_state_2024,streamscharts_q4_2024_landscape}.
-
+% > 背景：实时游戏场景中的伴随式助手需求：事件提示（event spotting）、策略建议（tactical guidance）、低时延语音交互（voice loop）。
+% > Gap：实践多为定制工程，缺少统一动作接口与可复现实验协议；研究侧在推进“统一评测/消融、污染控制/协议一致”等方法学。
+本项目拟构建一个面向玩家的\emph{伴随式（companion-style）}实时游戏助手：围绕\emph{事件提示}、\emph{策略建议}与\emph{语音交互闭环}提供低时延（low-latency）体验与可复现评测（reproducible evaluation）。当前生态从\emph{AI游戏主播/虚拟角色}到\emph{LLM 驱动的 NPC/插件}快速涌现，但大量实践依赖场景定制，\emph{统一的动作接口}与\emph{可复现实验协议}仍不充分；研究侧正通过\emph{统一评测/模块消融}与\emph{污染控制/协议一致}等方法学收敛评测与对比\cite{ORAK,lmgame}。本提案据此明确项目目标、范围与评测要素。
 
 % ==========
 % 1.2
 % ==========
 \subsection{Scope \& Working Definitions}
-% > 目的：界定本文术语与讨论范围，保持“工作定义（working definitions）”语气；不等同于方法承诺。
-% > 关键词括号：GUI（GCC）, MCP-style orchestration, screenshot-only, structured output, evaluation protocol。
-本文将\textbf{动作接口}（action interface）的工作定义限定为 \textbf{General Computer Control (GCC)} 的\emph{GUI}范式：\emph{screen-in, keyboard/mouse-out} 的人类同态接口（human-homomorphic interface）。代表性工作 \emph{CRADLE} 报告了在不依赖应用 API 的前提下完成长链路桌面/游戏任务的可行性与系统结构（规划/技能整理/反思/记忆）\cite{CRADLE}。此外，\emph{Model Context Protocol (MCP)} 可作为\emph{内部模块/技能编排}（registration/orchestration）的通用思路，与具体的输出通道无直接绑定；“统一评测/消融”与\emph{plug-and-play} 思路可见 \emph{ORAK}\cite{ORAK}；基于\emph{procedural generation} 的 OOD 方法学可见 \emph{Benchmarking-VLA-VLM}\cite{Benchmarking-VLA-VLM}；将真实游戏“转化为可靠评测”的协议化实践可见 \emph{lmgame}\cite{lmgame}。在\emph{GUI} 场景中，\emph{UI-Venus} 强调\emph{纯截图（screenshot-only）}输入与\emph{结构化动作（structured output）}的端到端导航\cite{ui-venus}；而 \emph{V\!-MAGE} 聚焦\emph{visual-only/continuous-space} 的视觉中心评测\cite{v-mage}。上述工作将在第二部分的相关研究中系统梳理。
+% > 目的：界定术语与范围（scope），使用“工作定义”语气；避免研究口吻与“仅xxx”表述。
+% > 关键词：GUI（GCC）, MCP-style orchestration, screenshot-first, structured output, evaluation protocol。
+本项目\textbf{以 GUI（GCC）通道为主要执行路径}（\emph{screen-in, keyboard/mouse-out} 的人类同态接口 human-homomorphic interface），强调跨应用/游戏的通用性与可迁移性（portability）。代表性工作 \emph{CRADLE} 报告了在不依赖应用 API 的前提下，通过\emph{规划/技能整理/反思/记忆}的管线完成长链路任务的可行性\cite{CRADLE}。\,
+\noindent\textbf{MCP-style 编排}在本项目中被用作\emph{内部模块/技能的注册与路由}（registration/orchestration）的通用思路；\textbf{不涵盖}针对具体应用/游戏的专用 API 适配工作。\,
+关于“统一评测/消融、plug-and-play”的组织可参考 \emph{ORAK}\cite{ORAK}；基于\emph{procedural generation} 的 OOD 方法学可参考 \emph{Benchmarking-VLA-VLM}\cite{Benchmarking-VLA-VLM}；把真实游戏“转化为可靠评测”的协议化实践可参考 \emph{lmgame}\cite{lmgame}。\,
+在 GUI 场景中，\emph{UI-Venus} 展示了\emph{截图输入（screenshot）+ 结构化动作（structured output）}的端到端导航路径\cite{ui-venus}；\emph{V\!-MAGE} 聚焦 \emph{visual-only/continuous-space} 的视觉中心评测\cite{v-mage}。相关工作将在第二部分系统梳理。
 
-\paragraph{Screenshot-only navigation (GUI).}
-% > 事实性一句：仅指向“可行性”与“代表指标/任务”，避免扩展为实现承诺。
-文献显示，在真实平台上，\emph{纯截图输入 + 结构化动作输出}亦可实现端到端导航并取得具有竞争力的结果（如 AndroidWorld 的 \emph{pass@1} 与 ScreenSpot 系列的屏幕定位任务）\cite{ui-venus}。
+\phead{Screenshot-first GUI feasibility.}
+在真实平台上，“截图输入 + 结构化动作输出”路线已有具体成绩：UI-Venus 在 AndroidWorld 报告 \textbf{65.9\%} \emph{pass@1}，在 ScreenSpot-V2/Pro 分别为 \textbf{95.3\%}/\textbf{61.9\%}\,\cite{ui-venus}，表明在不依赖 A11y/DOM 的条件下亦可实现可比导航能力。
 
-% > 通用MLLM结构示意：图随引用就近放置（你偏好“图在同一小节出现”）。
-作为多模态大模型（MLLM）的通用结构示意，图~\ref{fig:tool-aug-mllm01} 展示了文本经 \emph{tokenizer} 输入 LLM、非文本模态经 \emph{Multimodal Encoder/Projector} 对齐后与文本融合的典型流程\cite{tool-aug-mllm}。
-
+\phead{MLLM architecture at a glance.}
+图~\ref{fig:tool-aug-mllm01} 给出多模态大模型（MLLM）的通用结构：文本经 \emph{tokenizer} 输入 LLM，非文本模态由 \emph{Multimodal Encoder/Projector} 对齐后与文本融合\cite{tool-aug-mllm}。
 \picHere{./assets/images/from-papers/tool-aug-mllm01.jpg}{0.8\linewidth}
 {The overall architecture of MLLMs \cite{tool-aug-mllm}.}
 {fig:tool-aug-mllm01}
 
-% > 将“综述线索”统一放到1.2末尾，保持1.1干净（不在动机里大段列文献）。
-作为多模态交互智能体（Agent AI）的概念性综述，作者从“下一步具身动作预测（next-embodied action prediction）”出发，讨论外部知识、人类反馈与多传感输入在\emph{grounded} 场景下提升稳健性的作用\cite{agent-ai}。面向 GUI 自动化的综述则系统梳理了以 LLM 为“中枢”的 GUI 智能体在\emph{框架、训练数据/大动作模型（LAM）、评测基准与指标}方面的进展与挑战\cite{llm-brained-gui}；另有面向 (M)LLM-based GUI agents 的综述从\emph{感知—探索/知识—规划—交互}四组成进行框架化对齐，并指出评测方法学与标准化的挑战\cite{mllm-gui}；在更上层的 OS 范畴，\emph{OS Agents} 综述提出“环境/观测/动作—理解/规划/落地”的要素与能力图谱\cite{os-agents}。
+\phead{Survey cues.}
+更广义的“Agent AI”综述从“下一步具身动作预测（next-embodied action prediction）”出发，讨论外部知识、人类反馈与多传感输入在\emph{grounded} 场景中的作用\cite{agent-ai}；面向 GUI 自动化的综述系统梳理了以 LLM 为中枢的框架、\emph{LAM}（large action models）、基准与指标\cite{llm-brained-gui}；另有针对 (M)LLM-based GUI agents 的综述从\emph{感知—探索/知识—规划—交互}四组成对齐术语与挑战\cite{mllm-gui}；在 OS 视角，\emph{OS Agents} 综述提出“环境/观测/动作—理解/规划/落地”的要素图谱\cite{os-agents}；端侧推理综述为“低时延”语境提供工程参考\cite{ondevice-llm}；“LLM×游戏智能体”的方法与基准的更广泛总览可参见近期 arXiv 工作\cite{game-agents-large-models}。
 
-在“低延迟”语境中，端侧推理的技术路线为交互体验与成本边界提供了现实参考\cite{ondevice-llm}.
-
-面向“LLM×游戏智能体”的更广泛方法与基准综述，可参见近期 arXiv 的总览性工作\cite{game-agents-large-models}.
+\phead{Industry/Community signals.}
+作为动机与生态线索（非技术有效性论证），\emph{Neuro-sama} 的 \emph{AI streamer} 现象与相关开源生态（如 \emph{Open LLM VTuber}、\emph{Airi Project}、\emph{Kimjammer-Neuro}）反映出该方向的关注与活跃\cite{neurosama_youtube,open_llm_vtuber,airi_project,kimjammer_neuro}；平台侧量化数据亦显示较大受众体量：Neuro-sama 于 2025/01 创下 \textbf{Hype Train Level 111}（约 \textbf{85K} 付费订阅、约 \textbf{1.2M} bits），Twitch 2024 年总观看时长约 \textbf{18.5–20.8B} 小时、2024Q4 全行业约 \textbf{21B} 小时\cite{neurosama_hype_streamscharts_2025,pcgamesn_record_2025,vedal_twitchtracker,bloomberg_neurosama_2023,streamelements_state_2024,streamscharts_q4_2024_landscape}。
 
 % ==========
 % 1.3
 % ==========
 \subsection{Key Challenges}
-% > 仅列挑战与已知现象（reported issues），不提出解决方案；为Evaluation Plan与Methodology留出空间。
-（i）\textbf{长链路稳定性（long-horizon stability）}：在\emph{GUI（GCC）}通道上，错误累积与状态漂移更易放大；文献通过\emph{skills/反思/记忆}等管线缓解，但挑战仍存\cite{CRADLE}；%
-（ii）\textbf{视觉中心定位与记忆（vision-centric grounding \& memory）}：\emph{visual-only/continuous-space} 设定对\emph{定位/时机/视觉记忆/高层推理}提出更高要求\cite{v-mage}；%
-（iii）\textbf{OOD与协议一致性（OOD \& protocol consistency）}：评测需在\emph{过程生成}与\emph{变量可控}的条件下比较架构/数据/后处理，减少不可比性\cite{Benchmarking-VLA-VLM}；%
-（iv）\textbf{提示方差与污染（prompt variance \& contamination）}：将“\emph{游戏→评测}”落到可复现协议需稳定交互回路并记录后处理\cite{lmgame}；%
-（v）\textbf{无效动作与幻觉（invalid actions \& hallucination）}：\emph{结构化输出/约束解码}可降低\emph{invalid action}，但\emph{think–action mismatch} 等现象仍被报告\cite{ui-venus}；%
-（vi）\textbf{时延与交互体验（latency \& UX）}：实时伴随式场景强调语音往返（voice RTT）与帧到提示的响应时间，需与稳定性指标共同考量\cite{ORAK,lmgame}。
+% > 仅陈述挑战与已知现象；为 Evaluation Plan 与 Methodology 留空间。
+（i）\textbf{长链路稳定性（long-horizon stability）}：在 GUI（GCC）通道下，错误累积与状态漂移更易放大；文献中的\emph{skills/反思/记忆}管线可缓解，但挑战仍存\cite{CRADLE}；%
+（ii）\textbf{视觉中心定位与记忆（vision-centric grounding \& memory）}：\emph{visual-only/continuous-space} 对定位、时机、视觉记忆与高层推理提出更高要求\cite{v-mage}；%
+（iii）\textbf{OOD 与协议一致（OOD \& protocol consistency）}：需要在\emph{过程生成}与\emph{变量可控}条件下比较架构/数据/后处理，减少不可比性\cite{Benchmarking-VLA-VLM}；%
+（iv）\textbf{提示方差与污染（prompt variance \& contamination）}：把“\emph{游戏→评测}”落到可复现协议需稳定交互回路并记录后处理\cite{lmgame}；%
+（v）\textbf{无效动作与幻觉（invalid actions \& hallucination）}：\emph{结构化输出/约束解码}可降低 invalid action，但\emph{think–action mismatch} 等现象仍被报告\cite{ui-venus}；%
+（vi）\textbf{时延与交互体验（latency \& UX）}：实时伴随式场景强调\emph{voice RTT} 与帧到提示响应时间，需要与稳定性指标共同考量\cite{ORAK,lmgame}。
 
 % ==========
 % 1.4
 % ==========
-\subsection{Our Positioning \& Contributions}
-% > Proposal写法：此处仅列“研究定位/预期交付物类别”的占位，不展开实现细节；与C.1模板的“Objectives/Expected Results”呼应。
-\todo{(1) \textbf{研究定位}：GUI（GCC）下的伴随式助手设定；(2) \textbf{概念性模块化}：以 MCP-style 作为内部“技能/工具总线”进行注册/编排（与输出通道无关）；(3) \textbf{评测要素}：统一的任务脚本与指标（advice adoption, voice RTT, macro success 等）；(4) \textbf{预期交付物}：原型/评测脚本/文档（按C.1中的Expected Results表述）。}
+\subsection{Project Objectives \& Expected Deliverables}
+% > Proposal写法：列“目标/交付物类别”，避免研究“贡献”口吻与过度承诺。
+\textbf{Objectives.}
+\begin{itemize}
+  \item 实现一个\emph{以 GUI（GCC）为主}的\emph{伴随式}实时游戏助手原型，覆盖事件提示、策略建议与语音回路，面向低时延与可复现评测。
+  \item 采用\emph{MCP-style} 的内部编排思想组织\emph{skills/macros、planning、memory、reflection}，在不依赖应用专用 API 的前提下实现可插拔与可审计（auditability）。
+  \item 明确一套小而可复现的评测要素（任务脚本与指标族），关注\emph{advice adoption}、\emph{voice RTT}、\emph{macro success} 等体验相关量。
+\end{itemize}
+
+\textbf{Expected Deliverables.}
+\begin{itemize}
+  \item \textbf{系统原型}：屏幕采集与轻量感知、agentic 模块、MCP-style 技能总线、GUI 执行器、基础安全护栏（权限/回滚/急停）。
+  \item \textbf{评测脚本与配置}：可复现实验的任务脚本、指标计算与日志审计工具（含模块开关用于对照）。
+  \item \textbf{使用文档与演示}：安装/运行说明、配置模板与演示视频；\textit{范围外}：针对具体应用/游戏的专用 API 适配与大规模模型微调。
+\end{itemize}
 
 % ==========
 % 1.5
 % ==========
 \subsection{Design Principles \& System Preview}
-% > 仅给“系统流”与设计原则的文字预告，详图与模块细节在Methodology中呈现；避免承诺训练/参数。
-\todo{系统流一句话：\emph{screen/audio} → \emph{VLM} → \emph{LLM/agentic}（planning/memory/reflection）→ \emph{MCP-style}（技能注册/路由）→ \emph{GUI执行}（kb/mouse）→ \emph{safety}（permissions, rollback, kill-switch）。设计原则：结构化输出（structured output）、可审计（auditability）、可复现（reproducibility）。}
+% > 文字级别的“系统流 + 原则”；详图与模块细节放 Methodology。
+\textbf{Design principles}：结构化输出（structured output）、可审计（auditability）、可复现（reproducibility）、低耦合（MCP-style 编排）。\;
+\textbf{System preview}（一句话流程）：\emph{screen/audio} $\rightarrow$ 轻量 \emph{VLM} $\rightarrow$ \emph{LLM/agentic}（planning/memory/reflection）$\rightarrow$ \emph{MCP-style} 技能注册/路由 $\rightarrow$ \emph{GUI 执行}（kb/mouse）$\rightarrow$ \emph{safety}（permissions, rollback, kill-switch）。

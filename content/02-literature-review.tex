@@ -5,19 +5,18 @@
 % 2.1
 % ==========
 \subsection{Perception: Modalities \& Grounding}
-% > 输入模态与定位；本节仅界定输入模态与 grounding 能力的术语背景。不涉及实现选择。涉及 2.3–2.4。
-该方向通常以屏幕帧（screen frames）或短视频（video clips）为主输入，辅以窗口/坐标等轻量上下文；可选接入音频（audio）以形成语音闭环（ASR/TTS）。多模态模型承担检测/描述/定位（detection/description/grounding）、UI 元素识别与状态读出等能力；相较直接产出动作的 \emph{VLA}，\emph{VLM+tool} 将视觉理解与动作执行解耦，通过\emph{结构化调用（structured tool calls）}或\emph{技能库（skills/macros）}闭环。代表实践包括：\emph{UI-Venus} 在 \emph{screenshot-only} 条件下以\emph{结构化动作}实现端到端导航\cite{ui-venus}；\emph{V\!-MAGE} 强调 \emph{visual-only/continuous-space} 设定下的定位、时机与视觉记忆压力\cite{v-mage}；\emph{lmgame} 提供感知/记忆脚手架（scaffolds）以稳定交互与提示方差\cite{lmgame}。上述脉络共同勾勒了输入模态与 \emph{grounding} 能力的术语与范围。\cite{ui-venus,v-mage,lmgame}
-另外，也有从视频侧直接推断 PX 的做法，为交互或评测中的“机会对齐”提供情绪/投入度的代理\cite{letsplay-px}.
+% > 输入模态与 grounding 术语背景；不作实现承诺。涉及 2.3–2.4。
+该方向通常以屏幕帧（screen frames）或短视频（video clips）为主输入，辅以窗口/坐标等轻量上下文；必要时接入音频（audio）形成语音闭环（ASR/TTS）。多模态模型承担检测/描述/定位（detection/description/grounding）、UI 元素识别与状态读出等能力；相较直接产出动作的 \emph{VLA}，\emph{VLM+tool} 将视觉理解与动作执行解耦，通过\emph{结构化调用（structured tool calls）}或\emph{技能库（skills/macros）}闭环。代表实践包括：\emph{UI-Venus} 在 \emph{screenshot-only} 条件下以\emph{结构化动作}实现端到端导航\cite{ui-venus}；\emph{V\!-MAGE} 在 \emph{visual-only/continuous-space} 设定下强调定位、时机与视觉记忆压力\cite{v-mage}；\emph{lmgame} 以感知/记忆脚手架（scaffolds）稳定交互并控制提示方差\cite{lmgame}。另外，也有直接从 Let’s Play 视频侧推断玩家体验（PX）的做法，为交互或评测中的“机会对齐（opportunity alignment）”提供情绪/投入度代理\cite{letsplay-px}。
 
 \paragraph{Agent AI（multimodal interaction survey）}
-该综述以“\emph{Agent AI}”为工作定义：感知多模态输入（视觉/语言/环境信号）并在具身或虚拟环境中产生动作（embodied actions）的交互系统；作者从“下一步具身动作预测（next-embodied action prediction）”出发，讨论外部知识（external knowledge）、多传感输入（multi-sensory inputs）与人类反馈（human feedback）在 \emph{grounded} 场景下的作用，并建议以虚拟/模拟环境加速研究进展\cite{agent-ai}。该视角为“感知—定位—交互”的表述提供了概念锚点。
+该综述将“\emph{Agent AI}”界定为：感知多模态输入（视觉/语言/环境信号）并在具身或虚拟环境中产生动作（embodied actions）的交互系统；从“下一步具身动作预测（next-embodied action prediction）”出发，讨论外部知识（external knowledge）、多传感输入（multi-sensory inputs）与人类反馈（human feedback）在 \emph{grounded} 场景中的作用，并建议以虚拟/模拟环境加速研究进展\cite{agent-ai}。该视角为“感知—定位—交互”的表述提供了概念锚点。
 
 % ==========
 % 2.2
 % ==========
 \subsection{Action Interfaces: GUI (GCC) \& MCP-style Orchestration}
-% > 以 GUI（GCC）作为统一执行通道；MCP 作为内部“技能总线（skill bus）”的注册/编排思想（不讨论 API 适配）。CRADLE 在此作 GUI 可行性的代表。涉及 2.6–2.7。
-动作接口层面，\textbf{GUI} 路线以 \textbf{General Computer Control (GCC)} 为统一通道（\emph{screen-in, keyboard/mouse-out}），强调跨应用/跨游戏的可迁移性（portability）与人类同态交互（human-homomorphic interface）。代表性工作 \emph{CRADLE} 展示：在不依赖应用专用接口的前提下，结合\emph{规划—技能整理（skill curation/registry）—反思—记忆}的管线亦可完成长链路任务（desktop/games）\cite{CRADLE}；与此同时，\textbf{MCP}（Model Context Protocol）提供\emph{模块注册/编排（module registration/orchestration）}的协议化思路，使 \emph{skills/macros、planning、memory、reflection} 能在统一接口下组织与对比\cite{ORAK}。由此形成“以 GUI 为执行通道、以协议化编排（MCP-style）组织模块”的常见范式。
+% > GUI（GCC）为统一执行通道；MCP 为内部“技能总线”编排思想（不讨论 API 适配）。CRADLE 为可行性代表。涉及 2.6–2.7。
+动作接口层面，\textbf{GUI} 路线以 \textbf{General Computer Control (GCC)} 为统一通道（\emph{screen-in, keyboard/mouse-out}），强调跨应用/跨游戏的可迁移性（portability）与人类同态交互（human-homomorphic interface）。\emph{CRADLE} 显示：在不依赖应用专用接口的前提下，结合\emph{规划—技能整理（skill curation/registry）—反思—记忆}的管线亦可完成长链路任务（desktop/games）\cite{CRADLE}。与此同时，\textbf{MCP}（Model Context Protocol）提供\emph{模块注册/编排（module registration/orchestration）}的协议化思路，使 \emph{skills/macros、planning、memory、reflection} 能在统一接口下组织与对比\cite{ORAK}。由此形成“以 GUI 为执行通道、以协议化编排（MCP-style）组织模块”的常见范式。
 
 如 \autoref{fig:cradle-overview} 所示，CRADLE 以统一的 GUI（GCC）通道展示了从“屏幕输入→内在推理→键鼠控制”的闭环。
 
@@ -26,13 +25,13 @@
 {fig:cradle-overview}
 
 \paragraph{UI-Venus（screenshot-only）}
-端到端 GUI 导航，无需 planner/A11y；\emph{截图 $\to$ 结构化动作} 在真实平台报告了具有竞争力的结果（如 AndroidWorld 的 pass@1 与 ScreenSpot 系列定位）\cite{ui-venus}，强化了“GUI 统一通道”的可达性认识。
+端到端 GUI 导航，无需 planner/A11y；“\emph{截图 $\to$ 结构化动作}”在真实平台报告了具有竞争力的结果（如 AndroidWorld 的 pass@1 与 ScreenSpot 系列定位）\cite{ui-venus}，强化了“GUI 统一通道”的可达性认识。
 
 \paragraph{LLM-brained GUI agents（survey）}
 该综述以“LLM 为中枢的 GUI 智能体”为统一对象，围绕 GUI 自动化的\emph{框架}、\emph{数据与训练}、面向动作的\emph{专门化模型（large action models, LAM）}与\emph{评测基准/指标}展开，总结跨 Web/移动/桌面平台的通用交互能力与挑战，并提出若干路线图\cite{llm-brained-gui}。
 
 \paragraph{(M)LLM-based GUI agents（survey）}
-该综述将 GUI 智能体拆解为四大组件：\emph{perception}（多模态理解）、\emph{exploration/knowledge}（内部模型、历史回放与外部检索）、\emph{planning}（任务分解与推理）与 \emph{interaction}（动作生成与安全控制），并回顾跨桌面/移动/Web 的研究进展；作者指出元素定位、知识检索、长时规划与安全执行控制仍是挑战，同时强调评测在指标与协议上的标准化需求\cite{mllm-gui}。两篇综述共同提供了动作接口与系统组成的对齐视角。
+该综述将 GUI 智能体拆解为四大组件：\emph{perception}（多模态理解）、\emph{exploration/knowledge}（内部模型、历史回放与外部检索）、\emph{planning}（任务分解与推理）与 \emph{interaction}（动作生成与安全控制），回顾跨桌面/移动/Web 的研究进展，并指出元素定位、知识检索、长时规划与安全执行控制仍是挑战，同时强调评测在指标与协议上的标准化需求\cite{mllm-gui}。
 
 \paragraph{OS Agents（OS-level scope survey）}
 在 OS 视角下，(M)LLM 驱动的计算设备智能体通过操作系统提供的接口（如 GUI/CLI）跨电脑/手机/浏览器执行任务；综述提出“环境—观测空间—动作空间”的要素划分，并将“理解/规划/动作落地（grounding）”作为核心能力，系统回顾基础模型、代理框架、评测与安全威胁\cite{os-agents}。该范围化视角有助于统一“设备—接口—能力”的讨论语言。
@@ -42,17 +41,17 @@
 % ==========
 \subsection{Agentic Modules: Planning, Memory, Reflection, Skills}
 % > 机制视角综述；仅作分类与代表做法回顾。涉及 2.1, 2.2, 2.4。
-常见 \emph{agentic modules} 包括：\emph{planning}（分解与策略选择）、\emph{memory}（短长时与用户偏好）、\emph{self-reflection}（纠错与风格一致）与 \emph{skills/macros}（原子→复合）。例如，\emph{CRADLE} 组合 \emph{planning/skills/reflection/memory} 以缓解长链路误差累积；\emph{ORAK} 在统一评测中对上述模块进行消融比较\cite{CRADLE,ORAK}；\emph{UI-Venus} 在训练与数据层面探索\emph{轨迹历史对齐}与\emph{稀疏动作增强}\cite{uivenus_rft}。该类机制为长链路稳定性与一致性提供了可分析的结构要素。
+常见 \emph{agentic modules} 包括：\emph{planning}（分解与策略选择）、\emph{memory}（短长时与用户偏好）、\emph{self-reflection}（纠错与风格一致）与 \emph{skills/macros}（原子→复合）。例如，\emph{CRADLE} 组合 \emph{planning/skills/reflection/memory} 以缓解长链路误差累积；\emph{ORAK} 在统一评测中对上述模块进行消融比较\cite{CRADLE,ORAK}；\emph{UI-Venus} 在训练与数据层面探索\emph{轨迹历史对齐}与\emph{稀疏动作增强}\cite{uivenus_rft}。这类机制为长链路稳定性与一致性提供了可分析的结构要素。
 
 \paragraph{历史对齐与稀疏动作增强}
-\emph{Self-Evolving Trajectory History Alignment \& Sparse Action Enhancement}：用当前模型重写历史“思维—动作”轨迹以对齐风格/细节，并上采样稀疏但关键动作（如 LongPress），报告了对长链路一致性与泛化的改善\cite{uivenus_rft}。此外，有工作将“下一步具身动作预测（next-embodied action prediction）”与人类反馈并置为提升 \emph{agentic} 能力的关键因素，强调在 \emph{grounded} 环境中校准策略与记忆的重要性\cite{agent-ai}。
+\emph{Self-Evolving Trajectory History Alignment \& Sparse Action Enhancement}：用当前模型重写历史“思维—动作”轨迹以对齐风格/细节，并上采样稀疏但关键动作（如 LongPress），报告了对长链路一致性与泛化的改善\cite{uivenus_rft}。另有观点将“下一步具身动作预测（next-embodied action prediction）”与人类反馈并置为提升 \emph{agentic} 能力的关键因素，强调在 \emph{grounded} 环境中校准策略与记忆的重要性\cite{agent-ai}。
 
 % ==========
 % 2.4
 % ==========
 \subsection{Learning Paradigms: Zero-shot, RAG, Finetune, IL/RL, Distillation}
 % > 训练与推理范式回顾；不作实现承诺。涉及 2.1, 2.3。
-在学习与推理范式上，零样本/提示工程（prompting）、检索增强（RAG）、轻量微调（LoRA）、模仿/强化（IL/RL）与蒸馏（distillation）并行发展。以“\emph{指令化}（instructionalization）”增强 RL 代理的上下文理解是一条代表性路线：\emph{R2-Play} 将多模态游戏指令（MGI）并入 \emph{Decision Transformer}（\emph{DTGI}），并通过超网络（\emph{SHyperGenerator}）在训练任务与未见任务间共享知识；作者报告多模态指令较文本/轨迹单模态在多任务与泛化上更优（动机见 \autoref{fig:r2play-motivation}），且 MGI 的三段式结构——\emph{game description}、\emph{game trajectory}、\emph{game guidance}（含动作、语言引导及关键元素位置）——给出清晰的指令模板（见 \autoref{fig:r2play-mgi}）\cite{r2-play}。
+学习与推理范式并行发展：零样本/提示工程（prompting）、检索增强（RAG）、轻量微调（LoRA）、模仿/强化（IL/RL）与蒸馏（distillation）。以“\emph{指令化}（instructionalization）”增强 RL 代理的上下文理解是一条代表性路线：\emph{R2-Play} 将多模态游戏指令（MGI）并入 \emph{Decision Transformer}（\emph{DTGI}），并通过超网络（\emph{SHyperGenerator}）在训练任务与未见任务间共享知识；作者报告多模态指令较文本/轨迹单模态在多任务与泛化上更优（动机见 \autoref{fig:r2play-motivation}），且 MGI 的三段式结构——\emph{game description}、\emph{game trajectory}、\emph{game guidance}（含动作、语言引导及关键元素位置）——给出清晰的指令模板（见 \autoref{fig:r2play-mgi}）\cite{r2-play}。
 
 \picHere{./assets/images/from-papers/r2-play01.jpg}{0.7\linewidth}
 {Imagine an agent learning to play Palworld. (1) The agent exhibits confusion when only relying on textual guidance. (2) The agent is confused when presented with images of a Pal sphere and a Pal. (3) The agent understands how to catch a pet through \emph{multimodal guidance}, which combines textual guidance with images of the Pal sphere and Pal \cite{r2-play}.}
@@ -64,25 +63,16 @@
 
 \paragraph{RFT（GRPO）与动作粒度奖励}
 将奖励拆分为\emph{格式/动作类型/坐标/内容}四部分并加权，以同时度量\emph{结构化输出合规性}与\emph{细粒度定位/文本输入}正确性，作为 GUI 导航中 RL-finetune 的代表做法之一\cite{uivenus_rft}。\par
-另一方面，“工具增强型 MLLM（tool-augmented MLLM）”的综述从“数据—任务—评测”三条主线梳理外部工具（API、专家模型、知识库等）的作用边界：任务侧涵盖多模态 RAG、推理、幻觉、安全、代理与视频感知，流程侧以 MRAG 的“检索—重排—整合”三段式为例，评测侧指出既有指标难以全面刻画多模态生成与对齐\cite{tool-aug-mllm}。这些观察为讨论学习范式与评测要素提供了方法学参考。
-
-更广泛的综述从方法、应用与挑战三方面回顾了 \emph{LLM×游戏} 的研究脉络，涵盖从零样本/检索增强到
-模仿/强化学习及\emph{planning/memory/reflection} 与工具调用（tool-use/MCP-style）的组合，并串联环境类型、
-输入模态与动作接口以对齐评测与基准的讨论\cite{game-agents-large-models}.
+“工具增强型 MLLM（tool-augmented MLLM）”的综述从“数据—任务—评测”三条主线梳理外部工具（API、专家模型、知识库等）的作用边界：任务侧涵盖多模态 RAG、推理、幻觉、安全、代理与视频感知，流程侧以 MRAG 的“检索—重排—整合”三段式为例，评测侧指出既有指标难以全面刻画多模态生成与对齐\cite{tool-aug-mllm}。更广泛的总览从方法、应用与挑战三方面回顾 \emph{LLM×游戏} 的研究脉络，串联学习范式、\emph{planning/memory/reflection} 与工具调用（tool-use/MCP-style）的组合，并联通环境类型、输入模态与动作接口以对齐评测与基准的讨论\cite{game-agents-large-models}。
 
 % ==========
 % 2.5
 % ==========
 \subsection{Benchmarks \& Datasets (OS-like, Games, Desktop)}
-% > 三段法——ORAK（统一评测/消融/MCP 思想）→ lmgame-Bench（脚手架+污染控制）→ Procedural-generation（OOD 方法学）。涉及 2.6。收束为“评测组织与变量可控”的大图景。
+% > 三段法——ORAK（统一评测/消融/MCP 思想）→ lmgame-Bench（脚手架+污染控制）→ Procedural-generation（OOD 方法学）。收束为“评测组织与变量可控”的大图景。
 \paragraph{ORAK（统一评测/消融/MCP 思想）}
 \emph{ORAK} 通过 MCP 实现 \emph{plug-and-play} 的代理—环境解耦，并在统一配置下检验
-\emph{planning / reflection / memory / skills} 等 \emph{agentic modules} 的边际贡献（ablation），配套
-
-\emph{Leaderboard/Battle Arena} 与训练轨迹数据（fine-tuning trajectories），将\emph{机制—性能—配置}一体化呈现\cite{ORAK}。该体例凸显了“统一评测—模块消融”的可比性价值。
-
-该综述亦梳理了多样基准与评测设置，提示跨游戏可比性与协议一致的重要性\cite{game-agents-large-models}.
-
+\emph{planning / reflection / memory / skills} 等 \emph{agentic modules} 的边际贡献（ablation），配套 \emph{Leaderboard/Battle Arena} 与训练轨迹数据（fine-tuning trajectories），将“机制—性能—配置”一体化呈现\cite{ORAK}。更广泛的总览亦梳理了多样基准与评测设置，强调跨游戏可比性与协议一致的重要性\cite{game-agents-large-models}。
 
 \paragraph{Procedural-generation（OOD 方法学）}
 以\emph{procedural generation} 构造 OOD 与多步任务压力，统一比较 \emph{VLA/VLM} 在\emph{架构/训练数据/输出后处理}等变量下的稳健性，并配套工具链保证\emph{reproducibility}\cite{Benchmarking-VLA-VLM}。这是“变量可控—开放式难度”方向的典型方法学线索。
@@ -98,7 +88,7 @@
 {fig:lmgame-harness}
 
 \paragraph{V\!-MAGE（vision-centric, visual-only, continuous-space）}
-该框架以仅视觉输入与连续空间的游戏环境评测多模态模型的视觉中心能力，覆盖定位、轨迹追踪、时机、视觉记忆及更高层时序推理；其评测管线支持分离“模型/策略”，并采用 Elo 风格排名进行相对强度比较；作者报告模型与人类表现存在差距、常见感知错误与锚定偏差，且有限历史上下文会限制长时规划\cite{v-mage}。这一视觉中心脉络补充了跨类型真实游戏基准的视角。
+该框架以仅视觉输入与连续空间的游戏环境评测多模态模型的视觉中心能力，覆盖定位、轨迹追踪、时机、视觉记忆及更高层时序推理；其评测管线支持分离“模型/策略”，并采用 Elo 风格排名进行相对强度比较；作者报告模型与人类表现存在差距、常见感知错误与锚定偏差，且有限历史上下文会限制长时规划\cite{v-mage}。这一路线补充了跨类型真实游戏基准的视角。
 
 \picHere{./assets/images/from-papers/v-mage01.jpg}{0.9\linewidth}
 {The overview of the V-MAGE benchmark, designed to evaluate vision-centric capabilities and higher-level reasoning of MLLMs across 5 free-form games with 30+ levels \cite{v-mage}.}
@@ -109,24 +99,18 @@
 % ==========
 \subsection{Evaluation Protocols \& Metrics}
 % > 指标与协议的文献回顾；不作实现承诺。
-常见\emph{客观指标}：任务成功率（\emph{success/pass@k}）、完成时间（\emph{time-to-completion}）、误操作/回滚（\emph{misclick/rollback rate}）与延迟（\emph{latency}，如语音往返 \emph{voice RTT}）；\emph{主观/行为指标}：采纳程度（\emph{advice adoption}）与满意度等\cite{ORAK,lmgame,Benchmarking-VLA-VLM}。在类别分布不均（class imbalance）情形，\emph{macro-averaged} 与 \emph{micro} 指标并举以减轻多数类偏置\cite{Benchmarking-VLA-VLM}。协议层面，文献强调\emph{结构化输出与约束解码（structured output \& constrained decoding）}以降低无效动作与坐标偏差，也有将\emph{无效动作率}纳入评估与训练信号设计（动作拆分为\emph{格式/类型/坐标/内容}四粒度）的做法\cite{ui-venus}；“游戏→可靠评测”路线强调记录\emph{后处理/解码策略（post-processing）}、\emph{提示方差}与\emph{污染}控制，以减少实现细节对可比性的影响\cite{lmgame}。跨任务比较上，\emph{Elo 风格排名（Elo-style ranking）}可缓解关卡难度不均与多任务汇总问题\cite{v-mage}；而\emph{procedural generation} 的方法学将\emph{架构/数据/后处理}视作可控变量进行统一对比，强调 OOD 稳健性与可复现性\cite{Benchmarking-VLA-VLM}。以上做法为后续指标与协议的组织提供了参考图谱。
+常见\emph{客观指标}：任务成功率（\emph{success/pass@k}）、完成时间（\emph{time-to-completion}）、误操作/回滚（\emph{misclick/rollback rate}）与延迟（\emph{latency}，如语音往返 \emph{voice RTT}）；\emph{主观/行为指标}：采纳程度（\emph{advice adoption}）与满意度等\cite{ORAK,lmgame,Benchmarking-VLA-VLM}。在类别分布不均（class imbalance）情形，\emph{macro-averaged} 与 \emph{micro} 指标并举以减轻多数类偏置\cite{Benchmarking-VLA-VLM}。协议层面，文献强调\emph{结构化输出与约束解码（structured output \& constrained decoding）}以降低无效动作与坐标偏差，也有将\emph{无效动作率}纳入评估与训练信号设计（动作拆分为\emph{格式/类型/坐标/内容}四粒度）的做法\cite{ui-venus}；“游戏→可靠评测”路线强调记录\emph{后处理/解码策略（post-processing）}、\emph{提示方差}与\emph{污染}控制，以减少实现细节对可比性的影响\cite{lmgame}。跨任务比较上，\emph{Elo 风格排名（Elo-style ranking）}可缓解关卡难度不均与多任务汇总问题\cite{v-mage}；而\emph{procedural generation} 的方法学将\emph{架构/数据/后处理}视作可控变量进行统一对比，强调 OOD 稳健性与可复现性\cite{Benchmarking-VLA-VLM}。以上做法逐步形成了通用的评测组织与指标图谱。
 
 \paragraph{Label-free PX proxies from Let’s Play videos}
 除任务成功与时延外，亦有工作直接从 \emph{Let’s Play} 视频构建\emph{无标签（label-free）}玩家体验（PX）
-的代理信号：以画面、解说音频等多模态特征弱/自监督提炼 \emph{arousal/valence/engagement}
-并与小规模人工评分/高激励事件对齐，用于机会窗口（opportunity windows）与提示时机（hint timing）的度量\cite{letsplay-px}.
-
+的代理信号：以画面、解说音频等多模态特征弱/自监督提炼 \emph{arousal/valence/engagement}，并与小规模人工评分或高激励事件对齐，用于机会窗口（opportunity windows）与提示时机（hint timing）的度量\cite{letsplay-px}。
 
 % ==========
 % 2.7
 % ==========
 \subsection{Deployment \& Real-time Considerations}
 % > 工程现实回顾：资源/时延/交互链路；不给实现承诺。涉及 2.2, 2.6。
-部署相关研究聚焦资源与实时性约束：\emph{本地—云混合（local–cloud hybrid）}与\emph{推理量化（inference quantization，INT4/FP8）}降低时延与成本；\emph{流式解码（streaming decoding）}与\emph{语音中断（barge-in）}缩短交互回路；并评估对帧率与 CPU/GPU 占用的影响。为保证可比性，协议侧采用固定提示、记录 \emph{post-processing} 与环境版本；在真实设备/平台的在线评测亦逐步增多（如 AndroidWorld 与脚手架化交互）\cite{lmgame,ui-venus}。这些观察勾勒出“实时—资源—协议”三方面的工程边界。
-
-部署层面，on-device LMs 的综合回顾强调\emph{量化（INT4/FP8）}、\emph{蒸馏/适配}、\emph{KV 缓存与分页注意力}
-以及\emph{speculative/streaming 解码}等路径以降低时延与能耗，并讨论端侧资源约束下的稳定性折中与隐私优势\cite{ondevice-llm}.
-
+部署相关研究聚焦资源与实时性约束：\emph{本地—云混合（local–cloud hybrid）}与\emph{推理量化（inference quantization，INT4/FP8）}降低时延与成本；\emph{流式解码（streaming decoding）}与\emph{语音中断（barge-in）}缩短交互回路；并评估对帧率与 CPU/GPU 占用的影响。为保证可比性，协议侧采用固定提示、记录 \emph{post-processing} 与环境版本；在真实设备/平台的在线评测亦逐步增多（如 AndroidWorld 与脚手架化交互）\cite{lmgame,ui-venus}。同时，端侧部署（on-device）综述强调\emph{量化（INT4/FP8）}、\emph{蒸馏/适配}、\emph{KV 缓存与分页注意力}以及\emph{speculative/streaming 解码}等路径以降低时延与能耗，并讨论资源约束下的稳定性折中与隐私优势\cite{ondevice-llm}。
 
 % ==========
 % 2.8
@@ -135,7 +119,7 @@
 % > 安全与鲁棒性回顾：权限范围、确认、影子执行、回滚/急停、审计。涉及 2.2。
 文献强调\emph{权限模型（permission scoping/whitelisting）}与\emph{操作确认（confirmation）}以约束高风险动作；\emph{影子模式（shadow execution）}先预测后执行以降低副作用，并配套\emph{回滚（rollback）}与\emph{急停（kill-switch）}保障可逆性与故障恢复。在 GUI 场景中，\emph{think–action mismatch} 揭示了多模态模型可能产生的“幻觉（hallucination）”与不一致风险，提示需要\emph{日志与审计（auditability）}支持溯源与复查\cite{ui-venus}。总体上，权限边界、影子执行与可审计性构成了“安全—鲁棒”的基本支架。
 
-如 \autoref{fig:uivenus_qual} 所示，think–action 不一致（mismatch）揭示了 MLLM 的“幻觉”（hallucination）风险\cite{ui-venus}。
+如 \autoref{fig:uivenus_qual} 所示，think–action 不一致（mismatch）提示在复杂交互中需关注模型的幻觉与不一致风险\cite{ui-venus}。
 
 \picHere{./assets/images/from-papers/ui-venus01.jpg}{0.95\linewidth}
 {One trace of UI-Venus on the task named MarkorDeleteAllNotes in AndroidWorld. We can observe that UI-Venus successfully achieves the goal and has the reflection ability in Step 3. However, there also exists the conflict between think and action in Step 5, remaining as a future work about how to solve MLLM’s hallucination. \cite{ui-venus}}
@@ -146,4 +130,4 @@
 % ==========
 \subsection{Synthesis: Trends, Gaps \& Our Niche}
 % > 综述收束；自然语言收尾，不出现“与本文关系”。 
-总体趋势是：在 GUI（GCC）通道上引入\emph{协议化/模块化}编排以支撑可复现实验与消融；跨类型真实游戏的统一评测（如 \emph{ORAK}）与 \emph{visual-only/continuous-space} 的视觉中心评测（如 \emph{V\!-MAGE}）并行发展；将\emph{脚手架/污染控制}纳入协议（如 \emph{lmgame-Bench}）成为共识\cite{ORAK,v-mage,lmgame}。同时，沿着 \emph{grounded} 的感知—行动—人类反馈闭环，研究正逐步把注意力从单点 Demo 推向过程变量与稳健性\cite{agent-ai}。
+总体趋势是：在 GUI（GCC）通道上引入\emph{协议化/模块化}编排以支撑可复现实验与消融；跨类型真实游戏的统一评测（如 \emph{ORAK}）与 \emph{visual-only/continuous-space} 的视觉中心评测（如 \emph{V\!-MAGE}）并行发展，将\emph{脚手架/污染控制}纳入协议（如 \emph{lmgame-Bench}）逐步形成共识\cite{ORAK,v-mage,lmgame}。同时，沿着 \emph{grounded} 的“感知—行动—人类反馈”闭环，研究正从单点 Demo 转向过程变量与稳健性，进一步强调跨任务与 OOD 条件下的可比性与一致性\cite{agent-ai}。
