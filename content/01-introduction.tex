@@ -8,15 +8,14 @@
 \subsection{Problem Setting \& Motivation}
 % > 背景：实时游戏场景（real-time gaming）中的伴随式助手（companion-style）需求：事件提示（event spotting）、策略建议（tactical guidance）、低延迟语音交互（voice loop）。
 % > Gap：目前多为定制工程，缺少统一接口与可复现实验协议；相关研究正探索统一评测/消融与污染控制等方向（纯回顾语气）。
-近年来，面向玩家的智能交互快速涌现：从\emph{AI游戏主播/虚拟角色}到\emph{LLM驱动的NPC/插件}，社区与产业案例显示“\emph{大模型×游戏交互}”具备显著关注度与潜在影响（game changer potential）。然而，这些实践多依赖场景定制，缺乏\emph{统一动作接口}与\emph{可复现实验协议}；相应研究正在通过\emph{统一评测/模块消融}与\emph{污染控制/协议一致}等方法学加以弥合\cite{ORAK,lmgame}。本文讨论\emph{伴随式（companion-style）}实时助手，并将相关问题置于\emph{仅基于GUI（GCC）}与\emph{低延迟体验}的工作设定下加以界定。
+近年来，面向玩家的智能交互快速涌现：从\emph{AI游戏主播/虚拟角色}到\emph{LLM驱动的NPC/插件}，社区与产业案例显示“\emph{大模型×游戏交互}”具备关注度与潜在影响（game changer potential）。然而，这些实践多依赖场景定制，缺乏\emph{统一动作接口}与\emph{可复现实验协议}；相应研究正在通过\emph{统一评测/模块消融}与\emph{污染控制/协议一致}等方法学加以弥合\cite{ORAK,lmgame}。本文讨论\emph{伴随式（companion-style）}实时助手，并将相关问题置于\emph{仅基于GUI（GCC）}与\emph{低延迟体验}的工作设定下加以界定。
 
 \paragraph{Industry/Community Signals}
 % > 仅作动机与生态线索（signals），不作为学术证据。
-在社区层面，\emph{Neuro-sama} 的\emph{AI 游戏主播（AI streamer）}现象展示了大模型驱动的持续互动与情绪共鸣能力\cite{neurosama_youtube}；同时，叙事解谜作品 \emph{AI2U: With You \textquotesingle Til The End} 体现了“\emph{对话即操作（dialogue-as-action）}”与高交互度（LLM-controlled NPCs）的设计潜力\cite{ai2u_game}。围绕该方向的开源复现与二次开发——如 \emph{Open LLM VTuber}、\emph{Airi Project}、\emph{Kimjammer-Neuro} 等——持续出现，反映出应用生态的活跃\cite{open_llm_vtuber,airi_project,kimjammer_neuro}。
+在社区层面，\emph{Neuro-sama} 的\emph{AI 游戏主播（AI streamer）}现象展示了大模型驱动的持续互动与情绪共鸣能力\cite{neurosama_youtube}；同时，叙事解谜作品 \emph{AI2U: With You \textquotesingle Til The End} 体现了“\emph{对话即操作（dialogue-as-action）}”与高交互度（LLM-controlled NPCs）的设计潜力\cite{ai2u_game}。围绕该方向的开源复现与二次开发——如 \emph{Open LLM VTuber}、\emph{Airi Project}、\emph{Kimjammer-Neuro} 等——持续出现，反映出应用生态的活跃\cite{open_llm_vtuber,airi_project,kimjammer_neuro}。上述社区与产业案例\emph{仅作为动机与生态线索}，并不作为本文方法有效性的学术证据。
 
-作为多模态交互智能体（Agent AI）的概念性综述，\cite{agent-ai} 将“具身环境中的下一步动作预测（next-embodied action prediction）”与外部知识、人类反馈、多传感输入并置讨论，并提出在\emph{grounded}场景中可缓解大模型“幻觉”问题的观点\cite{agent-ai}.
+作为市场信号，AI VTuber（以 \emph{Neuro-sama} 为代表）已在主流平台获得大规模关注：其在 2025 年 1 月创造 Twitch \emph{Hype Train} 世界纪录（Level 111，\,$\sim$85K 付费订阅、$\sim$1.2M bits），相关媒体与行业统计均有报道；其频道长期维持数十万粉丝规模与高并发活跃\cite{neurosama_hype_streamscharts_2025,pcgamesn_record_2025,vedal_twitchtracker,bloomberg_neurosama_2023}。同时，直播总体观看时长处于高位（如 Twitch 2024 年全年约 $18.5$–$20.8$\,B 小时；2024\,Q4 全行业约 $21$\,B 小时），显示“AI×直播/游戏”具备现实受众与可观市场体量\cite{streamelements_state_2024,streamscharts_q4_2024_landscape}.
 
-作为面向 GUI 自动化的综述，\cite{llm-brained-gui} 系统梳理了以 LLM 为“中枢”的 GUI 智能体在框架、训练数据与大动作模型（LAM）、以及评测基准与指标方面的进展与挑战\cite{llm-brained-gui}.
 
 % ==========
 % 1.2
@@ -30,13 +29,15 @@
 % > 事实性一句：仅指向“可行性”与“代表指标/任务”，避免扩展为实现承诺。
 文献显示，在真实平台上，\emph{纯截图输入 + 结构化动作输出}亦可实现端到端导航并取得具有竞争力的结果（如 AndroidWorld 的 \emph{pass@1} 与 ScreenSpot 系列的屏幕定位任务）\cite{ui-venus}。
 
-作为面向 GUI 自动化的综述，\cite{mllm-gui} 从感知、探索/知识、规划与交互四个组成对 (M)LLM-based GUI agents 进行框架化梳理，并总结当前评测在方法学与标准化上的挑战\cite{mllm-gui}.
+% > 通用MLLM结构示意：图随引用就近放置（你偏好“图在同一小节出现”）。
+作为多模态大模型（MLLM）的通用结构示意，图~\ref{fig:tool-aug-mllm01} 展示了文本经 \emph{tokenizer} 输入 LLM、非文本模态经 \emph{Multimodal Encoder/Projector} 对齐后与文本融合的典型流程\cite{tool-aug-mllm}。
 
-作为操作系统层面的交互智能体综述，\cite{os-agents} 将 OS Agents 定义为在 OS 提供的环境与接口（如 GUI/CLI）中使用电脑、手机与浏览器完成任务的 (M)LLM-based agents，并从“环境/观测/动作”与“理解/规划/落地”两层结构化梳理构建路径与评测要点\cite{os-agents}.
+\picHere{./assets/images/from-papers/tool-aug-mllm01.jpg}{0.8\linewidth}
+{The overall architecture of MLLMs \cite{tool-aug-mllm}.}
+{fig:tool-aug-mllm01}
 
-作为多模态大模型（MLLM）的通用结构示意，图~\ref{fig:tool-aug-mllm01} 展示了：文本 \emph{query} 经 \emph{tokenizer} 输入 LLM；非文本模态（image/audio/video）先由 \emph{Multimodal Encoder} 提取表示，再经 \emph{Multimodal Projector} 对齐到语言嵌入空间，与文本在 LLM 中融合并生成响应\cite{tool-aug-mllm}.
-
-\picHere{./assets/images/from-papers/tool-aug-mllm01.jpg}{0.8\linewidth}{The overall architecture of MLLMs.}{fig:tool-aug-mllm01}
+% > 将“综述线索”统一放到1.2末尾，保持1.1干净（不在动机里大段列文献）。
+作为多模态交互智能体（Agent AI）的概念性综述，作者从“下一步具身动作预测（next-embodied action prediction）”出发，讨论外部知识、人类反馈与多传感输入在\emph{grounded} 场景下提升稳健性的作用\cite{agent-ai}。面向 GUI 自动化的综述则系统梳理了以 LLM 为“中枢”的 GUI 智能体在\emph{框架、训练数据/大动作模型（LAM）、评测基准与指标}方面的进展与挑战\cite{llm-brained-gui}；另有面向 (M)LLM-based GUI agents 的综述从\emph{感知—探索/知识—规划—交互}四组成进行框架化对齐，并指出评测方法学与标准化的挑战\cite{mllm-gui}；在更上层的 OS 范畴，\emph{OS Agents} 综述提出“环境/观测/动作—理解/规划/落地”的要素与能力图谱\cite{os-agents}。
 
 % ==========
 % 1.3
