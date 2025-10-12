@@ -23,7 +23,7 @@
 % > 关键词：GUI（GCC）, MCP-style orchestration, screenshot-first, structured output, evaluation protocol。
 本项目\textbf{以 GUI（GCC）通道为主要执行路径}（\emph{screen-in, keyboard/mouse-out} 的人类同态接口 human-homomorphic interface），强调跨应用/游戏的通用性与可迁移性（portability）。代表性工作 \emph{CRADLE} 报告了在不依赖应用 API 的前提下，通过\emph{规划/技能整理/反思/记忆}的管线完成长链路任务的可行性\cite{CRADLE}。\,
 \noindent\textbf{MCP-style 编排}在本项目中被用作\emph{内部模块/技能的注册与路由}（registration/orchestration）的通用思路；\textbf{不涵盖}针对具体应用/游戏的专用 API 适配工作。\,
-关于“统一评测/消融、plug-and-play”的组织可参考 \emph{ORAK}\cite{ORAK}；基于\emph{procedural generation} 的 OOD 方法学可参考 \emph{Benchmarking-VLA-VLM}\cite{Benchmarking-VLA-VLM}；把真实游戏“转化为可靠评测”的协议化实践可参考 \emph{lmgame}\cite{lmgame}。\,
+关于“统一评测/消融、plug-and-play”的组织可参考 \emph{ORAK}\cite{ORAK}；基于\emph{procedural generation} 的 OOD 方法学可参考 \emph{Benchmarking-VLA-VLM}\cite{Benchmarking-VLA-VLM}；把真实游戏“转化为可靠评测”的协议化实践可参考 \emph{lmgame}\cite{lmgame-bench}。\,
 在 GUI 场景中，\emph{UI-Venus} 展示了\emph{截图输入（screenshot）+ 结构化动作（structured output）}的端到端导航路径\cite{ui-venus}；\emph{V\!-MAGE} 聚焦 \emph{visual-only/continuous-space} 的视觉中心评测\cite{v-mage}。相关工作将在第二部分系统梳理。
 
 \phead{Screenshot-first GUI feasibility.}
@@ -49,7 +49,7 @@
 （i）\textbf{长链路稳定性（long-horizon stability）}：在 GUI（GCC）通道下，错误累积与状态漂移更易放大；文献中的\emph{skills/反思/记忆}管线可缓解，但挑战仍存\cite{CRADLE}；%
 （ii）\textbf{视觉中心定位与记忆（vision-centric grounding \& memory）}：\emph{visual-only/continuous-space} 对定位、时机、视觉记忆与高层推理提出更高要求\cite{v-mage}；%
 （iii）\textbf{OOD 与协议一致（OOD \& protocol consistency）}：需要在\emph{过程生成}与\emph{变量可控}条件下比较架构/数据/后处理，减少不可比性\cite{Benchmarking-VLA-VLM}；%
-（iv）\textbf{提示方差与污染（prompt variance \& contamination）}：把“\emph{游戏→评测}”落到可复现协议需稳定交互回路并记录后处理\cite{lmgame}；%
+（iv）\textbf{提示方差与污染（prompt variance \& contamination）}：把“\emph{游戏→评测}”落到可复现协议需稳定交互回路并记录后处理\cite{lmgame-bench}；%
 （v）\textbf{无效动作与幻觉（invalid actions \& hallucination）}：\emph{结构化输出/约束解码}可降低 invalid action，但\emph{think–action mismatch} 等现象仍被报告\cite{ui-venus}；%
 （vi）\textbf{时延与交互体验（latency \& UX）}：实时伴随式场景强调\emph{voice RTT} 与帧到提示响应时间，需要与稳定性指标共同考量\cite{ORAK,lmgame}。
 
@@ -79,3 +79,6 @@
 % > 文字级别的“系统流 + 原则”；详图与模块细节放 Methodology。
 \textbf{Design principles}：结构化输出（structured output）、可审计（auditability）、可复现（reproducibility）、低耦合（MCP-style 编排）。\;
 \textbf{System preview}（一句话流程）：\emph{screen/audio} $\rightarrow$ 轻量 \emph{VLM} $\rightarrow$ \emph{LLM/agentic}（planning/memory/reflection）$\rightarrow$ \emph{MCP-style} 技能注册/路由 $\rightarrow$ \emph{GUI 执行}（kb/mouse）$\rightarrow$ \emph{safety}（permissions, rollback, kill-switch）。
+
+
+% TODO: “虽然现在有类似于MAA、BetterGI、三月七小助手”这样的软件，但是他们主要是基于传统图像识别的自动化脚本，虽然能提升玩家体验，但是难以提供情感支持。
