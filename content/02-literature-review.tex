@@ -1,5 +1,6 @@
 \section{Literature Review}
-% > 说明：按 taxonomy 组织；每小节用自然句式收束，不出现“与本文关系”字样。CRADLE 放在 2.2（GUI/GCC）。涉及 2.1–2.9。
+% > 说明：按 taxonomy 组织；每小节用自然句式收束，不出现“与本文关系”字样。
+% > 本章涉及 2.1–2.9；CRADLE 放在 2.2（GUI/GCC）；Benchmarking-VLA-VLM 的方法学结论在 2.6 首段统一呈现。
 
 % ==========
 % 2.1
@@ -69,18 +70,15 @@
 % 2.5
 % ==========
 \subsection{Benchmarks \& Datasets (OS-like, Games, Desktop)}
-% > 三段法——ORAK（统一评测/消融/MCP 思想）→ lmgame-Bench（脚手架+污染控制）→ Procedural-generation（OOD 方法学）。收束为“评测组织与变量可控”的大图景。
+% > 三段法——ORAK（统一评测/消融/MCP 思想）→ lmgame-Bench（脚手架+污染控制）→ V-MAGE（视觉中心）。
+% > 注：原文的“Procedural-generation（OOD 方法学）/Benchmarking-VLA-VLM”移至 2.6 作为方法学小框统一讨论。
 \paragraph{ORAK（统一评测/消融/MCP 思想）}
 \emph{ORAK} 通过 MCP 实现 \emph{plug-and-play} 的代理—环境解耦，并在统一配置下检验
 \emph{planning / reflection / memory / skills} 等 \emph{agentic modules} 的边际贡献（ablation），配套 \emph{Leaderboard/Battle Arena} 与训练轨迹数据（fine-tuning trajectories），将“机制—性能—配置”一体化呈现\cite{ORAK}。更广泛的总览亦梳理了多样基准与评测设置，强调跨游戏可比性与协议一致的重要性\cite{game-agents-large-models}。
 
-\paragraph{Procedural-generation（OOD 方法学）}
-以\emph{procedural generation} 构造 OOD 与多步任务压力，统一比较 \emph{VLA/VLM} 在\emph{架构/训练数据/输出后处理}等变量下的稳健性，并配套工具链保证\emph{reproducibility}\cite{Benchmarking-VLA-VLM}。这是“变量可控—开放式难度”方向的典型方法学线索。
-
 \paragraph{lmgame-Bench（脚手架与污染控制）}
 \emph{lmgame} 将“\emph{游戏→评测}”系统化：用 \emph{Gym-style} 接口与\emph{perception/memory scaffolds}
 稳定 prompt 并剔除“污染”，在多模型下获得良好分离度，并通过\emph{相关性分析}展示不同游戏探测的能力混合；另报告单一游戏的 RL 训练对\emph{未见游戏}/\emph{外部规划任务}存在迁移\cite{lmgame-bench}。整体上，评测组织正从“单点游戏”走向“脚手架化、协议一致”的可复现比较。
-
 …为减少提示方差并抑制污染，lmgame 以模块化脚手架稳定“感知—记忆—推理”的交互回路（见 \autoref{fig:lmgame-harness}）。
 
 \picHere{./assets/images/from-papers/lmgame01.jpg}{0.9\linewidth}
@@ -98,8 +96,11 @@
 % 2.6
 % ==========
 \subsection{Evaluation Protocols \& Metrics}
-% > 指标与协议的文献回顾；不作实现承诺。
-常见\emph{客观指标}：任务成功率（\emph{success/pass@k}）、完成时间（\emph{time-to-completion}）、误操作/回滚（\emph{misclick/rollback rate}）与延迟（\emph{latency}，如语音往返 \emph{voice RTT}）；\emph{主观/行为指标}：采纳程度（\emph{advice adoption}）与满意度等\cite{ORAK,lmgame,Benchmarking-VLA-VLM}。在类别分布不均（class imbalance）情形，\emph{macro-averaged} 与 \emph{micro} 指标并举以减轻多数类偏置\cite{Benchmarking-VLA-VLM}。协议层面，文献强调\emph{结构化输出与约束解码（structured output \& constrained decoding）}以降低无效动作与坐标偏差，也有将\emph{无效动作率}纳入评估与训练信号设计（动作拆分为\emph{格式/类型/坐标/内容}四粒度）的做法\cite{ui-venus}；“游戏→可靠评测”路线强调记录\emph{后处理/解码策略（post-processing）}、\emph{提示方差}与\emph{污染}控制，以减少实现细节对可比性的影响\cite{lmgame-bench}。跨任务比较上，\emph{Elo 风格排名（Elo-style ranking）}可缓解关卡难度不均与多任务汇总问题\cite{v-mage}；而\emph{procedural generation} 的方法学将\emph{架构/数据/后处理}视作可控变量进行统一对比，强调 OOD 稳健性与可复现性\cite{Benchmarking-VLA-VLM}。以上做法逐步形成了通用的评测组织与指标图谱。
+% > 指标与协议的文献回顾；把 Benchmarking-VLA-VLM 的“动作映射/无效率/宏微指标/Brier”移至本节首段作为方法学小框。
+\paragraph{Methodological note（Benchmarking-VLA-VLM）}
+该工作以 \emph{procedural generation} 的多子任务为载体，总结了\emph{动作映射与评测原则}：将模型输出\emph{显式映射}到\emph{合法离散动作空间}，并联合使用 \emph{Invalid\%}、\emph{Micro/Macro Precision/Recall/F1} 与 \emph{Brier/MAE} 等度量；实验还显示\emph{输出约束/动作空间显式化}能显著降低无效输出、提升稳定性，同时指出\emph{视觉增益依模型/任务而异、OOD/时序敏感动作是难点}\cite{Benchmarking-VLA-VLM}。这些方法学结论为\emph{结构化输出/约束解码（structured output \& constrained decoding）}与\emph{无效动作率（invalid actions）}的纳入提供依据。
+
+常见\emph{客观指标}：任务成功率（\emph{success/pass@k}）、完成时间（\emph{time-to-completion}）、误操作/回滚（\emph{misclick/rollback rate}）与延迟（\emph{latency}，如语音往返 \emph{voice RTT}）；\emph{主观/行为指标}：采纳程度（\emph{advice adoption}）与满意度等\cite{ORAK,lmgame-bench,Benchmarking-VLA-VLM}。在类别分布不均（class imbalance）情形，\emph{macro-averaged} 与 \emph{micro} 指标并举以减轻多数类偏置\cite{Benchmarking-VLA-VLM}。协议层面，文献强调\emph{结构化输出与约束解码}以降低无效动作与坐标偏差，也有将\emph{无效动作率}纳入评估与训练信号设计（动作拆分为\emph{格式/类型/坐标/内容}四粒度）的做法\cite{ui-venus}；“游戏→可靠评测”路线强调记录\emph{后处理/解码策略（post-processing）}、\emph{提示方差}与\emph{污染}控制，以减少实现细节对可比性的影响\cite{lmgame-bench}。跨任务比较上，\emph{Elo 风格排名（Elo-style ranking）}可缓解关卡难度不均与多任务汇总问题\cite{v-mage}；而\emph{procedural generation} 的方法学将\emph{架构/数据/后处理}视作可控变量进行统一对比，强调 OOD 稳健性与可复现性\cite{Benchmarking-VLA-VLM}。以上做法逐步形成了通用的评测组织与指标图谱。
 
 \paragraph{Label-free PX proxies from Let’s Play videos}
 除任务成功与时延外，亦有工作直接从 \emph{Let’s Play} 视频构建\emph{无标签（label-free）}玩家体验（PX）
@@ -110,7 +111,7 @@
 % ==========
 \subsection{Deployment \& Real-time Considerations}
 % > 工程现实回顾：资源/时延/交互链路；不给实现承诺。涉及 2.2, 2.6。
-部署相关研究聚焦资源与实时性约束：\emph{本地—云混合（local–cloud hybrid）}与\emph{推理量化（inference quantization，INT4/FP8）}降低时延与成本；\emph{流式解码（streaming decoding）}与\emph{语音中断（barge-in）}缩短交互回路；并评估对帧率与 CPU/GPU 占用的影响。为保证可比性，协议侧采用固定提示、记录 \emph{post-processing} 与环境版本；在真实设备/平台的在线评测亦逐步增多（如 AndroidWorld 与脚手架化交互）\cite{lmgame,ui-venus}。同时，端侧部署（on-device）综述强调\emph{量化（INT4/FP8）}、\emph{蒸馏/适配}、\emph{KV 缓存与分页注意力}以及\emph{speculative/streaming 解码}等路径以降低时延与能耗，并讨论资源约束下的稳定性折中与隐私优势\cite{ondevice-llm}。
+部署相关研究聚焦资源与实时性约束：\emph{本地—云混合（local–cloud hybrid）}与\emph{推理量化（inference quantization，INT4/FP8）}降低时延与成本；\emph{流式解码（streaming decoding）}与\emph{语音中断（barge-in）}缩短交互回路；并评估对帧率与 CPU/GPU 占用的影响。为保证可比性，协议侧采用固定提示、记录 \emph{post-processing} 与环境版本；在真实设备/平台的在线评测亦逐步增多（如 AndroidWorld 与脚手架化交互）\cite{lmgame-bench,ui-venus}。同时，端侧部署（on-device）综述强调\emph{量化（INT4/FP8）}、\emph{蒸馏/适配}、\emph{KV 缓存与分页注意力}以及\emph{speculative/streaming 解码}等路径以降低时延与能耗，并讨论资源约束下的稳定性折中与隐私优势\cite{ondevice-llm}。
 
 % ==========
 % 2.8
@@ -130,4 +131,4 @@
 % ==========
 \subsection{Synthesis: Trends, Gaps \& Our Niche}
 % > 综述收束；自然语言收尾，不出现“与本文关系”。 
-总体趋势是：在 GUI（GCC）通道上引入\emph{协议化/模块化}编排以支撑可复现实验与消融；跨类型真实游戏的统一评测（如 \emph{ORAK}）与 \emph{visual-only/continuous-space} 的视觉中心评测（如 \emph{V\!-MAGE}）并行发展，将\emph{脚手架/污染控制}纳入协议（如 \emph{lmgame-Bench}）逐步形成共识\cite{ORAK,v-mage,lmgame}。同时，沿着 \emph{grounded} 的“感知—行动—人类反馈”闭环，研究正从单点 Demo 转向过程变量与稳健性，进一步强调跨任务与 OOD 条件下的可比性与一致性\cite{agent-ai}。
+总体趋势是：在 GUI（GCC）通道上引入\emph{协议化/模块化}编排以支撑可复现实验与消融；跨类型真实游戏的统一评测（如 \emph{ORAK}）与 \emph{visual-only/continuous-space} 的视觉中心评测（如 \emph{V\!-MAGE}）并行发展，将\emph{脚手架/污染控制}纳入协议（如 \emph{lmgame-Bench}）逐步形成共识\cite{ORAK,v-mage,lmgame-bench}。同时，沿着 \emph{grounded} 的“感知—行动—人类反馈”闭环，研究正从单点 Demo 转向过程变量与稳健性，进一步强调跨任务与 OOD 条件下的可比性与一致性\cite{agent-ai}。

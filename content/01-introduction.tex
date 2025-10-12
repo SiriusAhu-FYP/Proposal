@@ -13,7 +13,7 @@
 \subsection{Problem Setting \& Motivation}
 % > 背景：实时游戏场景中的伴随式助手需求：事件提示（event spotting）、策略建议（tactical guidance）、低时延语音交互（voice loop）。
 % > Gap：实践多为定制工程，缺少统一动作接口与可复现实验协议；研究侧在推进“统一评测/消融、污染控制/协议一致”等方法学。
-本项目拟构建一个面向玩家的\emph{伴随式（companion-style）}实时游戏助手：围绕\emph{事件提示}、\emph{策略建议}与\emph{语音交互闭环}提供低时延（low-latency）体验与可复现评测（reproducible evaluation）。当前生态从\emph{AI游戏主播/虚拟角色}到\emph{LLM 驱动的 NPC/插件}快速涌现，但大量实践依赖场景定制，\emph{统一的动作接口}与\emph{可复现实验协议}仍不充分；研究侧正通过\emph{统一评测/模块消融}与\emph{污染控制/协议一致}等方法学收敛评测与对比\cite{ORAK,lmgame}。本提案据此明确项目目标、范围与评测要素。
+本项目拟构建一个面向玩家的\emph{伴随式（companion-style）}实时游戏助手：围绕\emph{事件提示}、\emph{策略建议}与\emph{语音交互闭环}提供低时延（low-latency）体验与可复现评测（reproducible evaluation）。当前生态从\emph{AI游戏主播/虚拟角色}到\emph{LLM 驱动的 NPC/插件}快速涌现，但大量实践依赖场景定制，\emph{统一的动作接口}与\emph{可复现实验协议}仍不充分；研究侧正通过\emph{统一评测/模块消融}与\emph{污染控制/协议一致}等方法学收敛评测与对比\cite{ORAK,lmgame-bench}。本提案据此明确项目目标、范围与评测要素。
 
 % ==========
 % 1.2
@@ -42,7 +42,16 @@
 作为动机与生态线索（非技术有效性论证），\emph{Neuro-sama} 的 \emph{AI streamer} 现象与相关开源生态（如 \emph{Open LLM VTuber}、\emph{Airi Project}、\emph{Kimjammer-Neuro}）反映出该方向的关注与活跃\cite{neurosama_youtube,open_llm_vtuber,airi_project,kimjammer_neuro}；平台侧量化数据亦显示较大受众体量：Neuro-sama 于 2025/01 创下 \textbf{Hype Train Level 111}（约 \textbf{85K} 付费订阅、约 \textbf{1.2M} bits），Twitch 2024 年总观看时长约 \textbf{18.5–20.8B} 小时、2024Q4 全行业约 \textbf{21B} 小时\cite{neurosama_hype_streamscharts_2025,pcgamesn_record_2025,vedal_twitchtracker,bloomberg_neurosama_2023,streamelements_state_2024,streamscharts_q4_2024_landscape}。
 
 % ==========
-% 1.3
+% 1.3 （由原1.5前移）
+% ==========
+\subsection{Design Principles \& System Preview}
+% > 文字级别的“系统流 + 原则”；详图与模块细节放 Methodology。此处仅做设计准则与一行流程。
+\noindent\textbf{Design principles}：结构化输出（structured output）、可审计（auditability）、可复现（reproducibility）、低耦合（MCP-style 编排）。\;
+\noindent\textbf{System preview}（一句话流程）：\emph{screen/audio} $\rightarrow$ 轻量 \emph{VLM} $\rightarrow$ \emph{LLM/agentic}（planning/memory/reflection）$\rightarrow$ \emph{MCP-style} 技能注册/路由 $\rightarrow$ \emph{GUI 执行}（kb/mouse）$\rightarrow$ \emph{safety}（permissions, rollback, kill-switch）。\;
+\noindent\textbf{默认工程姿态（不作实现承诺）}：single-flight（不并发大模型请求）、event-triggered（事件触发）、frame-window（3–5 帧堆叠）、text-first（可解析为结构化文本则优先文本路径），以降低延迟与方差。
+
+% ==========
+% 1.4 （位置后移）
 % ==========
 \subsection{Key Challenges}
 % > 仅陈述挑战与已知现象；为 Evaluation Plan 与 Methodology 留空间。
@@ -51,21 +60,21 @@
 （iii）\textbf{OOD 与协议一致（OOD \& protocol consistency）}：需要在\emph{过程生成}与\emph{变量可控}条件下比较架构/数据/后处理，减少不可比性\cite{Benchmarking-VLA-VLM}；%
 （iv）\textbf{提示方差与污染（prompt variance \& contamination）}：把“\emph{游戏→评测}”落到可复现协议需稳定交互回路并记录后处理\cite{lmgame-bench}；%
 （v）\textbf{无效动作与幻觉（invalid actions \& hallucination）}：\emph{结构化输出/约束解码}可降低 invalid action，但\emph{think–action mismatch} 等现象仍被报告\cite{ui-venus}；%
-（vi）\textbf{时延与交互体验（latency \& UX）}：实时伴随式场景强调\emph{voice RTT} 与帧到提示响应时间，需要与稳定性指标共同考量\cite{ORAK,lmgame}。
+（vi）\textbf{时延与交互体验（latency \& UX）}：实时伴随式场景强调\emph{voice RTT} 与帧到提示响应时间，需要与稳定性指标共同考量\cite{ORAK,lmgame-bench}。
 
 % ==========
-% 1.4
+% 1.5 （原1.4）
 % ==========
 \subsection{Project Objectives \& Expected Deliverables}
 % > Proposal写法：列“目标/交付物类别”，避免研究“贡献”口吻与过度承诺。
-\textbf{Objectives.}
+\noindent\textbf{Objectives.}
 \begin{itemize}
   \item 实现一个\emph{以 GUI（GCC）为主}的\emph{伴随式}实时游戏助手原型，覆盖事件提示、策略建议与语音回路，面向低时延与可复现评测。
   \item 采用\emph{MCP-style} 的内部编排思想组织\emph{skills/macros、planning、memory、reflection}，在不依赖应用专用 API 的前提下实现可插拔与可审计（auditability）。
   \item 明确一套小而可复现的评测要素（任务脚本与指标族），关注\emph{advice adoption}、\emph{voice RTT}、\emph{macro success} 等体验相关量。
 \end{itemize}
 
-\textbf{Expected Deliverables.}
+\noindent\textbf{Expected Deliverables.}
 \begin{itemize}
   \item \textbf{系统原型}：屏幕采集与轻量感知、agentic 模块、MCP-style 技能总线、GUI 执行器、基础安全护栏（权限/回滚/急停）。
   \item \textbf{评测脚本与配置}：可复现实验的任务脚本、指标计算与日志审计工具（含模块开关用于对照）。
@@ -73,12 +82,15 @@
 \end{itemize}
 
 % ==========
-% 1.5
+% 1.6 （新增，开题口径声明）
 % ==========
-\subsection{Design Principles \& System Preview}
-% > 文字级别的“系统流 + 原则”；详图与模块细节放 Methodology。
-\textbf{Design principles}：结构化输出（structured output）、可审计（auditability）、可复现（reproducibility）、低耦合（MCP-style 编排）。\;
-\textbf{System preview}（一句话流程）：\emph{screen/audio} $\rightarrow$ 轻量 \emph{VLM} $\rightarrow$ \emph{LLM/agentic}（planning/memory/reflection）$\rightarrow$ \emph{MCP-style} 技能注册/路由 $\rightarrow$ \emph{GUI 执行}（kb/mouse）$\rightarrow$ \emph{safety}（permissions, rollback, kill-switch）。
+\subsection{Assumptions \& Out-of-Scope}
+% > 目的：提前声明工程与范围假设，降低评审对“宽口径”的不确定；与 2.7 部署现实呼应。
+\phead{Working assumptions.}
+默认采用“\emph{single-flight + event-triggered + frame-window（3–5 帧）+ text-first}”的工程姿态以降低时延与方差；评测记录\emph{post-processing} 与交互版本以保持协议一致。
+
+\phead{Out-of-scope.}
+不开展每个游戏/应用的专用 API 适配；不在本报告中承诺大规模端到端训练与数据采集；不涉及平台级增强权限（如 A11y/私有 DOM 钩子）的依赖。
 
 
 % TODO: “虽然现在有类似于MAA、BetterGI、三月七小助手”这样的软件，但是他们主要是基于传统图像识别的自动化脚本，虽然能提升玩家体验，但是难以提供情感支持。
