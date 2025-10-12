@@ -7,7 +7,7 @@
 % ==========
 \subsection{Perception: Modalities \& Grounding}
 % > 输入模态与 grounding 术语背景；不作实现承诺。涉及 2.3–2.4。
-该方向通常以屏幕帧（screen frames）或短视频（video clips）为主输入，辅以窗口/坐标等轻量上下文；必要时接入音频（audio）形成语音闭环（ASR/TTS）。多模态模型承担检测/描述/定位（detection/description/grounding）、UI 元素识别与状态读出等能力；相较直接产出动作的 \emph{VLA}，\emph{VLM+tool} 将视觉理解与动作执行解耦，通过\emph{结构化调用（structured tool calls）}或\emph{技能库（skills/macros）}闭环。代表实践包括：\emph{UI-Venus} 在 \emph{screenshot-only} 条件下以\emph{结构化动作}实现端到端导航\cite{ui-venus}；\emph{V\!-MAGE} 在 \emph{visual-only/continuous-space} 设定下强调定位、时机与视觉记忆压力\cite{v-mage}；\emph{lmgame} 以感知/记忆脚手架（scaffolds）稳定交互并控制提示方差\cite{lmgame-bench}。另外，也有直接从 Let’s Play 视频侧推断玩家体验（PX）的做法，为交互或评测中的“机会对齐（opportunity alignment）”提供情绪/投入度代理\cite{letsplay-px}。
+该方向通常以屏幕帧（screen frames）或短视频（video clips）为主输入，辅以窗口/坐标等轻量上下文；必要时接入音频（audio）形成语音闭环（ASR/TTS）。多模态模型承担检测/描述/定位（detection/description/grounding）、UI 元素识别与状态读出等能力；相较直接产出动作的 \emph{VLA}，\emph{VLM+tool} 将视觉理解与动作执行解耦，通过\emph{结构化调用（structured tool calls）}或\emph{技能库（skills/macros）}闭环。代表实践包括：\emph{UI-Venus} 在 \emph{screenshot-only} 条件下以\emph{结构化动作}实现端到端导航\cite{ui-venus}；\emph{V\!-MAGE} 在 \emph{visual-only/continuous-space} 设定下强调定位、时机与视觉记忆压力\cite{v-mage}；\emph{lmgame} 以感知/记忆脚手架（scaffolds）稳定交互并控制提示方差\cite{lmgame-bench}。
 
 \paragraph{Agent AI（multimodal interaction survey）}
 该综述将“\emph{Agent AI}”界定为：感知多模态输入（视觉/语言/环境信号）并在具身或虚拟环境中产生动作（embodied actions）的交互系统；从“下一步具身动作预测（next-embodied action prediction）”出发，讨论外部知识（external knowledge）、多传感输入（multi-sensory inputs）与人类反馈（human feedback）在 \emph{grounded} 场景中的作用，并建议以虚拟/模拟环境加速研究进展\cite{agent-ai}。该视角为“感知—定位—交互”的表述提供了概念锚点。
@@ -101,10 +101,6 @@
 该工作以 \emph{procedural generation} 的多子任务为载体，总结了\emph{动作映射与评测原则}：将模型输出\emph{显式映射}到\emph{合法离散动作空间}，并联合使用 \emph{Invalid\%}、\emph{Micro/Macro Precision/Recall/F1} 与 \emph{Brier/MAE} 等度量；实验还显示\emph{输出约束/动作空间显式化}能显著降低无效输出、提升稳定性，同时指出\emph{视觉增益依模型/任务而异、OOD/时序敏感动作是难点}\cite{Benchmarking-VLA-VLM}。这些方法学结论为\emph{结构化输出/约束解码（structured output \& constrained decoding）}与\emph{无效动作率（invalid actions）}的纳入提供依据。
 
 常见\emph{客观指标}：任务成功率（\emph{success/pass@k}）、完成时间（\emph{time-to-completion}）、误操作/回滚（\emph{misclick/rollback rate}）与延迟（\emph{latency}，如语音往返 \emph{voice RTT}）；\emph{主观/行为指标}：采纳程度（\emph{advice adoption}）与满意度等\cite{ORAK,lmgame-bench,Benchmarking-VLA-VLM}。在类别分布不均（class imbalance）情形，\emph{macro-averaged} 与 \emph{micro} 指标并举以减轻多数类偏置\cite{Benchmarking-VLA-VLM}。协议层面，文献强调\emph{结构化输出与约束解码}以降低无效动作与坐标偏差，也有将\emph{无效动作率}纳入评估与训练信号设计（动作拆分为\emph{格式/类型/坐标/内容}四粒度）的做法\cite{ui-venus}；“游戏→可靠评测”路线强调记录\emph{后处理/解码策略（post-processing）}、\emph{提示方差}与\emph{污染}控制，以减少实现细节对可比性的影响\cite{lmgame-bench}。跨任务比较上，\emph{Elo 风格排名（Elo-style ranking）}可缓解关卡难度不均与多任务汇总问题\cite{v-mage}；而\emph{procedural generation} 的方法学将\emph{架构/数据/后处理}视作可控变量进行统一对比，强调 OOD 稳健性与可复现性\cite{Benchmarking-VLA-VLM}。以上做法逐步形成了通用的评测组织与指标图谱。
-
-\paragraph{Label-free PX proxies from Let’s Play videos}
-除任务成功与时延外，亦有工作直接从 \emph{Let’s Play} 视频构建\emph{无标签（label-free）}玩家体验（PX）
-的代理信号：以画面、解说音频等多模态特征弱/自监督提炼 \emph{arousal/valence/engagement}，并与小规模人工评分或高激励事件对齐，用于机会窗口（opportunity windows）与提示时机（hint timing）的度量\cite{letsplay-px}。
 
 % ==========
 % 2.7
