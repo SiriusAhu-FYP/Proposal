@@ -1,97 +1,87 @@
-% ===== 段内小节（run-in）小宏：标题与正文同一行 =====
-\newcommand{\phead}[1]{\par\smallskip\noindent\textbf{#1}\quad}
-% 若想让小标题独占一行，则改为：
-% \newcommand{\phead}[1]{\par\smallskip\noindent\textbf{#1}\par\smallskip}
-
 \section{Introduction}
-% > 作用：以“产品向 Proposal”口吻交代问题场景、范围（scope）、现有缺口（gap）与项目定位（positioning）。
-% > 对标C.1模板的 1.1 Introduction/Background 与 1.2 Scope/Objectives；不在此承诺训练/参数等实现细节。
+% 讲故事主线：先说“为什么需要/现在缺什么”，再说“我们选择什么路径与口径”，给出“系统预览与设计原则”，点出“关键挑战”，最后明确“目标/交付物/边界”。引用以代表性论文为证，不堆栈。
 
 % ==========
-% 1.1
+% 1.1 Problem Setting & Motivation
 % ==========
 \subsection{Problem Setting \& Motivation}
-% > 背景：实时游戏场景中的伴随式助手需求：事件提示（event spotting）、策略建议（tactical guidance）、低时延语音交互（voice loop）。
-% > Gap：实践多为定制工程，缺少统一动作接口与可复现实验协议；研究侧在推进“统一评测/消融、污染控制/协议一致”等方法学。
-本项目拟构建一个面向玩家的\emph{伴随式（companion-style）}实时游戏助手：围绕\emph{事件提示}、\emph{策略建议}与\emph{语音交互闭环}提供低时延（low-latency）体验与可复现评测（reproducible evaluation）。当前生态从\emph{AI游戏主播/虚拟角色}到\emph{LLM 驱动的 NPC/插件}快速涌现，但大量实践依赖场景定制，\emph{统一的动作接口}与\emph{可复现实验协议}仍不充分；研究侧正通过\emph{统一评测/模块消融}与\emph{污染控制/协议一致}等方法学收敛评测与对比\cite{ORAK,lmgame-bench}。本提案据此明确项目目标、范围与评测要素。
+% 作用：把“伴随式实时助手”的使用图景与缺口（统一动作接口、可复现实验）讲清楚，并以代表性基准/综述作为证据引入。
+面向玩家的\emph{伴随式（companion-style）}实时助手，目标是在\textbf{不打断游戏流程}的前提下，持续提供\emph{事件提示（event spotting）}、\emph{策略建议（tactical guidance）}与\emph{语音回路（voice loop）}的低时延体验。近年的\emph{LLM$\times$游戏}与\emph{GUI 智能体}研究快速推进，但落地层面仍存在两类缺口：一是\textbf{动作接口不统一}，大量工程依赖场景定制；二是\textbf{评测协议不一致}，导致复现实验与横向对比困难。针对上述缺口，代表性工作正从\emph{统一协议/消融}与\emph{脚手架/污染控制}两侧收敛可复现方法学，为产品化路径提供了可操作依据\cite{ORAK,lmgame-bench,gp-agents}。
 
 % ==========
-% 1.2
+% 1.2 Scope & Working Definitions
 % ==========
 \subsection{Scope \& Working Definitions}
-% > 目的：界定术语与范围（scope），使用“工作定义”语气；避免研究口吻与“仅xxx”表述。
-% > 关键词：GUI（GCC）, MCP-style orchestration, screenshot-first, structured output, evaluation protocol。
-本项目\textbf{以 GUI（GCC）通道为主要执行路径}（\emph{screen-in, keyboard/mouse-out} 的人类同态接口 human-homomorphic interface），强调跨应用/游戏的通用性与可迁移性（portability）。代表性工作 \emph{CRADLE} 报告了在不依赖应用 API 的前提下，通过\emph{规划/技能整理/反思/记忆}的管线完成长链路任务的可行性\cite{CRADLE}。\,
-\noindent\textbf{MCP-style 编排}在本项目中被用作\emph{内部模块/技能的注册与路由}（registration/orchestration）的通用思路；\textbf{不涵盖}针对具体应用/游戏的专用 API 适配工作。\,
-关于“统一评测/消融、plug-and-play”的组织可参考 \emph{ORAK}\cite{ORAK}；基于\emph{procedural generation} 的 OOD 方法学可参考 \emph{Benchmarking-VLA-VLM}\cite{Benchmarking-VLA-VLM}；把真实游戏“转化为可靠评测”的协议化实践可参考 \emph{lmgame}\cite{lmgame-bench}。\,
-在 GUI 场景中，\emph{UI-Venus} 展示了\emph{截图输入（screenshot）+ 结构化动作（structured output）}的端到端导航路径\cite{ui-venus}；\emph{V\!-MAGE} 聚焦 \emph{visual-only/continuous-space} 的视觉中心评测\cite{v-mage}。相关工作将在第二部分系统梳理。
-
-\phead{Screenshot-first GUI feasibility.}
-在真实平台上，“截图输入 + 结构化动作输出”路线已有具体成绩：UI-Venus 在 AndroidWorld 报告 \textbf{65.9\%} \emph{pass@1}，在 ScreenSpot-V2/Pro 分别为 \textbf{95.3\%}/\textbf{61.9\%}\,\cite{ui-venus}，表明在不依赖 A11y/DOM 的条件下亦可实现可比导航能力。
-
-\phead{MLLM architecture at a glance.}
-图~\ref{fig:tool-aug-mllm01} 给出多模态大模型（MLLM）的通用结构：文本经 \emph{tokenizer} 输入 LLM，非文本模态由 \emph{Multimodal Encoder/Projector} 对齐后与文本融合\cite{tool-aug-mllm}。
-\picHere{./assets/images/from-papers/tool-aug-mllm01.jpg}{0.8\linewidth}
-{The overall architecture of MLLMs \cite{tool-aug-mllm}.}
-{fig:tool-aug-mllm01}
-
-\phead{Survey cues.}
-更广义的“Agent AI”综述从“下一步具身动作预测（next-embodied action prediction）”出发，讨论外部知识、人类反馈与多传感输入在\emph{grounded} 场景中的作用\cite{agent-ai}；面向 GUI 自动化的综述系统梳理了以 LLM 为中枢的框架、\emph{LAM}（large action models）、基准与指标\cite{llm-brained-gui}；另有针对 (M)LLM-based GUI agents 的综述从\emph{感知—探索/知识—规划—交互}四组成对齐术语与挑战\cite{mllm-gui}；在 OS 视角，\emph{OS Agents} 综述提出“环境/观测/动作—理解/规划/落地”的要素图谱\cite{os-agents}；端侧推理综述为“低时延”语境提供工程参考\cite{ondevice-llm}；“LLM×游戏智能体”的方法与基准的更广泛总览可参见近期 arXiv 工作\cite{game-agents-large-models}。
-
-\phead{Industry/Community signals.}
-作为动机与生态线索（非技术有效性论证），\emph{Neuro-sama} 的 \emph{AI streamer} 现象与相关开源生态（如 \emph{Open LLM VTuber}、\emph{Airi Project}、\emph{Kimjammer-Neuro}）反映出该方向的关注与活跃\cite{neurosama_youtube,open_llm_vtuber,airi_project,kimjammer_neuro}；平台侧量化数据亦显示较大受众体量：Neuro-sama 于 2025/01 创下 \textbf{Hype Train Level 111}（约 \textbf{85K} 付费订阅、约 \textbf{1.2M} bits），Twitch 2024 年总观看时长约 \textbf{18.5–20.8B} 小时、2024Q4 全行业约 \textbf{21B} 小时\cite{neurosama_hype_streamscharts_2025,pcgamesn_record_2025,vedal_twitchtracker,bloomberg_neurosama_2023,streamelements_state_2024,streamscharts_q4_2024_landscape}。
+% 作用：用“工作定义”定下本文的口径：执行通道（GCC）、编排方式（MCP-style）、输出形态（结构化输出/约束解码）、评测抓手（统一协议与事件型指标）。
+本项目选择\textbf{以 GUI（GCC）为统一动作接口}（\emph{screen-in, keyboard/mouse-out} 的人类同态通道），并以\textbf{结构化输出（structured output）+ 约束解码（constrained decoding）}作为默认的动作生成与落地路径。代表性证据表明：在\emph{不依赖应用专用 API} 的前提下，通过“规划—技能整理（macro/skill）—自反思—记忆”的管线可跑通长链路任务；在真实平台上，\emph{截图} $\rightarrow$ \emph{结构化动作} 的端到端导航可复现，且\emph{合法动作映射（legal move constraint）}显著降低无效动作（invalid actions）\cite{CRADLE,ui-venus,Benchmarking-VLA-VLM}。内部组织上，本文采用\textbf{MCP-style 编排}（模块/技能/工具的注册与路由），用于支撑消融与替换；评测上参考\textbf{统一协议+脚手架} 的做法，并引入\emph{机会导向}的 OAS/RT/APO 三项工作定义以刻画伴随式体验\cite{ORAK,lmgame-bench}。
 
 % ==========
-% 1.3 （由原1.5前移）
+% 1.3 Design Principles & System Preview
 % ==========
 \subsection{Design Principles \& System Preview}
-% > 文字级别的“系统流 + 原则”；详图与模块细节放 Methodology。此处仅做设计准则与一行流程。
-\noindent\textbf{Design principles}：结构化输出（structured output）、可审计（auditability）、可复现（reproducibility）、低耦合（MCP-style 编排）。\;
-\noindent\textbf{System preview}（一句话流程）：\emph{screen/audio} $\rightarrow$ 轻量 \emph{VLM} $\rightarrow$ \emph{LLM/agentic}（planning/memory/reflection）$\rightarrow$ \emph{MCP-style} 技能注册/路由 $\rightarrow$ \emph{GUI 执行}（kb/mouse）$\rightarrow$ \emph{safety}（permissions, rollback, kill-switch）。\;
-\noindent\textbf{默认工程姿态（不作实现承诺）}：single-flight（不并发大模型请求）、event-triggered（事件触发）、frame-window（3–5 帧堆叠）、text-first（可解析为结构化文本则优先文本路径），以降低延迟与方差。
+% 作用：一句话系统流＋设计原则；把“为什么这样设计”与前文证据钩住；引入端侧/工具增强作为工程抓手。
+
+\noindent\textbf{Design principles.}
+本文遵循四项原则：\textbf{结构化输出}（降低无效/便于审计）、\textbf{协议一致}（可复现/可消融）、\textbf{低耦合编排}（MCP-style，便于插拔 skills/tools）、\textbf{低时延}（面向 voice loop 与事件提示）。  
+
+\noindent\textbf{System preview.}
+系统流为：\emph{screen/audio} $\rightarrow$ 轻量\emph{VLM} 感知 $\rightarrow$ \emph{agentic}（planning/memory/reflection）$\rightarrow$ \emph{MCP-style} 技能/工具路由（含 OCR/检索/计算等 \emph{tool use}）$\rightarrow$ \emph{GUI 执行}（kb/mouse）$\rightarrow$ \emph{safety}（确认/回滚/急停）。为降低端到端时延，部署层面将结合\emph{工具增强型 MLLM} 的分担思路与\emph{端侧推理}的量化/缓存策略作为工程抓手\cite{tool-aug-mllm,on-device-llm}。
 
 % ==========
-% 1.4 （位置后移）
+% 1.4 Key Challenges
 % ==========
 \subsection{Key Challenges}
-% > 仅陈述挑战与已知现象；为 Evaluation Plan 与 Methodology 留空间。
-（i）\textbf{长链路稳定性（long-horizon stability）}：在 GUI（GCC）通道下，错误累积与状态漂移更易放大；文献中的\emph{skills/反思/记忆}管线可缓解，但挑战仍存\cite{CRADLE}；%
-（ii）\textbf{视觉中心定位与记忆（vision-centric grounding \& memory）}：\emph{visual-only/continuous-space} 对定位、时机、视觉记忆与高层推理提出更高要求\cite{v-mage}；%
-（iii）\textbf{OOD 与协议一致（OOD \& protocol consistency）}：需要在\emph{过程生成}与\emph{变量可控}条件下比较架构/数据/后处理，减少不可比性\cite{Benchmarking-VLA-VLM}；%
-（iv）\textbf{提示方差与污染（prompt variance \& contamination）}：把“\emph{游戏→评测}”落到可复现协议需稳定交互回路并记录后处理\cite{lmgame-bench}；%
-（v）\textbf{无效动作与幻觉（invalid actions \& hallucination）}：\emph{结构化输出/约束解码}可降低 invalid action，但\emph{think–action mismatch} 等现象仍被报告\cite{ui-venus}；%
-（vi）\textbf{时延与交互体验（latency \& UX）}：实时伴随式场景强调\emph{voice RTT} 与帧到提示响应时间，需要与稳定性指标共同考量\cite{ORAK,lmgame-bench}。
+% 作用：把“落到玩家侧真正难的事”说清楚，用通俗句式说明——为什么重要、怎么量、文献怎么佐证；为后文评测与设计留钩子（OAS/RT/APO、结构化输出、脚手架等）。
+
+落到真实玩家场景，难点不是单一模型分数，而是\textbf{稳、准、快、可控}的整体体验。下面按\emph{可测}的挑战项列出。
+
+
+\noindent\textbf{长链路稳定（long-horizon stability, GCC）。}
+只走 GUI（GCC）时，误点与偏移会沿交互链放大，导致“走着走着就跑偏”。可用 \emph{pass@k}、回滚率（rollback）与 \textbf{APO}（attempts per opportunity）来量。\;实践显示，\emph{planning + skills（macro）+ reflection + memory} 的组合能缓解这类漂移，但并非万灵药\cite{CRADLE}。
+
+
+\noindent\textbf{视觉定位与记忆（vision-centric grounding \& memory）。}
+在仅视觉/连续空间设定下，\emph{定位/追踪/计数、时机控制、长期视觉记忆}是当前模型的短板，常见现象是“看见了但对不上位/时”。可按\textbf{OAS}（opportunity-normalized success）分机会类型统计，如“可拾取物/时间点/路径节点”等\cite{v-mage}。
+
+
+\noindent\textbf{无效动作与幻觉（invalid actions \& think–action mismatch）。}
+自由文本到动作容易“想得对、点错位”。\textbf{结构化输出 + 合法动作映射（legal move constraint）}能大幅压低 \emph{Invalid\%}，并用 \emph{Brier/MAE} 看校准；训练侧可用“格式/类型/坐标/内容”四粒度奖励对齐执行细节\cite{Benchmarking-VLA-VLM,ui-venus}。
+
+
+\noindent\textbf{OOD 与协议一致（OOD \& protocol consistency）。}
+环境一换、版本一更，成绩就难对比。需要\emph{过程生成}（procedural generation）做分布外（OOD）评测、固定 \emph{post-processing} 与提示脚手架（scaffold）来控变量，并在\emph{统一协议}与 \emph{leaderboard/battle arena} 下报告 \emph{macro/micro} 指标\cite{Benchmarking-VLA-VLM,lmgame-bench,ORAK}。
+
+
+\noindent\textbf{时延与交互体验（latency \& UX）。}
+伴随式助手要“当下就回应”。关键是\textbf{RT}（reaction time per opportunity）与 \emph{voice RTT}（语音往返）。工程上需靠\emph{量化/剪枝/KV 缓存/流式解码}与\emph{端侧/端云协同}压时延，搭配单航班（single-flight）与可打断（barge-in）策略\cite{on-device-llm}。
+
+
+\noindent\textbf{安全与鲁棒（safety \& robustness）。}
+高风险动作必须“可确认、可回退、可追溯”。做法是\emph{权限白名单}、\emph{双确认}、\emph{影子执行（shadow execution）}与\emph{回滚/急停}，并保存\emph{日志/审计}以定位 \emph{think–action mismatch}\cite{llm-brained-gui,mllm-gui,os-agents}。
 
 % ==========
-% 1.5 （原1.4）
+% 1.5 Project Objectives & Expected Deliverables
 % ==========
 \subsection{Project Objectives \& Expected Deliverables}
-% > Proposal写法：列“目标/交付物类别”，避免研究“贡献”口吻与过度承诺。
-\noindent\textbf{Objectives.}
-\begin{itemize}
-  \item 实现一个\emph{以 GUI（GCC）为主}的\emph{伴随式}实时游戏助手原型，覆盖事件提示、策略建议与语音回路，面向低时延与可复现评测。
-  \item 采用\emph{MCP-style} 的内部编排思想组织\emph{skills/macros、planning、memory、reflection}，在不依赖应用专用 API 的前提下实现可插拔与可审计（auditability）。
-  \item 明确一套小而可复现的评测要素（任务脚本与指标族），关注\emph{advice adoption}、\emph{voice RTT}、\emph{macro success} 等体验相关量。
-\end{itemize}
+% 作用：以“产品向”列目标与交付物，不写研究承诺；指标对齐前文口径。
 
-\noindent\textbf{Expected Deliverables.}
-\begin{itemize}
-  \item \textbf{系统原型}：屏幕采集与轻量感知、agentic 模块、MCP-style 技能总线、GUI 执行器、基础安全护栏（权限/回滚/急停）。
-  \item \textbf{评测脚本与配置}：可复现实验的任务脚本、指标计算与日志审计工具（含模块开关用于对照）。
-  \item \textbf{使用文档与演示}：安装/运行说明、配置模板与演示视频；\textit{范围外}：针对具体应用/游戏的专用 API 适配与大规模模型微调。
-\end{itemize}
+\noindent\textbf{Objectives.}
+(i) 实现一个\textbf{以 GCC 为主}的\emph{伴随式}实时助手原型，覆盖事件提示、策略建议与语音回路；(ii) 采用\textbf{MCP-style 编排}组织 \emph{skills/macros、planning、memory、reflection}，在不依赖应用专用 API 的前提下实现可插拔与可审计；(iii) 明确一套\textbf{小而可复现}的评测要素（任务脚本与指标族），关注 \emph{pass@k/TTC/Invalid\%/macro–micro} 以及 \emph{OAS/RT/APO} 等体验相关量\cite{ORAK,lmgame-bench}.  
+
+\noindent\textbf{Expected deliverables.}
+(a) \textbf{系统原型}：屏幕采集与轻量感知、agentic 模块、MCP-style 技能总线、GUI 执行器与基础安全护栏；(b) \textbf{评测脚本与配置}：可复现实验的任务脚本、指标计算与日志审计工具（含模块开关用于对照）；(c) \textbf{使用文档与演示}：安装/运行说明、配置模板与演示视频。
 
 % ==========
-% 1.6 （新增，开题口径声明）
+% 1.6 Assumptions & Out-of-Scope
 % ==========
 \subsection{Assumptions \& Out-of-Scope}
-% > 目的：提前声明工程与范围假设，降低评审对“宽口径”的不确定；与 2.7 部署现实呼应。
-\phead{Working assumptions.}
-默认采用“\emph{single-flight + event-triggered + frame-window（3–5 帧）+ text-first}”的工程姿态以降低时延与方差；评测记录\emph{post-processing} 与交互版本以保持协议一致。
+% 作用：提前声明工程与范围假设，降低评审对“宽口径”的不确定；与部署/评测呼应。
 
-\phead{Out-of-scope.}
-不开展每个游戏/应用的专用 API 适配；不在本报告中承诺大规模端到端训练与数据采集；不涉及平台级增强权限（如 A11y/私有 DOM 钩子）的依赖。
+\noindent\textbf{Working assumptions.}
+默认采用“\emph{single-flight + event-triggered + frame-window（3–5 帧）+ text-first}”的工程姿态以降低时延与方差；评测记录\emph{post-processing} 与环境版本以保持协议一致。  
 
+\noindent\textbf{Out-of-scope.}
+不开展\textbf{逐个应用/游戏的专用 API 适配}；不在本报告中承诺\textbf{大规模端到端训练与数据采集}；不依赖平台级增强权限（如 A11y/私有 DOM 钩子）；\textbf{VLA 直出动作}仅作为评测对照而非默认路径\cite{Benchmarking-VLA-VLM}.
 
 % TODO: “虽然现在有类似于MAA、BetterGI、三月七小助手”这样的软件，但是他们主要是基于传统图像识别的自动化脚本，虽然能提升玩家体验，但是难以提供情感支持。
 
