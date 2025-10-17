@@ -19,11 +19,11 @@
 % 作用：回答“怎么比、控什么变量、报什么指标、如何降无效动作”；把统一协议/脚手架/动作显式化/奖励设计与指标口径形成一套可复现抓手。
 % 承上启下：本节结尾过渡到 2.3——在统一协议下，谁在起作用要靠可复现的模块消融来回答。
 
-在统一协议方面，文献以 \emph{MCP-style} 的模块编排（orchestration）\textbf{解耦代理与多游戏环境}，统一配置与日志，\textbf{在同一协议下做可复现的消融}以比较 \emph{planning / reflection / memory / skills} 等模块；同时配套 \emph{leaderboard} 与 \emph{battle arena}，维持跨任务可比性\cite{ORAK}。为减少提示方差与避免训练—测试污染，评测侧引入 Gym-style 接口与感知/记忆脚手架（harness），记录 \emph{post-processing} 并固定环境版本，报告在多模型下具有良好分离度的结果\cite{lmgame-bench}。
+在统一协议方面，已有研究通过 \emph{MCP-style} 编排\textbf{解耦代理与多游戏环境}，统一配置与日志，\textbf{在同一协议下做可复现的消融}以比较 \emph{planning / reflection / memory / skills} 等模块，并配套 \emph{leaderboard} 与 \emph{battle arena} 维持跨任务可比性\cite{ORAK}。为减少提示方差与避免训练—测试污染，评测侧引入 Gym-style 接口与感知/记忆脚手架（harness），记录 \emph{post-processing} 并固定环境版本，报告在多模型下具有良好分离度的结果\cite{lmgame-bench}。
 
-在“无效动作治理”上，\textbf{动作显式化}是共同结论：将模型输出\emph{映射到合法离散动作空间}，并采用\emph{结构化输出/约束解码}联合抑制 \emph{Invalid\%} 与坐标偏差；评估层面同时使用 \emph{Micro/Macro Precision/Recall/F1} 与 \emph{Brier/MAE} 兼顾分类与校准。\emph{端到端 GUI 导航}还在 RL-finetune 中把奖励拆分为\emph{格式/动作类型/坐标/内容}四粒度，将“合规性与细粒度正确性”纳入可学习信号，形成\textbf{工程可落地}的闭环\cite{Benchmarking-VLA-VLM,ui-venus}。
+在“无效动作治理”上，\textbf{动作显式化}是共同结论：将输出\emph{映射到合法离散动作空间}并采用\emph{结构化输出/约束解码}联合抑制 \emph{Invalid\%} 与坐标偏差；评估层面同时使用 \emph{Micro/Macro Precision/Recall/F1} 与 \emph{Brier/MAE} 兼顾分类与校准\cite{Benchmarking-VLA-VLM}。与此一致，近期综述提出两条工程路径：其一将自由文本\emph{语义映射到最近的允许动作}；其二直接\emph{在允许动作集合上建模概率}，两者均可与本文“合法动作映射/约束解码”的实现口径对齐\cite{llm-ga}。面向结构化动作的端到端导航，还可在 RL-finetune 中将奖励拆分为\emph{格式/动作类型/坐标/内容}四粒度，将“合规性与细粒度正确性”纳入可学习信号，形成\textbf{工程可落地}的闭环\cite{ui-venus}。
 
-为了与“伴随式实时体验”对齐，本文在客观指标（\emph{success/pass@k}、\emph{time-to-completion, TTC}、\emph{misclick/rollback}、\emph{latency}——含 \emph{voice RTT}）与\emph{macro/micro} 并报之外，引入三项\textbf{机会导向}工作定义：\textbf{OAS}（\emph{opportunity-normalized success}，成功次数÷可操作机会数）、\textbf{RT}（\emph{reaction time per opportunity}，机会出现到首个有效动作/提示的时间）与\textbf{APO}（\emph{attempts per opportunity}，每次机会的平均尝试/回滚次数）\cite{ORAK,lmgame-bench,Benchmarking-VLA-VLM,ui-venus}。\textit{在这套协议下，“谁在起作用”不再“口说无凭”，而是可以用可复现的模块消融实验来回答。}
+为了与“伴随式实时体验”对齐，本文在客观指标（\emph{success/pass@k}、\emph{time-to-completion, TTC}、\emph{misclick/rollback}、\emph{latency}——含 \emph{voice RTT}）与\emph{macro/micro} 并报之外，引入三项\textbf{机会导向}工作定义：\textbf{OAS}（\emph{opportunity-normalized success}，成功次数÷可操作机会数）、\textbf{RT}（\emph{reaction time per opportunity}，机会出现到首个有效动作/提示的时间）与\textbf{APO}（\emph{attempts per opportunity}，每次机会的平均尝试/回滚次数）\cite{ORAK,lmgame-bench,Benchmarking-VLA-VLM,ui-venus}。
 
 % ==========
 % 2.3 Agentic 模块
@@ -32,7 +32,7 @@
 % 作用：把长链路稳定性的结构要素（planning/memory/reflection/skills）与“可复现消融”和“训练侧配套”放在同一叙事里。
 % 承上启下：本节结尾过渡到 2.4——让这些模块更稳/更强，学习范式是关键杠杆。
 
-围绕长链路稳定性，研究把代理拆解为可组合的\textbf{四要素}：\emph{planning}（任务分解与策略选择）、\emph{memory}（短长时与用户偏好）、\emph{self-reflection}（纠错与风格一致）与 \emph{skills/macros}（原子到复合技能）。实践表明，该组合能缓解错误累积与状态漂移，支撑 \emph{GCC} 通道上的可迁移闭环\cite{CRADLE}；而在统一协议下，\textbf{可复现的模块消融}给出了边际效应与搭配选择的证据，使“用/不用、强/弱”不再停留于经验判断\cite{ORAK}。
+围绕长链路稳定性，研究通常将代理拆解为可组合的\textbf{四要素}：\emph{planning}（任务分解与策略选择）、\emph{memory}（短长时与用户偏好）、\emph{self-reflection}（纠错与风格一致）与 \emph{skills/macros}（原子到复合技能）。该组合有助于缓解错误累积与状态漂移，支撑 \emph{GCC} 通道上的可迁移闭环\cite{CRADLE}；在统一协议下，\textbf{可复现的模块消融}提供了边际效应与搭配选择的证据，使“用/不用、强/弱”不再停留于经验判断\cite{ORAK}。训练与数据侧通常与\emph{结构化动作}相匹配：通过 \emph{RL-finetune} 与反馈式调优（如 \emph{GRPO/RFT}），并以“格式/类型/坐标/内容”四粒度奖励，\textbf{收紧输出空间}同时提升细粒度正确性\cite{ui-venus}。作为收敛视角，近期综述将上述组件归并为\emph{记忆—推理—I/O}三件套：\emph{planning+reflection} 对齐 \emph{reasoning}，\emph{skills/macros} 属于 \emph{I/O} 的动作产出形态，\emph{memory} 独立，便于在实现与评测时统一术语与接口\cite{llm-ga}。
 
 训练与数据侧的配套通常与\emph{结构化动作}相匹配：通过 \emph{RL-finetune} 与反馈式调优（如 \emph{GRPO/RFT}），并以“格式/类型/坐标/内容”四粒度奖励，\textbf{收紧输出空间}同时提升细粒度正确性，从而在“反思—记忆—技能”的外圈外，再加一层\emph{可学习的约束}\cite{ui-venus}。此外，接口位形也影响模块产物：\emph{VLM} 倾向输出文本/JSON，经由映射进入动作空间；\emph{VLA} 则直接产出动作向量/分布，二者在无效率、校准与 OOD 行为上的取舍需要在同一协议中对照评测\cite{Benchmarking-VLA-VLM}。\textit{要让这些模块更稳/更强，下一步问题就是：如何学习与调优。}
 
@@ -45,31 +45,7 @@
 
 指令化与条件化提供了“看懂—再行动”的可解释路径：\emph{R2-Play} 将多模态游戏指令（\emph{multimodal game instructions, MGI}）并入 \emph{Decision Transformer}，用“\emph{游戏描述—轨迹—操作引导（含关键元素位置）}”三段式模板共享跨任务知识，在多任务与泛化上报告相对优势，可作为\textbf{提示/指导结构}的模板参考\cite{r2-play}。对结构化动作任务而言，\emph{RL-finetune} 配合四粒度奖励把“合法性+定位/文本输入”压进可学习信号，\textbf{直接对齐} 2.2 节中的“无效动作治理”目标\cite{ui-venus}。
 
-为在资源与稳态间取舍，\emph{工具增强型 MLLM} 的综述总结了外部工具（OCR/检索/计算/专家模型等）在 \emph{tool use / MCP-style} 编排下对延迟与鲁棒性的影响与边界，提示通过检索与轻量工具链分担大模型负载；而接口对照研究将 \emph{VLM+映射} 与 \emph{VLA直出动作}并置，指出两类路径在无效率、置信校准与 OOD 表现上的差异，需要结合具体协议与数据分布权衡\cite{tool-aug-mllm,Benchmarking-VLA-VLM}。\textit{即便“能做—能比—能学”已形成闭环，模型仍有系统性短板，必须在评测中直面。}
-
-% ==========
-% 2.5 能力边界
-% ==========
-\subsection{能力边界（Capability Gaps）}
-% 作用：直面“做不到哪儿”，把失败模式与短板集中呈现，回扣 event spotting / tactical guidance / voice loop 的风险位；作为后续指标与案例设计的负样本清单。
-
-以视觉为中心的自由形式游戏显示，多模态模型在若干关键能力上仍与人类存在差距：\emph{定位/追踪/计数}、\emph{历史依赖与锚定偏置}、\emph{时机控制}、\emph{视觉记忆}、\emph{文本识别与空间理解}以及\emph{高层时序推理}等维度普遍薄弱。采用 Elo 风格相对强度排名与“模型/策略”的管线分离，从评测组织上揭示了这些系统性短板与不稳定性\cite{v-mage}。更通用的 LLM×游戏评测同样显示，\emph{交互稳定性与污染控制}会显著影响结果分离度，提示伴随式场景需要\emph{机会归一化}与\emph{反应时}等细粒度度量以及脚手架约束\cite{lmgame-bench}。
-
-% ==========
-% 2.6 术语与范围对齐（glossary box）
-% ==========
-\subsection{术语与范围对齐（Glossary \& Scope Alignment）}
-% 作用：避免跨论文叫法不一导致的混淆；不引入新结论，仅固定本文口径。建议在排版中做成“灰底小盒/附录小表”，此处用行内加粗标示。
-% 证据来源：多篇综述的共识视角\cite{agent-ai,llm-brained-gui,mllm-gui,os-agents}；必要时在部署节再补 on-device 与更广游戏综述\cite{on-device-llm,gp-agents}。
-
-\textbf{GCC（General Computer Control）}：\emph{screen-in + keyboard/mouse-out} 的人类同态动作接口；本文默认执行通道\cite{llm-brained-gui}.  
-\textbf{LAM（Large Action Models）}：以\emph{结构化动作}为一等产出的模型族；本文作为对照范式引用\cite{llm-brained-gui}.  
-\textbf{VLM vs VLA}：\emph{文本/JSON 输出经映射}进入动作空间 vs \emph{直接动作向量/分布}；评测统一采用\emph{合法动作映射 + 约束解码}口径\cite{mllm-gui}.  
-\textbf{Scaffold vs Orchestration（MCP-style）}：前者为评测期的稳定交互“脚手架”，后者为模块/工具的注册与路由；二者互补\cite{os-agents}.  
-\textbf{指标口径}：\emph{pass@k}、\emph{TTC}、\emph{Invalid\%}、\emph{macro/micro} 并报；机会导向的 \textbf{OAS/RT/APO} 作为伴随式场景的核心补充\cite{agent-ai}.  
+为在资源与稳态间取舍，\emph{工具增强型 MLLM} 的综述总结了外部工具（OCR/检索/计算/专家模型等）在 \emph{tool use / MCP-style} 编排下对延迟与鲁棒性的影响与边界，提示通过检索与轻量工具链分担大模型负载；而接口对照研究将 \emph{VLM+映射} 与 \emph{VLA直出动作}并置，指出两类路径在无效率、置信校准与 OOD 表现上的差异，需要结合具体协议与数据分布权衡\cite{tool-aug-mllm,Benchmarking-VLA-VLM}。\textit{即便“能做—能比—能学”已形成闭环，模型仍有系统性短板，必须在评测中直面。} 
 
 % —— 收束句，回钩全文母题 ——
-\noindent\textit{综上，文献给出的“\textbf{可行}—\textbf{可比}—\textbf{可稳}—\textbf{可学}—\textbf{有边界}”五段证据限定了本文后续系统与评测的口径：以 \textbf{GCC} 为统一接口，以 \textbf{结构化输出 + 合法动作映射} 降无效；以 \textbf{可复现协议与脚手架} 做对照；并用 \textbf{OAS/RT/APO} 捕捉伴随式实时体验。}
-
-
-% TODO: 将2.5、2.6放到Introduction里面（这些应该在Intro中先讲清楚，即缺陷和对齐术语）
+% \noindent\textit{综上，文献给出的“\textbf{可行}—\textbf{可比}—\textbf{可稳}—\textbf{可学}—\textbf{有边界}”五段证据限定了本文后续系统与评测的口径：以 \textbf{GCC} 为统一接口，以 \textbf{结构化输出 + 合法动作映射} 降无效；以 \textbf{可复现协议与脚手架} 做对照；并用 \textbf{OAS/RT/APO} 捕捉伴随式实时体验。}
