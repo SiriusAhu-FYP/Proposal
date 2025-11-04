@@ -36,10 +36,10 @@ This scope is defined based on its demonstrated feasibility. Existing studies ha
 \subsection{Design Principles \& System Preview}
 
 \noindent\textbf{Design principles.}\par
-This paper follows four principles: \textbf{Structured Output} (reduces invalid actions and is easy to audit), \textbf{Protocol Consistency} (ensures reproducibility and ablative evaluation), \textbf{Low-Coupling Orchestration} (MCP-style, facilitates modular insertion/removal of skills/tools), and \textbf{Low Latency} (optimized for voice loop and event triggering).
+This work follows four principles: \textbf{Unified Input} (ensures portability across applications), \textbf{Structured Output} (reduces invalid actions and is easy to audit), \textbf{Protocol Consistency} (ensures reproducibility and ablative evaluation), \textbf{Low-Coupling Orchestration} (MCP-style, facilitates modular insertion/removal of skills/tools).
 
 \noindent\textbf{System preview.}\par
-The system flow is as follows: \textbf{screen/audio} capture, lightweight \textbf{VLM} perception, \textbf{agentic} (planning/memory/reflection) modules, \textbf{MCP-style} skill/tool routing (including OCR/retrieval/computation \textbf{tool use}), \textbf{GUI execution} (kb/mouse), and finally passing through the \textbf{safety} module (confirmation/rollback/emergency stop). To reduce end-to-end latency, the deployment strategy will combine the \textbf{tool-augmented MLLM} approach with \textbf{on-device inference} quantization/caching strategies as key engineering tactics \cite{tool-aug-mllm, on-device-llm}.
+The system flow is as follows: \textbf{screen/audio} capture, lightweight \textbf{VLM} perception, \textbf{agentic} (planning/memory/reflection) modules, \textbf{MCP-style} skill/tool routing (including OCR/retrieval/computation \textbf{tool use}), \textbf{GUI execution} (keyboard and mouse), and finally passing through the \textbf{safety} module (confirmation/rollback/emergency stop). To reduce end-to-end latency, the deployment strategy will combine the \textbf{tool-augmented MLLM} approach with \textbf{on-device inference} quantization/caching strategies as key engineering tactics \cite{tool-aug-mllm, on-device-llm}.
 
 % ==========
 % 1.4 Key Challenges
@@ -84,9 +84,11 @@ In real player scenarios, the challenge is not just the individual model score, 
 % ==========
 \subsection{Assumptions \& Out-of-Scope}
 
-\noindent\textbf{Working assumptions.} The default engineering posture is \textbf{single-flight + event-triggered + frame-window (3–5 frames) + text-first} to reduce latency and variance. Evaluation records \textbf{post-processing} and environment versions will be maintained to ensure protocol consistency.
+\noindent\textbf{Working assumptions.}\par
+The default engineering posture is \textbf{single-flight + event-triggered + frame-window (3–5 frames) + text-first} to reduce latency and variance. Evaluation records \textbf{post-processing} and environment versions will be maintained to ensure protocol consistency.
 
-\noindent\textbf{Out-of-scope.} This project does not involve \textbf{adapting application/game-specific APIs} on a per-application basis. It does not commit to \textbf{large-scale end-to-end training and data collection} in this report. It will not rely on platform-level enhancement privileges (such as A11y/private DOM hooks). \textbf{VLA direct-action} will be used only as a benchmark comparison and not as the default path \cite{Benchmarking-VLA-VLM}.
+\noindent\textbf{Out-of-scope.}\par
+ This project does not involve \textbf{adapting application/game-specific APIs} on a per-application basis. It does not commit to \textbf{large-scale end-to-end training and data collection} in this report. It will not rely on platform-level enhancement privileges (such as A11y/private DOM hooks). \textbf{VLA direct-action} will be used only as a benchmark comparison and not as the default path \cite{Benchmarking-VLA-VLM}.
 
 % ==========
 % 1.7 术语与范围对齐（Glossary \& Scope Alignment）
@@ -95,11 +97,11 @@ In real player scenarios, the challenge is not just the individual model score, 
 
 \noindent\todo{Add more \dots}
 
-Since this research area is relatively new, the terminology and naming conventions across different works are not yet unified. Therefore, before entering the literature review, this paper aligns key terms and definitions:
+Since this research area is relatively new, the terminology and naming conventions across different works are not yet unified. Therefore, before entering the literature review, this work aligns key terms and definitions:
 
-\noindent\textbf{GCC (General Computer Control):} A human-homomorphic action interface defined as screen-in + keyboard/mouse-out; this is the default execution channel in this paper \cite{llm-brained-gui}.
+\noindent\textbf{GCC (General Computer Control):} A human-homomorphic action interface defined as screen-in + keyboard/mouse-out; this is the default execution channel in this work \cite{llm-brained-gui}.
 
-\noindent\textbf{LAM (Large Action Models):} A family of models where structured actions are treated as first-class outputs; referenced as a comparative paradigm in this paper \cite{llm-brained-gui}.
+\noindent\textbf{LAM (Large Action Models):} A family of models where structured actions are treated as first-class outputs; referenced as a comparative paradigm in this work \cite{llm-brained-gui}.
 
 \noindent\textbf{VLM vs VLA:} Text/JSON output mapped into action space vs direct action vectors/distributions; evaluation will consistently use legal move mapping + constrained decoding approach \cite{mllm-gui}.
 
@@ -107,7 +109,7 @@ Since this research area is relatively new, the terminology and naming conventio
 
 \noindent\textbf{Metric Definitions:} \textbf{pass@k}, \textbf{TTC}, \textbf{Invalid\%}, and \textbf{macro/micro} will be reported together; opportunity-driven \textbf{OAS/RT/APO} serve as core supplements in companion-style scenarios \cite{agent-ai}.
 
-\noindent\textbf{Memory–Reasoning–I/O (M-R-I/O):} The internal working division and terminology anchor of this paper. Here, planning and reflection align with reasoning, skills/macros represent action output forms on the I/O side, and memory remains independent. The output side will default to a “semantic-to-allowed action” mapping or a compliance strategy that models probabilities over the set of allowed actions \cite{llm-ga}.
+\noindent\textbf{Memory–Reasoning–I/O (M-R-I/O):} The internal working division and terminology anchor of this work. Here, planning and reflection align with reasoning, skills/macros represent action output forms on the I/O side, and memory remains independent. The output side will default to a “semantic-to-allowed action” mapping or a compliance strategy that models probabilities over the set of allowed actions \cite{llm-ga}.
 
 
 % TODO: “虽然现在有类似于MAA、BetterGI、三月七小助手”这样的软件，但是他们主要是基于传统图像识别的自动化脚本，虽然能提升玩家体验，但是难以提供情感支持。
