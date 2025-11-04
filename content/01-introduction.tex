@@ -5,101 +5,110 @@
 % 1.1 Problem Setting & Motivation
 % ==========
 \subsection{Problem Setting \& Motivation}
-% 作用：把“伴随式实时助手”的使用图景与缺口（统一动作接口、可复现实验）讲清楚，并以代表性基准/综述作为证据引入。
+% Why worthy? (Passion, market, need)
+% Demand -> Neuro-sama (success on market and tech) -> Timely: recent research support -> Project Definition
 
-面向玩家的\textbf{伴随式（companion-style）}实时助手，目标是在\textbf{不打断游戏流程}的前提下，持续提供\textbf{事件提示（event spotting）}、\textbf{策略建议（tactical guidance）}与\textbf{语音回路（voice loop）}的低时延体验。近年的\textbf{LLM$\times$游戏}与\textbf{GUI 智能体}研究快速推进，但落地层面仍存在两类缺口：一是\textbf{动作接口不统一}，大量工程依赖场景定制；二是\textbf{评测协议不一致}，导致复现实验与横向对比困难。围绕这些缺口，已有工作正从\textbf{统一协议/消融}与\textbf{脚手架/污染控制}两侧收敛可复现方法学，为产品化路径提供操作依据\cite{ORAK,lmgame-bench,gp-agents}。同时，近期综述将 LLM 游戏智能体抽象为\textbf{记忆—推理—I/O}三件套，并强调 I/O 质量与\textbf{允许动作集合}的一致性是交互成败的关键，这与“结构化输出/约束解码”的工程路径相吻合\cite{llm-ga}。
+The demand for **companion-style** AI assistants that operate in real-time gaming environments is expanding rapidly. This trend signals a shift in player expectations, moving beyond simple automation scripts or static information overlays toward interactive, persistent, and engaging AI partners.
+
+The rise of AI-driven virtual streamers, particularly the **Neuro-sama** phenomenon, highlights a significant shift in both technology and community-driven commercialization. Neuro-sama, an AI-powered virtual streamer (VTuber), engages in real-time conversations and dynamic gameplay, capturing the attention of audiences \cite{neurosama_youtube}. Although Neuro-sama remains closed-source, its success has inspired a vibrant open-source ecosystem, with developers aiming to replicate or expand upon its capabilities \cite{open_llm_vtuber,airi_project,kimjammer_neuro}. This technological innovation has been accompanied by strong commercial traction on platforms like Twitch, indicating a growing market demand for AI that offers both utility and companionship \cite{neurosama_hype_streamscharts_2025, vedal_twitchtracker}. Through persistent, low-latency **voice loops**, these AI systems create engaging player experiences, driving both user engagement and monetization.
+
+This project is timely. While the market demand is clear, the technological feasibility for a \textbf{reproducible, non-API-dependent} assistant has only recently emerged. Foundational research is now converging on the key methodologies required for productization. This includes the development of **unified evaluation protocols** and **modular ablation frameworks**, which are essential for ensuring that experiments are reproducible and comparable \cite{ORAK, lmgame-bench}. Furthermore, recent work has demonstrated the viability of **General Computer Control (GCC)** pathways (i.e., screen-in, keyboard/mouse-out), confirming that capable agents can operate without relying on game-specific APIs \cite{CRADLE, ui-venus}.
+
+**Inspired by** this clear convergence of market demand and emerging academic feasibility, this project aims to bridge the gap. The core objective is to define and build a prototype for a **companion-style assistant**. This assistant is envisioned as a persistent, in-game partner that delivers **event spotting** and **tactical guidance**, leveraging these new, reproducible methodologies to enhance the player's experience without interrupting gameplay.
 
 % ==========
 % 1.2 Scope & Working Definitions
 % ==========
-\subsection{Scope \& Working Definitions}
-% 作用：用“工作定义”定下本文的口径：执行通道（GCC）、编排方式（MCP-style）、输出形态（结构化输出/约束解码）、评测抓手（统一协议与事件型指标）。
+\subsection{Project Scope \& Feasibility}
 
-本项目选择\textbf{以 GUI（GCC）为统一动作接口}（\textbf{screen-in, keyboard/mouse-out} 的人类同态通道），并以\textbf{结构化输出（structured output）+ 约束解码（constrained decoding）}作为默认的动作生成与落地路径。已有研究表明：在\textbf{不依赖应用专用 API} 的前提下，通过“规划—技能整理（macro/skill）—自反思—记忆”的管线可跑通长链路任务；在真实平台上，“\textbf{截图} $\rightarrow$ \textbf{结构化动作}”的端到端导航具有可复现性，且\textbf{合法动作映射（legal move constraint）}能够显著降低无效动作（invalid actions）\cite{CRADLE,ui-venus,Benchmarking-VLA-VLM}。内部组织采用\textbf{MCP-style 编排}（模块/技能/工具的注册与路由），支撑消融与替换；评测遵循\textbf{统一协议+脚手架} 的做法，并引入\textbf{机会导向}的 OAS/RT/APO 三项工作定义以刻画伴随式体验\cite{ORAK,lmgame-bench}。为避免名词漂移，本文将\textbf{记忆—推理—I/O}作为术语锚点：\textbf{planning+reflection} 对齐 \textbf{reasoning}，\textbf{skills/macros} 属于 \textbf{I/O} 侧的动作产出形态，\textbf{memory} 独立；输出端默认遵循“语义\,$\rightarrow$\,允许动作”映射或\textbf{在允许集合上建模概率}的合规策略\cite{llm-ga}。
+To address the issue of inconsistent action interfaces and the challenge of reproducibility caused by reliance on scene-specific APIs, as mentioned in previous sections, this project makes the following clear definition of its technical scope:
+
+\begin{itemize}
+    \item \textbf{Unified action interface via GUI (GCC)}: This refers to a human-homomorphic channel with screen-in, keyboard/mouse-out.
+    \item \textbf{Structured output as the default path}: The default action generation and execution path is defined as \textbf{structured output + constrained decoding}.
+\end{itemize}
+
+This scope is defined based on its demonstrated feasibility. Existing studies have shown that, without relying on application-specific APIs, long-horizon tasks can be completed through a pipeline of "planning → macro/skill organization → self-reflection → memory". Additionally, on real platforms, the "screenshot → structured action" end-to-end navigation path has been proven to be reproducible, and \textbf{legal move constraints} significantly reduce invalid actions \cite{CRADLE, ui-venus, Benchmarking-VLA-VLM}.
 
 % ==========
 % 1.3 Design Principles & System Preview
 % ==========
 \subsection{Design Principles \& System Preview}
-% 作用：一句话系统流＋设计原则；把“为什么这样设计”与前文证据钩住；引入端侧/工具增强作为工程抓手。
 
-\noindent\textbf{Design principles.}
-本文遵循四项原则：\textbf{结构化输出}（降低无效/便于审计）、\textbf{协议一致}（可复现/可消融）、\textbf{低耦合编排}（MCP-style，便于插拔 skills/tools）、\textbf{低时延}（面向 voice loop 与事件提示）。  
+\noindent\textbf{Design principles.}\par
+This paper follows four principles: \textbf{Structured Output} (reduces invalid actions and is easy to audit), \textbf{Protocol Consistency} (ensures reproducibility and ablative evaluation), \textbf{Low-Coupling Orchestration} (MCP-style, facilitates modular insertion/removal of skills/tools), and \textbf{Low Latency} (optimized for voice loop and event triggering).
 
-\noindent\textbf{System preview.}
-系统流为：\textbf{screen/audio} $\rightarrow$ 轻量\textbf{VLM} 感知 $\rightarrow$ \textbf{agentic}（planning/memory/reflection）$\rightarrow$ \textbf{MCP-style} 技能/工具路由（含 OCR/检索/计算等 \textbf{tool use}）$\rightarrow$ \textbf{GUI 执行}（kb/mouse）$\rightarrow$ \textbf{safety}（确认/回滚/急停）。为降低端到端时延，部署层面将结合\textbf{工具增强型 MLLM} 的分担思路与\textbf{端侧推理}的量化/缓存策略作为工程抓手\cite{tool-aug-mllm,on-device-llm}。
+\noindent\textbf{System preview.}\par
+The system flow is as follows: \textbf{screen/audio} capture, lightweight \textbf{VLM} perception, \textbf{agentic} (planning/memory/reflection) modules, \textbf{MCP-style} skill/tool routing (including OCR/retrieval/computation \textbf{tool use}), \textbf{GUI execution} (kb/mouse), and finally passing through the \textbf{safety} module (confirmation/rollback/emergency stop). To reduce end-to-end latency, the deployment strategy will combine the \textbf{tool-augmented MLLM} approach with \textbf{on-device inference} quantization/caching strategies as key engineering tactics \cite{tool-aug-mllm, on-device-llm}.
 
 % ==========
 % 1.4 Key Challenges
 % ==========
 \subsection{Key Challenges}
-% 作用：把“落到玩家侧真正难的事”说清楚，用通俗句式说明——为什么重要、怎么量、文献怎么佐证；为后文评测与设计留钩子（OAS/RT/APO、结构化输出、脚手架等）。
 
-落到真实玩家场景，难点不是单一模型分数，而是\textbf{稳、准、快、可控}的整体体验。下面按\textbf{可测}的挑战项列出。
+In real player scenarios, the challenge is not just the individual model score, but the overall experience that is \textbf{stable, accurate, fast, and controllable}. Below, the challenges are listed according to \textbf{measurable} factors.
 
-\noindent\textbf{长链路稳定（long-horizon stability, GCC）。}
-只走 GUI（GCC）时，误点与偏移会沿交互链放大，导致“走着走着就跑偏”。可用 \textbf{pass@k}、回滚率（rollback）与 \textbf{APO}（attempts per opportunity）来量；\;“\textbf{planning + skills（macro）+ reflection + memory}”的组合能缓解漂移，但并非万灵药\cite{CRADLE}。
+\noindent\textbf{Long-Horizon Stability (GCC).} When using only GUI (GCC), errors and misalignments can accumulate along the interaction chain, leading to the problem of “drifting off track.” This can be measured with \textbf{pass@k}, rollback rate, and APO (attempts per opportunity). The combination of “\textbf{planning + skills (macro) + reflection + memory}” can alleviate drift, but it is not a panacea \cite{CRADLE}.
 
-\noindent\textbf{视觉定位与记忆（vision-centric grounding \& memory）。}
-在仅视觉/连续空间设定下，\textbf{定位/追踪/计数、时机控制、长期视觉记忆}是当前模型短板，可按\textbf{OAS}（opportunity-normalized success）分机会类型统计，如“可拾取物/时间点/路径节点”等\cite{v-mage}。
+\noindent\textbf{Vision-Centric Grounding \& Memory.} In purely visual or continuous space setups, \textbf{localization/tracking/counting, timing control, and long-term visual memory} are current model limitations. These can be statistically measured by \textbf{OAS} (opportunity-normalized success), broken down by opportunity types such as “pickable items/time points/path nodes” \cite{v-mage}.
 
-\noindent\textbf{无效动作与幻觉（invalid actions \& think–action mismatch）。}
-自由文本到动作容易“想得对、点错位”。\textbf{结构化输出 + 合法动作映射}能够压低 \textbf{Invalid\%}，并可用 \textbf{Brier/MAE} 看校准；训练侧以“格式/类型/坐标/内容”四粒度奖励对齐执行细节\cite{Benchmarking-VLA-VLM,ui-venus}。在实现层面，还可采用“\textbf{语义\,$\rightarrow$\,允许动作}”映射或\textbf{在允许动作集合上建模概率}的输出策略，从源头抑制越界与错位\cite{llm-ga}。
+\noindent\textbf{Invalid Actions \& Think-Action Mismatch.} Converting free text into actions often results in “thinking correctly but clicking the wrong place.” \textbf{Structured output + legal move constraints} can reduce \textbf{Invalid\%}, and \textbf{Brier/MAE} can be used to evaluate calibration. On the training side, rewards based on four granularities—“format/type/coordinates/content”—align execution details \cite{Benchmarking-VLA-VLM, ui-venus}. At the implementation level, output strategies such as “\textbf{semantic, →, allowed actions}” mapping or \textbf{probability modeling over the set of allowed actions} can be used to suppress out-of-bounds and misaligned actions from the start \cite{llm-ga}.
 
-\noindent\textbf{OOD 与协议一致（OOD \& protocol consistency）。}
-环境一换、版本一更，成绩就难对比。需要\textbf{过程生成}（procedural generation）做分布外（OOD）评测，固定 \textbf{post-processing} 与提示脚手架（scaffold）控变量，并在\textbf{统一协议}与 \textbf{leaderboard/battle arena} 下报告 \textbf{macro/micro} 指标\cite{Benchmarking-VLA-VLM,lmgame-bench,ORAK}。
+\noindent\textbf{OOD \& Protocol Consistency.} When the environment or version changes, comparison results become difficult. \textbf{Procedural generation} is needed for out-of-distribution (OOD) evaluation, with fixed \textbf{post-processing} and prompt scaffolding to control variables, and reporting \textbf{macro/micro} metrics under a \textbf{unified protocol} and \textbf{leaderboard/battle arena} \cite{Benchmarking-VLA-VLM, lmgame-bench, ORAK}.
 
-\noindent\textbf{时延与交互体验（latency \& UX）。}
-伴随式助手要“当下就回应”。关键是\textbf{RT}（reaction time per opportunity）与 \textbf{voice RTT}（语音往返）。工程上依赖\textbf{量化/剪枝/KV 缓存/流式解码}与\textbf{端侧/端云协同}压时延，搭配单航班（single-flight）与可打断（barge-in）策略\cite{on-device-llm}。
+\noindent\textbf{Latency \& User Experience (UX).} An assistant must “respond instantly.” The key metrics are \textbf{RT} (reaction time per opportunity) and \textbf{voice RTT} (round-trip voice latency). Engineering strategies to reduce latency include \textbf{quantization/pruning/KV caching/streaming decoding} and \textbf{on-device/edge-cloud collaboration}, along with single-flight and barge-in strategies \cite{on-device-llm}.
 
-\noindent\textbf{安全与健壮性（safety \& robustness）。}
-高风险动作必须“可确认、可回退、可追溯”。做法包括\textbf{权限白名单}、\textbf{双确认}、\textbf{影子执行（shadow execution）}与\textbf{回滚/急停}，并保存\textbf{日志/审计}定位 \textbf{think–action mismatch}\cite{llm-brained-gui,mllm-gui,os-agents}.
+\noindent\textbf{Safety \& Robustness.} High-risk actions must be “confirmable, rollbackable, and traceable.” The approach includes \textbf{permission whitelists}, \textbf{double confirmation}, \textbf{shadow execution}, and \textbf{rollback/emergency stop}, with \textbf{logging/auditing} to locate \textbf{think-action mismatch} \cite{llm-brained-gui, mllm-gui, os-agents}.
 
 % ==========
 % 1.5 Project Objectives & Expected Deliverables
 % ==========
 \subsection{Project Objectives \& Expected Deliverables}
-% 作用：以“产品向”列目标与交付物，不写研究承诺；指标对齐前文口径。
 
-\noindent\textbf{Objectives.}
-(i) 实现一个\textbf{以 GCC 为主}的\textbf{伴随式}实时助手原型，覆盖事件提示、策略建议与语音回路；(ii) 采用\textbf{MCP-style 编排}组织 \textbf{skills/macros、planning、memory、reflection}，在不依赖应用专用 API 的前提下实现可插拔与可审计；(iii) 明确一套\textbf{小而可复现}的评测要素（任务脚本与指标族），关注 \textbf{pass@k/TTC/Invalid\%/macro–micro} 以及 \textbf{OAS/RT/APO} 等体验相关量\cite{ORAK,lmgame-bench}.  
+\noindent\textbf{Objectives.} 
+\begin{itemize}
+    \item [(i)] Develop a \textbf{GCC-based} \textbf{assistant} real-time prototype that covers event prompting, strategy suggestions, and voice loops. 
+    \item [(ii)] Organize \textbf{skills/macros, planning, memory, reflection} using \textbf{MCP-style orchestration}, enabling plug-and-play and auditability without relying on application-specific APIs.
+    \item [(iii)] Define a set of \textbf{small and reproducible} evaluation elements (task scripts and metric families), focusing on \textbf{pass@k/TTC/Invalid\%/macro-micro} and \textbf{OAS/RT/APO} experience-related metrics \cite{ORAK, lmgame-bench}.
+\end{itemize}
 
-\noindent\textbf{Expected deliverables.}
-(a) \textbf{系统原型}：屏幕采集与轻量感知、agentic 模块、MCP-style 技能总线、GUI 执行器与基础安全护栏；(b) \textbf{评测脚本与配置}：可复现实验的任务脚本、指标计算与日志审计工具（含模块开关用于对照）；(c) \textbf{使用文档与演示}：安装/运行说明、配置模板与演示视频。
+\noindent\textbf{Expected Deliverables.} 
+\begin{itemize}
+    \item [(a)] \textbf{System Prototype:} Screen capture and lightweight perception, agentic modules, MCP-style skill bus, GUI executor, and basic safety safeguards.
+    \item [(b)] \textbf{Evaluation Scripts and Configuration:} Reproducible task scripts, metric calculation, and logging/audit tools (including module switches for comparison).
+    \item [(c)] \textbf{User Documentation and Demos:} Installation/operation instructions, configuration templates, and demo videos.
+\end{itemize}
 
 % ==========
 % 1.6 Assumptions & Out-of-Scope
 % ==========
 \subsection{Assumptions \& Out-of-Scope}
-% 作用：提前声明工程与范围假设，降低评审对“宽口径”的不确定；与部署/评测呼应。
 
-\noindent\textbf{Working assumptions.}
-默认采用“\textbf{single-flight + event-triggered + frame-window（3–5 帧）+ text-first}”的工程姿态以降低时延与方差；评测记录\textbf{post-processing} 与环境版本以保持协议一致。  
+\noindent\textbf{Working assumptions.} The default engineering posture is \textbf{single-flight + event-triggered + frame-window (3–5 frames) + text-first} to reduce latency and variance. Evaluation records \textbf{post-processing} and environment versions will be maintained to ensure protocol consistency.
 
-\noindent\textbf{Out-of-scope.}
-不开展\textbf{逐个应用/游戏的专用 API 适配}；不在本报告中承诺\textbf{大规模端到端训练与数据采集}；不依赖平台级增强权限（如 A11y/私有 DOM 钩子）；\textbf{VLA 直出动作}仅作为评测对照而非默认路径\cite{Benchmarking-VLA-VLM}.
+\noindent\textbf{Out-of-scope.} This project does not involve \textbf{adapting application/game-specific APIs} on a per-application basis. It does not commit to \textbf{large-scale end-to-end training and data collection} in this report. It will not rely on platform-level enhancement privileges (such as A11y/private DOM hooks). \textbf{VLA direct-action} will be used only as a benchmark comparison and not as the default path \cite{Benchmarking-VLA-VLM}.
 
 % ==========
-% 1.7 能力边界
+% 1.7 术语与范围对齐（Glossary \& Scope Alignment）
 % ==========
-\subsection{能力边界（Capability Gaps）}
-% 作用：直面“做不到哪儿”，把失败模式与短板集中呈现，回扣 event spotting / tactical guidance / voice loop 的风险位；作为后续指标与案例设计的负样本清单。
+\subsection{Glossary \& Terminology}
 
-以视觉为中心的自由形式游戏显示，多模态模型在若干关键能力上仍与人类存在差距：\textbf{定位/追踪/计数}、\textbf{历史依赖与锚定偏置}、\textbf{时机控制}、\textbf{视觉记忆}、\textbf{文本识别与空间理解}以及\textbf{高层时序推理}等维度普遍薄弱。采用 Elo 风格相对强度排名与“模型/策略”的管线分离，从评测组织上揭示了这些系统性短板与不稳定性\cite{v-mage}。更通用的 LLM×游戏评测同样显示，\textbf{交互稳定性与污染控制}会显著影响结果分离度，提示伴随式场景需要\textbf{机会归一化}与\textbf{反应时}等细粒度度量以及脚手架约束\cite{lmgame-bench}。
+\noindent\todo{Add more \dots}
 
-% ==========
-% 1.8 术语与范围对齐（glossary box）
-% ==========
-\subsection{术语与范围对齐（Glossary \& Scope Alignment）}
-% 作用：避免跨论文叫法不一导致的混淆；不引入新结论，仅固定本文口径。建议在排版中做成“灰底小盒/附录小表”，此处用行内加粗标示。
-% 证据来源：多篇综述的共识视角\cite{agent-ai,llm-brained-gui,mllm-gui,os-agents}；必要时在部署节再补 on-device 与更广游戏综述\cite{on-device-llm,gp-agents}。
+Since this research area is relatively new, the terminology and naming conventions across different works are not yet unified. Therefore, before entering the literature review, this paper aligns key terms and definitions:
 
-\textbf{GCC（General Computer Control）}：\textbf{screen-in + keyboard/mouse-out} 的人类同态动作接口；本文默认执行通道\cite{llm-brained-gui}.  
-\textbf{LAM（Large Action Models）}：以\textbf{结构化动作}为一等产出的模型族；本文作为对照范式引用\cite{llm-brained-gui}.  
-\textbf{VLM vs VLA}：\textbf{文本/JSON 输出经映射}进入动作空间 vs \textbf{直接动作向量/分布}；评测统一采用\textbf{合法动作映射 + 约束解码}口径\cite{mllm-gui}.  
-\textbf{Scaffold vs Orchestration（MCP-style）}：前者为评测期稳定交互“脚手架”，后者为模块/工具注册与路由；二者互补\cite{os-agents}.  
-\textbf{指标口径}：\textbf{pass@k}、\textbf{TTC}、\textbf{Invalid\%}、\textbf{macro/micro} 并报；机会导向的 \textbf{OAS/RT/APO} 为伴随式场景核心补充\cite{agent-ai}.  
-\textbf{记忆—推理—I/O（memory–reasoning–I/O）}：本文的内部工作划分与术语锚点；\textbf{planning+reflection}→\textbf{reasoning}，\textbf{skills/macros}→\textbf{I/O}，\textbf{memory} 独立；输出端遵循“语义\,$\rightarrow$\,允许动作”或\textbf{在允许集合上建模概率}的合规策略\cite{llm-ga}.
+\noindent\textbf{GCC (General Computer Control):} A human-homomorphic action interface defined as screen-in + keyboard/mouse-out; this is the default execution channel in this paper \cite{llm-brained-gui}.
+
+\noindent\textbf{LAM (Large Action Models):} A family of models where structured actions are treated as first-class outputs; referenced as a comparative paradigm in this paper \cite{llm-brained-gui}.
+
+\noindent\textbf{VLM vs VLA:} Text/JSON output mapped into action space vs direct action vectors/distributions; evaluation will consistently use legal move mapping + constrained decoding approach \cite{mllm-gui}.
+
+\noindent\textbf{Scaffold vs Orchestration (MCP-style):} The former refers to the stable interaction "scaffolding" during evaluation, while the latter refers to module/tool registration and routing; both are complementary \cite{os-agents}.
+
+\noindent\textbf{Metric Definitions:} \textbf{pass@k}, \textbf{TTC}, \textbf{Invalid\%}, and \textbf{macro/micro} will be reported together; opportunity-driven \textbf{OAS/RT/APO} serve as core supplements in companion-style scenarios \cite{agent-ai}.
+
+\noindent\textbf{Memory–Reasoning–I/O (M-R-I/O):} The internal working division and terminology anchor of this paper. Here, planning and reflection align with reasoning, skills/macros represent action output forms on the I/O side, and memory remains independent. The output side will default to a “semantic-to-allowed action” mapping or a compliance strategy that models probabilities over the set of allowed actions \cite{llm-ga}.
+
 
 % TODO: “虽然现在有类似于MAA、BetterGI、三月七小助手”这样的软件，但是他们主要是基于传统图像识别的自动化脚本，虽然能提升玩家体验，但是难以提供情感支持。
 
