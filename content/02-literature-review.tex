@@ -8,9 +8,9 @@
 % 作用：回答“只走 GUI（GCC），不接专用 API，能否跑通真实任务？”；为后文的评测协议与模块选择提供事实前提。
 % 承上启下：本节结尾过渡到 2.2——既然能做，就要统一“怎么比”。
 
-要把“伴随式实时助手”落到真实游戏，首先要回答：\textbf{不接专用 API、仅用 GUI（GCC, screen-in \& keyboard/mouse-out）是否可行？} 代表性工作证明，在 \emph{不依赖应用专用接口} 的条件下，通过“信息采集—规划—技能整理（macro/skill）—自反思—记忆”的管线，\textbf{可以}在桌面/游戏场景跑通长链路任务，从而确立了 \emph{人类同态接口（human-homomorphic interface）} 的可迁移性与可复现性\cite{CRADLE}。
+要把“伴随式实时助手”落到真实游戏，首先要回答：\textbf{不接专用 API、仅用 GUI（GCC, screen-in \& keyboard/mouse-out）是否可行？} 代表性工作证明，在 \textbf{不依赖应用专用接口} 的条件下，通过“信息采集—规划—技能整理（macro/skill）—自反思—记忆”的管线，\textbf{可以}在桌面/游戏场景跑通长链路任务，从而确立了 \textbf{人类同态接口（human-homomorphic interface）} 的可迁移性与可复现性\cite{CRADLE}。
 
-进一步地，端到端实践展示了“\emph{截图} $\rightarrow$ \emph{结构化动作（structured output）}”的可落地路径：以受约束的动作模式替代自由文本，使执行更稳且便于审计（auditability）；同时，评测框架通过感知/记忆脚手架（scaffolds）稳定交互回路，把“游戏→评测”流程工程化\cite{ui-venus,lmgame-bench}。对比研究还提出\textbf{合法动作映射}与\textbf{约束解码（constrained decoding）}以显著降低无效动作（invalid actions），为后文的评测协议埋下方法学钩子\cite{Benchmarking-VLA-VLM}。\textit{既然“能做”已被验证，接下来就需要统一“怎么比”。}
+进一步地，端到端实践展示了“\textbf{截图} $\rightarrow$ \textbf{结构化动作（structured output）}”的可落地路径：以受约束的动作模式替代自由文本，使执行更稳且便于审计（auditability）；同时，评测框架通过感知/记忆脚手架（scaffolds）稳定交互回路，把“游戏→评测”流程工程化\cite{ui-venus,lmgame-bench}。对比研究还提出\textbf{合法动作映射}与\textbf{约束解码（constrained decoding）}以显著降低无效动作（invalid actions），为后文的评测协议埋下方法学钩子\cite{Benchmarking-VLA-VLM}。\textit{既然“能做”已被验证，接下来就需要统一“怎么比”。}
 
 % ==========
 % 2.2 评测协议
@@ -19,11 +19,11 @@
 % 作用：回答“怎么比、控什么变量、报什么指标、如何降无效动作”；把统一协议/脚手架/动作显式化/奖励设计与指标口径形成一套可复现抓手。
 % 承上启下：本节结尾过渡到 2.3——在统一协议下，谁在起作用要靠可复现的模块消融来回答。
 
-在统一协议方面，已有研究通过 \emph{MCP-style} 编排\textbf{解耦代理与多游戏环境}，统一配置与日志，\textbf{在同一协议下做可复现的消融}以比较 \emph{planning / reflection / memory / skills} 等模块，并配套 \emph{leaderboard} 与 \emph{battle arena} 维持跨任务可比性\cite{ORAK}。为减少提示方差与避免训练—测试污染，评测侧引入 Gym-style 接口与感知/记忆脚手架（harness），记录 \emph{post-processing} 并固定环境版本，报告在多模型下具有良好分离度的结果\cite{lmgame-bench}。
+在统一协议方面，已有研究通过 \textbf{MCP-style} 编排\textbf{解耦代理与多游戏环境}，统一配置与日志，\textbf{在同一协议下做可复现的消融}以比较 \textbf{planning / reflection / memory / skills} 等模块，并配套 \textbf{leaderboard} 与 \textbf{battle arena} 维持跨任务可比性\cite{ORAK}。为减少提示方差与避免训练—测试污染，评测侧引入 Gym-style 接口与感知/记忆脚手架（harness），记录 \textbf{post-processing} 并固定环境版本，报告在多模型下具有良好分离度的结果\cite{lmgame-bench}。
 
-在“无效动作治理”上，\textbf{动作显式化}是共同结论：将输出\emph{映射到合法离散动作空间}并采用\emph{结构化输出/约束解码}联合抑制 \emph{Invalid\%} 与坐标偏差；评估层面同时使用 \emph{Micro/Macro Precision/Recall/F1} 与 \emph{Brier/MAE} 兼顾分类与校准\cite{Benchmarking-VLA-VLM}。与此一致，近期综述提出两条工程路径：其一将自由文本\emph{语义映射到最近的允许动作}；其二直接\emph{在允许动作集合上建模概率}，两者均可与本文“合法动作映射/约束解码”的实现口径对齐\cite{llm-ga}。面向结构化动作的端到端导航，还可在 RL-finetune 中将奖励拆分为\emph{格式/动作类型/坐标/内容}四粒度，将“合规性与细粒度正确性”纳入可学习信号，形成\textbf{工程可落地}的闭环\cite{ui-venus}。
+在“无效动作治理”上，\textbf{动作显式化}是共同结论：将输出\textbf{映射到合法离散动作空间}并采用\textbf{结构化输出/约束解码}联合抑制 \textbf{Invalid\%} 与坐标偏差；评估层面同时使用 \textbf{Micro/Macro Precision/Recall/F1} 与 \textbf{Brier/MAE} 兼顾分类与校准\cite{Benchmarking-VLA-VLM}。与此一致，近期综述提出两条工程路径：其一将自由文本\textbf{语义映射到最近的允许动作}；其二直接\textbf{在允许动作集合上建模概率}，两者均可与本文“合法动作映射/约束解码”的实现口径对齐\cite{llm-ga}。面向结构化动作的端到端导航，还可在 RL-finetune 中将奖励拆分为\textbf{格式/动作类型/坐标/内容}四粒度，将“合规性与细粒度正确性”纳入可学习信号，形成\textbf{工程可落地}的闭环\cite{ui-venus}。
 
-为了与“伴随式实时体验”对齐，本文在客观指标（\emph{success/pass@k}、\emph{time-to-completion, TTC}、\emph{misclick/rollback}、\emph{latency}——含 \emph{voice RTT}）与\emph{macro/micro} 并报之外，引入三项\textbf{机会导向}工作定义：\textbf{OAS}（\emph{opportunity-normalized success}，成功次数÷可操作机会数）、\textbf{RT}（\emph{reaction time per opportunity}，机会出现到首个有效动作/提示的时间）与\textbf{APO}（\emph{attempts per opportunity}，每次机会的平均尝试/回滚次数）\cite{ORAK,lmgame-bench,Benchmarking-VLA-VLM,ui-venus}。
+为了与“伴随式实时体验”对齐，本文在客观指标（\textbf{success/pass@k}、\textbf{time-to-completion, TTC}、\textbf{misclick/rollback}、\textbf{latency}——含 \textbf{voice RTT}）与\textbf{macro/micro} 并报之外，引入三项\textbf{机会导向}工作定义：\textbf{OAS}（\textbf{opportunity-normalized success}，成功次数÷可操作机会数）、\textbf{RT}（\textbf{reaction time per opportunity}，机会出现到首个有效动作/提示的时间）与\textbf{APO}（\textbf{attempts per opportunity}，每次机会的平均尝试/回滚次数）\cite{ORAK,lmgame-bench,Benchmarking-VLA-VLM,ui-venus}。
 
 % ==========
 % 2.3 Agentic 模块
@@ -32,9 +32,9 @@
 % 作用：把长链路稳定性的结构要素（planning/memory/reflection/skills）与“可复现消融”和“训练侧配套”放在同一叙事里。
 % 承上启下：本节结尾过渡到 2.4——让这些模块更稳/更强，学习范式是关键杠杆。
 
-围绕长链路稳定性，研究通常将代理拆解为可组合的\textbf{四要素}：\emph{planning}（任务分解与策略选择）、\emph{memory}（短长时与用户偏好）、\emph{self-reflection}（纠错与风格一致）与 \emph{skills/macros}（原子到复合技能）。该组合有助于缓解错误累积与状态漂移，支撑 \emph{GCC} 通道上的可迁移闭环\cite{CRADLE}；在统一协议下，\textbf{可复现的模块消融}提供了边际效应与搭配选择的证据，使“用/不用、强/弱”不再停留于经验判断\cite{ORAK}。训练与数据侧通常与\emph{结构化动作}相匹配：通过 \emph{RL-finetune} 与反馈式调优（如 \emph{GRPO/RFT}），并以“格式/类型/坐标/内容”四粒度奖励，\textbf{收紧输出空间}同时提升细粒度正确性\cite{ui-venus}。作为收敛视角，近期综述将上述组件归并为\emph{记忆—推理—I/O}三件套：\emph{planning+reflection} 对齐 \emph{reasoning}，\emph{skills/macros} 属于 \emph{I/O} 的动作产出形态，\emph{memory} 独立，便于在实现与评测时统一术语与接口\cite{llm-ga}。
+围绕长链路稳定性，研究通常将代理拆解为可组合的\textbf{四要素}：\textbf{planning}（任务分解与策略选择）、\textbf{memory}（短长时与用户偏好）、\textbf{self-reflection}（纠错与风格一致）与 \textbf{skills/macros}（原子到复合技能）。该组合有助于缓解错误累积与状态漂移，支撑 \textbf{GCC} 通道上的可迁移闭环\cite{CRADLE}；在统一协议下，\textbf{可复现的模块消融}提供了边际效应与搭配选择的证据，使“用/不用、强/弱”不再停留于经验判断\cite{ORAK}。训练与数据侧通常与\textbf{结构化动作}相匹配：通过 \textbf{RL-finetune} 与反馈式调优（如 \textbf{GRPO/RFT}），并以“格式/类型/坐标/内容”四粒度奖励，\textbf{收紧输出空间}同时提升细粒度正确性\cite{ui-venus}。作为收敛视角，近期综述将上述组件归并为\textbf{记忆—推理—I/O}三件套：\textbf{planning+reflection} 对齐 \textbf{reasoning}，\textbf{skills/macros} 属于 \textbf{I/O} 的动作产出形态，\textbf{memory} 独立，便于在实现与评测时统一术语与接口\cite{llm-ga}。
 
-训练与数据侧的配套通常与\emph{结构化动作}相匹配：通过 \emph{RL-finetune} 与反馈式调优（如 \emph{GRPO/RFT}），并以“格式/类型/坐标/内容”四粒度奖励，\textbf{收紧输出空间}同时提升细粒度正确性，从而在“反思—记忆—技能”的外圈外，再加一层\emph{可学习的约束}\cite{ui-venus}。此外，接口位形也影响模块产物：\emph{VLM} 倾向输出文本/JSON，经由映射进入动作空间；\emph{VLA} 则直接产出动作向量/分布，二者在无效率、校准与 OOD 行为上的取舍需要在同一协议中对照评测\cite{Benchmarking-VLA-VLM}。\textit{要让这些模块更稳/更强，下一步问题就是：如何学习与调优。}
+训练与数据侧的配套通常与\textbf{结构化动作}相匹配：通过 \textbf{RL-finetune} 与反馈式调优（如 \textbf{GRPO/RFT}），并以“格式/类型/坐标/内容”四粒度奖励，\textbf{收紧输出空间}同时提升细粒度正确性，从而在“反思—记忆—技能”的外圈外，再加一层\textbf{可学习的约束}\cite{ui-venus}。此外，接口位形也影响模块产物：\textbf{VLM} 倾向输出文本/JSON，经由映射进入动作空间；\textbf{VLA} 则直接产出动作向量/分布，二者在无效率、校准与 OOD 行为上的取舍需要在同一协议中对照评测\cite{Benchmarking-VLA-VLM}。\textit{要让这些模块更稳/更强，下一步问题就是：如何学习与调优。}
 
 % ==========
 % 2.4 学习范式
@@ -43,9 +43,9 @@
 % 作用：集中说明“怎么学/怎么调”，与 2.3 的模块和 2.2 的协议形成闭环；突出指令化（MGI）、RL-finetune 与工具增强的互补性。
 % 承上启下：本节结尾过渡到 2.5——即便如此，系统性短板依然存在，需在评测中直面。
 
-指令化与条件化提供了“看懂—再行动”的可解释路径：\emph{R2-Play} 将多模态游戏指令（\emph{multimodal game instructions, MGI}）并入 \emph{Decision Transformer}，用“\emph{游戏描述—轨迹—操作引导（含关键元素位置）}”三段式模板共享跨任务知识，在多任务与泛化上报告相对优势，可作为\textbf{提示/指导结构}的模板参考\cite{r2-play}。对结构化动作任务而言，\emph{RL-finetune} 配合四粒度奖励把“合法性+定位/文本输入”压进可学习信号，\textbf{直接对齐} 2.2 节中的“无效动作治理”目标\cite{ui-venus}。
+指令化与条件化提供了“看懂—再行动”的可解释路径：\textbf{R2-Play} 将多模态游戏指令（\textbf{multimodal game instructions, MGI}）并入 \textbf{Decision Transformer}，用“\textbf{游戏描述—轨迹—操作引导（含关键元素位置）}”三段式模板共享跨任务知识，在多任务与泛化上报告相对优势，可作为\textbf{提示/指导结构}的模板参考\cite{r2-play}。对结构化动作任务而言，\textbf{RL-finetune} 配合四粒度奖励把“合法性+定位/文本输入”压进可学习信号，\textbf{直接对齐} 2.2 节中的“无效动作治理”目标\cite{ui-venus}。
 
-为在资源与稳态间取舍，\emph{工具增强型 MLLM} 的综述总结了外部工具（OCR/检索/计算/专家模型等）在 \emph{tool use / MCP-style} 编排下对延迟与鲁棒性的影响与边界，提示通过检索与轻量工具链分担大模型负载；而接口对照研究将 \emph{VLM+映射} 与 \emph{VLA直出动作}并置，指出两类路径在无效率、置信校准与 OOD 表现上的差异，需要结合具体协议与数据分布权衡\cite{tool-aug-mllm,Benchmarking-VLA-VLM}。\textit{即便“能做—能比—能学”已形成闭环，模型仍有系统性短板，必须在评测中直面。} 
+为在资源与稳态间取舍，\textbf{工具增强型 MLLM} 的综述总结了外部工具（OCR/检索/计算/专家模型等）在 \textbf{tool use / MCP-style} 编排下对延迟与鲁棒性的影响与边界，提示通过检索与轻量工具链分担大模型负载；而接口对照研究将 \textbf{VLM+映射} 与 \textbf{VLA直出动作}并置，指出两类路径在无效率、置信校准与 OOD 表现上的差异，需要结合具体协议与数据分布权衡\cite{tool-aug-mllm,Benchmarking-VLA-VLM}。\textit{即便“能做—能比—能学”已形成闭环，模型仍有系统性短板，必须在评测中直面。} 
 
 % —— 收束句，回钩全文母题 ——
 % \noindent\textit{综上，文献给出的“\textbf{可行}—\textbf{可比}—\textbf{可稳}—\textbf{可学}—\textbf{有边界}”五段证据限定了本文后续系统与评测的口径：以 \textbf{GCC} 为统一接口，以 \textbf{结构化输出 + 合法动作映射} 降无效；以 \textbf{可复现协议与脚手架} 做对照；并用 \textbf{OAS/RT/APO} 捕捉伴随式实时体验。}
