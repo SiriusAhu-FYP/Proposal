@@ -8,15 +8,19 @@
 % Why worthy? (Passion, market, need)
 % Demand -> Neuro-sama (success on market and tech) -> Timely: recent research support -> Project Definition
 
-The demand for \textbf{interactive and companion-like experiences} in real-time gaming environments is rapidly growing, with players seeking more than just simple automation or static overlays\cite{streamelements_state_2024, streamscharts_q4_2024_landscape}. As gaming experiences evolve, the focus is shifting towards AI assistants that offer genuine engagement and companionship, providing players with dynamic, responsive partners who enhance the overall gameplay experience. This trend is being validated by both indie games and major industry players, who are working to create AI partners that do more than just automate tasks—they engage, interact, and form meaningful connections with players.
+The demand for \textbf{interactive and companion-like experiences} in real-time entertainment is rapidly growing, with players seeking more than just simple automation or static overlays. As the landscape of interactive experiences evolves, the focus is shifting towards genuine engagement and companionship, with players desiring dynamic, responsive partners that enhance their overall experience.
 
 On the one hand, games like AI2U: ``With You 'Til The End'' are already capitalizing on this trend, drawing players in with the novelty of engaging with generative AI characters \cite{ai2u_game}. At the same time, larger companies are investing in foundational technologies like NVIDIA's ACE (Avatar Cloud Engine) and Ubisoft's ``NEO NPCs'', aiming to create autonomous agents that enhance gameplay rather than just drive conversation~\cite{nvidia_ace_autonomous_2025, ubisoft_neo_npc_2024}. These shifts in the gaming industry are validating the commercial viability of AI-driven experiences, as evidenced by increased player engagement and media interest~\cite{inworld_market_validation_2023}.
 
-The rise of AI-driven virtual streamers, particularly the Neuro-sama phenomenon, highlights a significant shift in both technology and community-driven commercialization. Neuro-sama, an AI-powered virtual streamer (VTuber), engages in real-time conversations and dynamic gameplay, capturing the attention of audiences \cite{neurosama_youtube}. Although Neuro-sama remains closed-source, its success has inspired a vibrant open-source ecosystem, with developers aiming to replicate or expand upon its capabilities \cite{open_llm_vtuber, airi_project, kimjammer_neuro}. This technological innovation has been accompanied by strong commercial traction on platforms like Twitch, indicating a growing market demand for AI that offers both utility and companionship \cite{neurosama_hype_streamscharts_2025, vedal_twitchtracker}. Through persistent, low-latency voice loops, these AI systems create engaging player experiences, driving both user engagement and monetization.
+On the other hand, the rise of AI-driven virtual streamers, particularly the Neuro-sama phenomenon, highlights a significant shift in both technology and community-driven commercialization. Neuro-sama, an AI-powered virtual streamer (VTuber), engages in real-time conversations and dynamic gameplay, capturing the attention of audiences \cite{neurosama_youtube, streamelements_state_2024, streamscharts_q4_2024_landscape}. Although Neuro-sama remains closed-source, its success has inspired a vibrant open-source ecosystem, with developers aiming to replicate or expand upon its capabilities \cite{open_llm_vtuber, airi_project, kimjammer_neuro}. This technological innovation has been accompanied by strong commercial traction on platforms like Twitch, indicating a growing market demand for AI that offers both utility and companionship \cite{neurosama_hype_streamscharts_2025}.
 
 This project is timely. While the market demand is clear, the technological feasibility for a \textbf{reproducible, non-API-dependent} assistant has only recently emerged. Foundational research is now converging on the key methodologies required for productization. This includes the development of \textbf{unified evaluation protocols} and \textbf{modular ablation frameworks}, which are essential for ensuring that experiments are reproducible and comparable \cite{ORAK, lmgame-bench}. Furthermore, recent work has demonstrated the viability of \textbf{General Computer Control (GCC)} pathways (i.e., screen-in, keyboard/mouse-out), confirming that capable agents can operate without relying on game-specific APIs \cite{CRADLE, ui-venus}.
 
+\todo{Consider whether to remove the previous paragraph about ``timely''}
+
 Inspired by this clear convergence of market demand and emerging academic feasibility, this project aims to bridge the gap. The core objective is to define and build a prototype for a \textbf{companion-style assistant}. This assistant is envisioned as a persistent, in-game partner that delivers \textbf{event spotting} and \textbf{tactical guidance}, leveraging these new, reproducible methodologies to enhance the player's experience without interrupting gameplay.
+
+\todo{Consider to improve this paragraph after finishing other parts}
 
 % ==========
 % 1.2 Key Challenges
@@ -25,7 +29,7 @@ Inspired by this clear convergence of market demand and emerging academic feasib
 
 In real player scenarios, the challenge is not just the individual model score, but the overall experience that is \textbf{stable, accurate, fast, and controllable}. Below, the challenges and possible solutions are listed based on recent literature:
 
-\paragraph{Long-Horizon Stability.} When using only GUI (GCC), errors and misalignments can accumulate along the interaction chain, leading to the problem of ``drifting off track.'' This can be measured with \textit{pass@k} (firstly pass the test at k-th attempt) and \textit{APO} (attempts per opportunity). The combination of ``planning + skills (macro) + reflection + memory'' can alleviate drift, but it is not a panacea \cite{CRADLE}.
+\paragraph{Long-Horizon Stability.} When using only GUI (GCC), errors and misalignments can accumulate along the interaction chain, leading to the problem of ``drifting off track.'' This can be measured with \textit{pass@k} (firstly pass the test at k-th attempt) and \textit{Invalid\%} (percent of invalid actions) \cite{Benchmarking-VLA-VLM}. The combination of ``planning + skills (macro) + reflection + memory'' can alleviate drift, but it is not a panacea \cite{CRADLE}.
 
 % TODO: 是否要说明每个指标
 
@@ -61,12 +65,15 @@ This project does not involve \textbf{adapting application/game-specific APIs} o
 % 1.4 Design Principles & System Preview
 % ==========
 \subsection{Design Principles \& System Preview}
+\todo{Put to Section 3. Project Plan, or just remove?}
 
 \paragraph{Design principles.}
 This project follows four principles: \textbf{Unified Input} (ensures portability across applications), \textbf{Structured Output} (reduces invalid actions and is easy to audit), \textbf{Protocol Consistency} (ensures reproducibility and ablative evaluation), \textbf{Low-Coupling Orchestration} (MCP-style, facilitates modular insertion/removal of skills/tools).
 
 \paragraph{System preview.}
 The system flow is as follows: \textbf{screen/audio} capture, lightweight \textbf{VLM} perception, \textbf{agentic} (planning/memory/reflection) modules, \textbf{MCP-style} skill/tool routing (including OCR/retrieval/computation \textbf{tool use}), \textbf{GUI execution} (keyboard and mouse), and finally passing through the \textbf{safety} module (confirmation/rollback/emergency stop). To reduce end-to-end latency, the deployment strategy will combine the \textbf{tool-augmented MLLM} approach with \textbf{on-device inference} quantization/caching strategies as key engineering tactics \cite{tool-aug-mllm, on-device-llm}.
+
+\todo{$\uparrow$ Not ready yet}
 
 
 % ==========
@@ -77,7 +84,7 @@ The system flow is as follows: \textbf{screen/audio} capture, lightweight \textb
 \paragraph{Project Objectives.} 
 \begin{itemize}
     \item [(i)] Develop a \textbf{GCC-based} \textbf{assistant} real-time prototype that covers event prompting, strategy suggestions, and voice loops. 
-    \item [(ii)] Organize \textbf{skills/macros, planning, memory, reflection} using \textbf{MCP-style orchestration}, enabling plug-and-play and auditability without relying on application-specific APIs.
+    \item [(ii)] Organize \textbf{skills, planning, memory, reflection} using \textbf{MCP-style orchestration}, enabling plug-and-play and auditability without relying on application-specific APIs.
     \item [(iii)] Define a set of \textbf{small and reproducible} evaluation elements (task scripts and metric families), focusing on \textbf{pass@k/TTC/Invalid\%/macro-micro} and \textbf{OAS/RT/APO} experience-related metrics \cite{ORAK, lmgame-bench}.
 \end{itemize}
 
@@ -107,11 +114,8 @@ Since this research area is relatively new, the terminology and naming conventio
 
 \paragraph{Metric Definitions:} \textbf{pass@k}, \textbf{TTC}, \textbf{Invalid\%}, and \textbf{macro/micro} will be reported together; opportunity-driven \textbf{OAS/RT/APO} serve as core supplements in companion-style scenarios \cite{agent-ai}.
 
-\paragraph{Memory–Reasoning–I/O (M-R-I/O):} The internal working division and terminology anchor of this project. Here, planning and reflection align with reasoning, skills/macros represent action output forms on the I/O side, and memory remains independent. The output side will default to a ``semantic-to-allowed action'' mapping or a compliance strategy that models probabilities over the set of allowed actions \cite{llm-ga}.
+\paragraph{Memory–Reasoning–I/O (M-R-I/O):} The internal working division and terminology anchor of this project. Here, planning and reflection align with reasoning, skills represent action output forms on the I/O side, and memory remains independent. The output side will default to a ``semantic-to-allowed action'' mapping or a compliance strategy that models probabilities over the set of allowed actions \cite{llm-ga}.
 
+% TODO: 模块化的skills/macro，方便社区开发适用于不同游戏的插件？✅后期必须要加
 
-% TODO: ``虽然现在有类似于MAA、BetterGI、三月七小助手''这样的软件，但是他们主要是基于传统图像识别的自动化脚本，虽然能提升玩家体验，但是难以提供情感支持。
-
-% TODO: 模块化的skills/macro，方便社区开发适用于不同游戏的插件？
-
-% TODO: 传给大模型的是处理后的图片？比如说用YOLO打标和位置？
+% TODO: 传给大模型的是处理后的图片？比如说用YOLO打标和位置？🤔后面再看
