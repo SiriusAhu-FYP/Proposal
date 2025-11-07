@@ -84,3 +84,13 @@ Explain how the system works. (maybe with a diagram)
 ### 3. Project Plan
 
 ### 4. Conclusion
+
+# Revise Suggestions from Supervisor
+1. Consider remove "timely" part, or put it to Lit. Review section
+2. Move 1.2 to Lit. Review section
+3. Summarize some more detailed classes of these challenges
+4. Remove "Exclusion" of Scope
+5. Move 1.3 ("Project Objectives", "Expected Deliverables") and 1.4 to section 3 Project Plan
+6. Consider remove Glossary section, but keep the contents for the writing of dissertation.
+7. Add a "Methodology" section before "Project Plan" (not following the template). Introduce how will we implement the system, involve more theory content.
+8. Add more citations, to about 30+
