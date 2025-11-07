@@ -2,6 +2,17 @@
 
 This README.md is to help me to clearly organize and manage the contents of my FYP proposal, and also to contribute to the future dissertation writing.
 
+## ⭐ What I'm going to do
+Misunderstandings:
+- An AI-streamer agent that can play games by itself? ❌ No!
+- An AI agent that can play games by telling what to do? ❌ No!
+
+Real Goal:
+An AI companion (**partner**) that play game with the user, with 3 core features: 
+1. **Proactive Companionship**: "Hey bro, you just missed a chance to be rich!". The partner can proactively spot important events and notify the user.
+2. **Collaborative Problem-Solving**: "You've stucked here for a while, do you want me to search some guides for you?" The partner can provide tactical guidance to help the user overcome challenges (with internet search if necessary).
+3. **On-Demand Task Delegation**: User: "My mom is calling me for dinner, can you help me to explore the new area?" The partner can temporarily take over some simple tasks to assist the user.
+
 ## About the Contents
 
 **Based on the FYP proposal template provided by school**, we should have 4 main sections.
