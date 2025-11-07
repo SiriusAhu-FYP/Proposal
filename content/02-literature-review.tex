@@ -49,3 +49,25 @@
 
 % —— 收束句，回钩全文母题 ——
 % \noindent\textit{综上，文献给出的“\textbf{可行}—\textbf{可比}—\textbf{可稳}—\textbf{可学}—\textbf{有边界}”五段证据限定了本文后续系统与评测的口径：以 \textbf{GCC} 为统一接口，以 \textbf{结构化输出 + 合法动作映射} 降无效；以 \textbf{可复现协议与脚手架} 做对照；并用 \textbf{OAS/RT/APO} 捕捉伴随式实时体验。}
+
+
+% ==========
+% 1.2 Key Challenges
+% ==========
+\subsection{Key Challenges}
+
+In real player scenarios, the challenge is not just the individual model score, but the overall experience that is \textbf{stable, accurate, fast, and controllable}. Below, the challenges and possible solutions are listed based on recent literature:
+
+\paragraph{Long-Horizon Stability.} When using only GUI (GCC), errors and misalignments can accumulate along the interaction chain, leading to the problem of ``drifting off track.'' This can be measured with \textit{pass@k} (firstly pass the test at k-th attempt) and \textit{Invalid\%} (percent of invalid actions) \cite{Benchmarking-VLA-VLM}. The combination of ``planning + skills (macro) + reflection + memory'' can alleviate drift, but it is not a panacea \cite{CRADLE}.
+
+% TODO: 是否要说明每个指标
+
+\paragraph{Vision-Centric Grounding \& Memory.} In purely visual or continuous space setups, localization/tracking/counting, timing control, and long-term visual memory are current model limitations. These can be statistically measured by \textit{OAS} (opportunity-normalized success), broken down by opportunity types such as ``pickable items/time points/path nodes'' \cite{v-mage}.
+
+\paragraph{Invalid Actions \& Think-Action Mismatch.} Converting free text into actions often results in ``thinking correctly but clicking the wrong place.''  Using the combination of structured output and legal move constraints can reduce invalid predictions, which can be used to evaluate calibration by \textit{Brier MAE}. On the training side, rewards based on four granularities, ``format/type/coordinates/content'', align execution details \cite{Benchmarking-VLA-VLM, ui-venus}. At the implementation level, output strategies such as ``\textit{semantic to allowed actions}'' mapping or \textit{probability modeling over the set of allowed actions} can be used to suppress out-of-bounds and misaligned actions from the start \cite{llm-ga}.
+
+\paragraph{Out-of-Distribution \& Protocol Consistency.} When the environment or version changes, comparison results become difficult. \textit{Procedural generation} is needed for out-of-distribution (OOD) evaluation, with fixed \textit{post-processing} and prompt scaffolding to control variables, and reporting \textit{macro/micro} metrics under a \textit{unified protocol} and \textit{leaderboard/battle arena} \cite{Benchmarking-VLA-VLM, lmgame-bench, ORAK}.
+
+\paragraph{Latency \& User Experience (UX).} An assistant must ``respond instantly.'' The key metrics are \textit{RT} (reaction time per opportunity) and \textit{voice RTT} (round-trip voice latency). Engineering strategies to reduce latency include \textit{quantization/pruning/KV caching/streaming decoding} and \textit{on-device/edge-cloud collaboration}, along with single-flight and barge-in strategies \cite{on-device-llm}.
+
+\paragraph{Safety \& Robustness.} High-risk actions must be ``confirmable, rollbackable, and traceable.'' The approach includes \textit{permission whitelists}, \textit{double confirmation}, \textit{shadow execution}, and \textit{rollback/emergency stop}, with \textit{logging/auditing} to locate \textit{think-action mismatch} \cite{llm-brained-gui, mllm-gui, os-agents}.

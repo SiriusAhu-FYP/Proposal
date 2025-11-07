@@ -1,0 +1,20 @@
+% ==========
+% 1.6 术语与范围对齐（Glossary \& Scope Alignment）
+% ==========
+\subsection{Glossary \& Terminology}
+
+\noindent\todo{Add more \dots}
+
+Since this research area is relatively new, the terminology and naming conventions across different works are not yet unified. Therefore, before entering the literature review, this project aligns key terms and definitions:
+
+\paragraph{GCC (General Computer Control):} A human-homomorphic action interface defined as screen-in + keyboard/mouse-out; this is the default execution channel in this project \cite{llm-brained-gui}.
+
+\paragraph{LAM (Large Action Models):} A family of models where structured actions are treated as first-class outputs; referenced as a comparative paradigm in this project \cite{llm-brained-gui}.
+
+\paragraph{VLM vs VLA:} Text/JSON output mapped into action space vs direct action vectors/distributions; evaluation will consistently use legal move mapping + constrained decoding approach \cite{mllm-gui}.
+
+\paragraph{Scaffold vs Orchestration (MCP-style):} The former refers to the stable interaction "scaffolding" during evaluation, while the latter refers to module/tool registration and routing; both are complementary \cite{os-agents}.
+
+\paragraph{Metric Definitions:} \textbf{pass@k}, \textbf{TTC}, \textbf{Invalid\%}, and \textbf{macro/micro} will be reported together; opportunity-driven \textbf{OAS/RT/APO} serve as core supplements in companion-style scenarios \cite{agent-ai}.
+
+\paragraph{Memory–Reasoning–I/O (M-R-I/O):} The internal working division and terminology anchor of this project. Here, planning and reflection align with reasoning, skills represent action output forms on the I/O side, and memory remains independent. The output side will default to a ``semantic-to-allowed action'' mapping or a compliance strategy that models probabilities over the set of allowed actions \cite{llm-ga}.
