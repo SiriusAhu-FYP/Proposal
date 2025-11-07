@@ -51,3 +51,17 @@ The following deliverables will be provided at the end of the project:
         \item Demo videos showcasing system capabilities.
     \end{itemize}
 \end{enumerate}
+
+% ==========
+% 1.4 Design Principles & System Preview
+% ==========
+\subsection{Design Principles \& System Preview}
+\todo{Put to Section 3. Project Plan, or just remove?}
+
+\paragraph{Design principles.}
+This project follows four principles: \textbf{Unified Input} (ensures portability across applications), \textbf{Structured Output} (reduces invalid actions and is easy to audit), \textbf{Protocol Consistency} (ensures reproducibility and ablative evaluation), \textbf{Low-Coupling Orchestration} (MCP-style, facilitates modular insertion/removal of skills/tools).
+
+\paragraph{System preview.}
+The system flow is as follows: \textbf{screen/audio} capture, lightweight \textbf{VLM} perception, \textbf{agentic} (planning/memory/reflection) modules, \textbf{MCP-style} skill/tool routing (including OCR/retrieval/computation \textbf{tool use}), \textbf{GUI execution} (keyboard and mouse), and finally passing through the \textbf{safety} module (confirmation/rollback/emergency stop). To reduce end-to-end latency, the deployment strategy will combine the \textbf{tool-augmented MLLM} approach with \textbf{on-device inference} quantization/caching strategies as key engineering tactics \cite{tool-aug-mllm, on-device-llm}.
+
+\todo{$\uparrow$ Not ready yet}
