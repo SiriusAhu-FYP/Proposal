@@ -29,7 +29,7 @@ And here I record **my understanding** of each section and subsections. (How wil
 
 #### 1.2 Key Challenges
 
-- Just list some main challenges found from the literature review. Details are skipped here
+- List some main challenges and possible solutions found from the literature review.
 
 #### 1.3 Scope, Objectives and Deliverables
 ##### Scope
@@ -73,8 +73,9 @@ Define some metrics to measure the performance of the prototype
 Explain how the system works. (maybe with a diagram)
 
 #### 1.5 Glossary Alignment
-
-1. Skill: (macro in some literature)
+1. GCC: General Computer Control, a human-homorphic
+2. Skill: The skill / tool set that an agent can use. Also named macro in some literatures.
+...
 
 <div style="color:red">BTW: Is "Related Work" necessary in proposal?</div>
 

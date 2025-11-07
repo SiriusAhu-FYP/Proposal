@@ -44,21 +44,122 @@ In real player scenarios, the challenge is not just the individual model score, 
 \paragraph{Safety \& Robustness.} High-risk actions must be ``confirmable, rollbackable, and traceable.'' The approach includes \textit{permission whitelists}, \textit{double confirmation}, \textit{shadow execution}, and \textit{rollback/emergency stop}, with \textit{logging/auditing} to locate \textit{think-action mismatch} \cite{llm-brained-gui, mllm-gui, os-agents}.
 
 % ==========
-% 1.3 Scope & Boundaries
+% 1.3 Scope, Objectives and Deliverables
 % ==========
-\subsection{Scope and Boundaries}
+% \subsection{Scope, Objectives and Deliverables}
+% \paragraph{Scope}
+% To address the challenges of inconsistent action interfaces and the limitations posed by reliance on game-specific APIs, this project adopts the following technical scope:
 
-To address the issue of inconsistent action interfaces and the challenge of reproducibility caused by reliance on scene-specific APIs, as mentioned in previous sections, this project makes the following clear definition of its technical scope:
+% \begin{enumerate}
+%     \item \textbf{Unified Action Interface via GUI (GCC)}: The system will utilize a human-homomorphic interface with a screen-in, keyboard/mouse-out paradigm, eliminating the need for application/game-specific APIs. This ensures that the system can function across various platforms without relying on specialized interfaces, making it broadly adaptable. Studies have shown that this approach can handle long-horizon tasks successfully without the need for application-specific APIs \cite{CRADLE, ui-venus}.
+%     \item \textbf{Constrained Action Generation with Structured Output}: The system's output will follow a predefined structured format (e.g., a JSON schema), and actions will be selected from a predefined set of valid actions (e.g., "move forward," "open inventory"). This structured output reduces errors like hallucinations and ensures that the actions are legal and predictable. Previous research has demonstrated the feasibility of using this structured approach to achieve reproducible action generation in real environments, with legal move constraints significantly reducing invalid actions \cite{Benchmarking-VLA-VLM}.
+%     \item \textbf{Low-Coupling Orchestration}: The system will employ MCP-style orchestration, allowing for modular, plug-and-play components that can be easily updated or extended. This ensures that new skills or modules can be integrated seamlessly, which will also support future ablation studies and system updates. This approach has been successfully applied in other systems for modularization and flexible integration \cite{ORAK}.
+% \end{enumerate}
 
-\begin{itemize}
-    \item \textbf{Unified action interface via GUI (GCC)}: This refers to a human-homomorphic channel with screen-in, keyboard/mouse-out.
-    \item \textbf{Structured output as the default path}: The default action generation and execution path is defined as \textbf{structured output + constrained decoding}.
-\end{itemize}
+% \paragraph{Out-of-scope.}
+% The following items are explicitly outside the scope of this project:
+% \begin{enumerate}
+%     \item \textbf{Application/Game-Specific APIs}: The project does not involve adapting or integrating game-specific APIs on a per-application basis, ensuring flexibility and compatibility across different platforms.
+%     \item \textbf{Large-Scale End-to-End Training}: The project will not engage in large-scale data collection or end-to-end training. Instead, the focus will be on modular, reusable systems and small-scale evaluations.
+%     \item \textbf{Platform-Level Enhancement Privileges}: The project will not rely on platform-specific enhancements (e.g., A11y or private DOM hooks), ensuring that the system operates independently of platform-specific privileges.
+%     \item \textbf{VLA Direct-Action}: Although VLA models may be suited for generating actions based on visual input, this approach is not part of the current project. VLA will be used only for benchmarking comparisons, not as the primary method \cite{Benchmarking-VLA-VLM}.
+% \end{enumerate}
 
-This scope is defined based on its demonstrated feasibility. Existing studies have shown that, without relying on application-specific APIs, long-horizon tasks can be completed through a pipeline consisting of "planning, macro/skill organization, self-reflection, and memory". Additionally, on real platforms, the "screenshot to structured action" end-to-end navigation path has been proven to be reproducible, and \textbf{legal move constraints} significantly reduce invalid actions \cite{CRADLE, ui-venus, Benchmarking-VLA-VLM}.
+% \paragraph{Project Objectives}
 
-\paragraph{Out-of-scope.}
-This project does not involve \textbf{adapting application/game-specific APIs} on a per-application basis. It does not commit to \textbf{large-scale end-to-end training and data collection} in this report. It will not rely on platform-level enhancement privileges (such as A11y/private DOM hooks). \textbf{VLA direct-action} will be used only as a benchmark comparison and not as the default path \cite{Benchmarking-VLA-VLM}.
+% The primary goals of this project are as follows:
+% \begin{enumerate}
+%     \item Develop a GCC-Based Real-Time Prototype with core functions such as event spotting, strategy suggestions, and voice loops.
+%     \item Implement MCP-Style Orchestration with organized skills, planning, memory, and reflection using MCP-style orchestration, enabling a plug-and-play system architecture independent of application-specific APIs.
+%     \item Define Reproducible Evaluation Metrics that include a set of small and reproducible evaluation elements, including metrics such as \textit{pass@k}, \textit{Invalid\%}, \textit{macro-micro performance}\cite{ORAK, lmgame-bench}.
+% \end{enumerate}
+
+% \paragraph{Expected Deliverables}
+
+% The project will deliver the following:
+% \begin{enumerate}
+%     \item \textbf{System Prototype}: A fully functioning prototype featuring:
+%     \begin{itemize}
+%         \item Screen capture and lightweight perception.
+%         \item Agentic modules for event spotting, strategy suggestions, and voice loops.
+%         \item MCP-style skill bus for modular integration and execution.
+%         \item GUI executor for interacting with the game interface.
+%         \item Safety safeguards including confirmation features.
+%     \end{itemize}
+
+%     \item \textbf{Evaluation Scripts and Configuration}: Reproducible task scripts and configuration files for:
+
+%     \begin{itemize}
+%         \item Metric calculation and performance tracking.
+%         \item Logging and auditing tools for system comparison.
+%     \end{itemize}
+
+%     \item \textbf{User Documentation and Demos}: Comprehensive documentation and demo materials, including:
+
+%     \begin{itemize}
+%         \item Quick start guidance and configuration templates for system setup.
+%         \item Demo videos showcasing system capabilities.
+%     \end{itemize}
+% \end{enumerate}
+
+\subsection{Scope, Objectives, and Deliverables}
+
+\paragraph{Scope} 
+This project aims to develop a system that addresses the challenges of inconsistent action interfaces and the limitations of relying on platform-specific implementations. The technical scope, including the boundaries of what will and will not be addressed, is as follows:
+
+\begin{enumerate}
+    \item \textbf{Unified Action Interface via GUI (GCC)}: The system will utilize a human-homomorphic interface with a screen-in, keyboard/mouse-out paradigm. This eliminates the need for platform-specific interfaces or game-specific programming interfaces (APIs), ensuring adaptability across different platforms without requiring specialized API integration \cite{CRADLE, ui-venus}.
+    
+    \item \textbf{Constrained Action Generation with Structured Output}: Actions will be selected from a predefined set of valid actions (e.g., "move forward," "open inventory") and formatted using a structured output (e.g., JSON). This approach reduces errors such as hallucinations and ensures that the actions generated are legal, predictable, and reproducible. This structured framework guarantees that only valid actions are performed, significantly reducing the risk of errors during real-time operation \cite{Benchmarking-VLA-VLM}.
+    
+    \item \textbf{Low-Coupling Orchestration}: The system will implement an MCP-style orchestration model that allows modular, plug-and-play components. This modular architecture ensures that new skills or modules can be easily integrated, promoting system scalability and flexibility. It also supports future updates and ablation studies without requiring major overhauls to the system's core structure \cite{ORAK}.
+
+    \item \textbf{Exclusions}:
+    \todo{A single paragraph or just a point of "Scope"?}
+    \begin{itemize}
+        \item The project will not involve the adaptation or integration of platform-specific APIs, ensuring universal compatibility across various platforms.
+        \item The project will not engage in large-scale data collection or training of models from scratch. Instead, the focus will be on modular components that are reusable and efficient, with small-scale evaluations.
+        \item The system will operate independently of platform-level enhancements such as accessibility features (A11y) or private DOM hooks, maintaining broad compatibility across diverse platforms.
+        \item Visual-Linguistic Agents (VLA) will not be the primary method for generating actions, but may be used for benchmarking comparisons \cite{Benchmarking-VLA-VLM}.
+    \end{itemize}
+\end{enumerate}
+
+\paragraph{Project Objectives}
+The primary objectives of this project are as follows:
+
+\begin{enumerate}
+    \item Develop a fully functional real-time prototype based on the GCC approach, capable of event detection, strategy suggestions, and voice loop interaction.
+    
+    \item Implement an MCP-style modular orchestration system that integrates skills, planning, memory, and reflection, enabling a plug-and-play architecture.
+    
+    \item Define clear, reproducible evaluation metrics to assess the system’s performance, including metrics such as \textit{pass@k}, \textit{Invalid\%}, and \textit{macro-micro performance}.
+\end{enumerate}
+
+\paragraph{Expected Deliverables}
+The following deliverables will be provided at the end of the project:
+
+\begin{enumerate}
+    \item \textbf{System Prototype}: A fully functional prototype that includes:
+    \begin{itemize}
+        \item Screen capture and lightweight perception.
+        \item Agentic modules for event detection, strategy suggestion, and voice loops.
+        \item MCP-style skill bus for modular integration and execution.
+        \item GUI executor for interacting with the game interface.
+        \item Safety safeguards, including confirmation features.
+    \end{itemize}
+    
+    \item \textbf{Evaluation Scripts and Configuration}: Reproducible task scripts and configuration files that include:
+    \begin{itemize}
+        \item Metrics for performance tracking.
+        \item Logging and auditing tools for system comparison.
+    \end{itemize}
+    
+    \item \textbf{User Documentation and Demos}: Comprehensive documentation and demo materials, including:
+    \begin{itemize}
+        \item Quick start guides and configuration templates.
+        \item Demo videos showcasing system capabilities.
+    \end{itemize}
+\end{enumerate}
 
 
 % ==========
@@ -74,26 +175,6 @@ This project follows four principles: \textbf{Unified Input} (ensures portabilit
 The system flow is as follows: \textbf{screen/audio} capture, lightweight \textbf{VLM} perception, \textbf{agentic} (planning/memory/reflection) modules, \textbf{MCP-style} skill/tool routing (including OCR/retrieval/computation \textbf{tool use}), \textbf{GUI execution} (keyboard and mouse), and finally passing through the \textbf{safety} module (confirmation/rollback/emergency stop). To reduce end-to-end latency, the deployment strategy will combine the \textbf{tool-augmented MLLM} approach with \textbf{on-device inference} quantization/caching strategies as key engineering tactics \cite{tool-aug-mllm, on-device-llm}.
 
 \todo{$\uparrow$ Not ready yet}
-
-
-% ==========
-% 1.5 Project Objectives & Expected Deliverables
-% ==========
-\subsection{Project Objectives \& Expected Deliverables}
-
-\paragraph{Project Objectives.} 
-\begin{itemize}
-    \item [(i)] Develop a \textbf{GCC-based} \textbf{assistant} real-time prototype that covers event prompting, strategy suggestions, and voice loops. 
-    \item [(ii)] Organize \textbf{skills, planning, memory, reflection} using \textbf{MCP-style orchestration}, enabling plug-and-play and auditability without relying on application-specific APIs.
-    \item [(iii)] Define a set of \textbf{small and reproducible} evaluation elements (task scripts and metric families), focusing on \textbf{pass@k/TTC/Invalid\%/macro-micro} and \textbf{OAS/RT/APO} experience-related metrics \cite{ORAK, lmgame-bench}.
-\end{itemize}
-
-\paragraph{Expected Deliverables.} 
-\begin{itemize}
-    \item [(a)] \textbf{System Prototype:} Screen capture and lightweight perception, agentic modules, MCP-style skill bus, GUI executor, and basic safety safeguards.
-    \item [(b)] \textbf{Evaluation Scripts and Configuration:} Reproducible task scripts, metric calculation, and logging/audit tools (including module switches for comparison).
-    \item [(c)] \textbf{User Documentation and Demos:} Installation/operation instructions, configuration templates, and demo videos.
-\end{itemize}
 
 % ==========
 % 1.6 术语与范围对齐（Glossary \& Scope Alignment）
