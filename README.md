@@ -93,7 +93,8 @@ Explain how the system works. (maybe with a diagram)
 
 ### 5. Conclusion
 
-# Revise Suggestions from Supervisor
+# TODOs
+## Revise Suggestions from Supervisor
 - [x] Consider remove "timely" part, or put it to Lit. Review section
 - [x] Move 1.2 to Lit. Review section
 - [ ] Summarize some more detailed classes of these challenges
@@ -102,3 +103,8 @@ Explain how the system works. (maybe with a diagram)
 - [x] Consider remove Glossary section, but keep the contents for the writing of dissertation.
 - [x] Add a "Methodology" section before "Project Plan" (not following the template). Introduce how will we implement the system, involve more theory content.
 - [ ] Add more citations, to about 30+
+
+## Check the correctness of points in Lit. Review
+- [ ] Theme 1
+- [ ] Theme 2
+- [ ] Theme 3
