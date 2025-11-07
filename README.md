@@ -52,10 +52,7 @@ TODO: TBD
 6. Summary of this section
 
 ### 2. Literature Review
-
-#### 1.2 Key Challenges
-
-- List some main challenges and possible solutions found from the literature review.
+See [Literature_Review.md](Literature_Review.md) for details.
 
 ### 3. Methodology
 
