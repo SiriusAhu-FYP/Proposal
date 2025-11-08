@@ -1,7 +1,45 @@
-% This project is timely. While the market demand is clear, the technological feasibility for a \textbf{reproducible, non-API-dependent} assistant has only recently emerged. Foundational research is now converging on the key methodologies required for productization. This includes the development of \textbf{unified evaluation protocols} and \textbf{modular ablation frameworks}, which are essential for ensuring that experiments are reproducible and comparable \cite{ORAK, lmgame-bench}. Furthermore, recent work has demonstrated the viability of \textbf{General Computer Control (GCC)} pathways (i.e., screen-in, keyboard/mouse-out), confirming that capable agents can operate without relying on game-specific APIs \cite{CRADLE, ui-venus}.
+\section{Methodology}
+\label{sec:methodology}
+% This is the intro paragraph from your draft, which is a perfect justification.
+This project is timely. While the market demand is clear, the technological feasibility for a \textbf{reproducible, non-API-dependent} assistant has only recently emerged. Foundational research is now converging on the key methodologies required for productization. This includes the development of \textbf{unified evaluation protocols} and \textbf{modular ablation frameworks}, which are essential for ensuring that experiments are reproducible and comparable \cite{ORAK, lmgame-bench}. Furthermore, recent work has demonstrated the viability of \textbf{General Computer Control (GCC)} pathways (i.e., screen-in, keyboard/mouse-out), confirming that capable agents can operate without relying on game-specific APIs \cite{CRADLE, ui-venus}.
 
+The proposed methodology is a \textbf{novel, hierarchical architecture} designed to fill the functional-relational gap identified in the literature. The system is architected as a central ``Orchestrator'' managing several specialized, ``plug-and-play'' sub-modules. This design is inspired by the modularity of SOTA (State-of-the-Art) frameworks like \textit{AgentOrchestra} and will be integrated via a \textbf{Model Context Protocol (MCP)}, which provides a standardized bus for robust, low-coupling communication.
 
+\subsection{Core Design Principles}
+\noindent The system's architecture is guided by four key principles:
 
-% TODO: 模块化的skills/macro，方便社区开发适用于不同游戏的插件？✅后期必须要加
+\begin{enumerate}
+    \item \textbf{Unified Input (GCC):} The agent will operate on the ``screen-in, keyboard/mouse-out'' \textbf{General Computer Control (GCC)} paradigm. This human-homomorphic interface is foundational, ensuring the agent is game-agnostic and does not rely on specialized APIs, a concept validated by the \textit{CRADLE} framework.
+    
+    \item \textbf{Lightweight, Structured Perception:} To avoid the bottleneck of feeding raw video to a large VLM, a \textbf{Lightweight Perception Module} (e.g., a fine-tuned YOLO model) will first process the screen. This module will locate objects of interest (e.g., health bars, mini-maps, enemies) and output a \textbf{structured text description} of the game state for the VLM to consume.
+    
+    \item \textbf{Constrained Action Generation:} The agent's output will be \textbf{Constrained JSON} from a pre-defined \textbf{Skill Set}. The LLM's role is to select a valid skill (e.g., \texttt{\{'skill\_name': 'use\_potion', 'target': 'self'\}}), not to generate raw coordinates. This aligns with the reliability principles of ``Legal Move Constraints'' and structured outputs.
+    
+    \item \textbf{Proactive Companionship:} The system is designed to be a proactive partner, not just a reactive tool. This is achieved by having the Relational Core monitor game-state events (e.g., ``danger status'' identified by the Orchestrator) and initiate interaction, fulfilling the ``Relational-Functional Loop'' identified in the literature.
+\end{enumerate}
 
-% TODO: 传给大模型的是处理后的图片？比如说用YOLO打标和位置？🤔后面再看
+\subsection{Proposed System Architecture}
+The system's data flow is a continuous loop managed by a central Orchestrator, which is comprised of several system-level modules (e.g., LLM communication, voice loop, GCC I/O).
+
+\begin{enumerate}
+    \item \textbf{Perception:} The \textbf{Lightweight Perception Module} scans the screen to produce structured text data (see \autoref{lst:game-state}).
+
+\todo{Design this later}
+\begin{lstlisting}[caption={Structured game-state JSON},label={lst:game-state},basicstyle=\ttfamily]
+{
+    "health": 10,
+    "enemies_nearby": 3,
+    "player_status": "in_combat"
+}
+\end{lstlisting}
+    
+    \item \textbf{Orchestration (The ``Conductor''):} The central \textbf{Orchestrator Module} (a VLM) receives this structured game-state data and the user's voice/text input. Its primary job is to analyze the complete context, understand the player's \emph{intent}, and identify \emph{proactive triggers} (e.g., ``player health is critical'').
+    
+    \item \textbf{Delegation (via MCP):} The Orchestrator delegates the identified task via the MCP bus to a specialized sub-module:
+    \begin{itemize}
+    \item \textbf{The Functional Core (The ``Agent''):} Receives functional commands (e.g., ``move to quest marker''). It selects the appropriate skill from the \textbf{Skill Set} and outputs the \textbf{Constrained JSON} to the \textbf{GCC I/O Module} for keyboard/mouse execution.
+    \item \textbf{The Relational Core (The ``Companion''):} Receives conversational cues or proactive triggers (e.g., the ``danger status'' event). It generates an ``in-character'' response (e.g., ``Watch out, you're low on health!''), which is sent to the \textbf{Voice Loop Module}.
+    \end{itemize}
+    
+    \item \textbf{Verification (The Feedback Loop):} After the Functional Core executes an action, a \textbf{Verifier Module} closes the loop. This module is inspired by the principles of error-checking frameworks like \textit{BacktrackAgent}. It performs a quick check on the \emph{new} screen state to confirm the action was successful (e.g., ``Is the inventory \emph{now} on screen?''). If it fails, it reports the error back to the Orchestrator for replanning.
+\end{enumerate}
