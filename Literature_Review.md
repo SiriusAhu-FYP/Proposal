@@ -22,7 +22,6 @@ This section covers the evaluation frameworks used to measure the performance of
 * **pass@k**: Measures how many attempts an AI needs to successfully complete a task. This metric is commonly used in decision‑making tasks to track success across multiple attempts and is particularly useful for evaluating task performance over repeated trials (Benchmarking-VLA-VLM, 2025).
 * **Invalid%**: Tracks errors by measuring the proportion of **invalid actions** taken by the AI, which helps identify problems in action selection. A higher **Invalid%** indicates the model struggles to produce valid outputs within the specified action space (Benchmarking-VLA-VLM, 2025).
 * **Granular Skill Assessment**: The V-Mage framework uses "Unit Tests for Core Visual Abilities" to provide a granular assessment of an agent's specific skills, such as positioning, trajectory tracking, timing, and visual memory, rather than just a single success score. \cite{V-Mage, 2024}
-* **Dense and Auxiliary Rewards**: A combination of dense rewards (feedback at each timestep) and auxiliary rewards (additional task-specific rewards, such as correct formatting or achieving sub-goals) accelerates learning and improves task performance, particularly in complex tasks. \cite{Agentgym-rl, 2025; rl-fine-tune-driving, 2024}
 * **Benchmarking and Task-Specific Metrics**: Systems like **ORAK** and **lmgame-bench** provide comprehensive frameworks for systematically evaluating AI performance across multiple game types and specific tasks, ensuring consistent, reliable results (lmgame-bench, 2023; ORAK, 2023).
 * **Dynamic ELO System**: V-Mage introduces a **Dynamic ELO system** to address cross-game comparison, helping standardize agent performance across different games and environments (V-Mage, 2024).
 
@@ -59,6 +58,7 @@ This section presents the major learning paradigms that underpin the training of
 * **RL‑Finetuning**: Rather than rely solely on supervised imitation, modern agent systems apply RL‑based finetuning (or reinforcement fine‑tuning, RFT) on top of pretrained models, enabling adaptation to multi‑step tasks, reward sparsity, and interactive decision‑making (UI‑Venus 2025; AgentGym‑RL 2025; Improving Agent Behaviors 2024).
 * **Structured Action Generation**: To reduce error and constrain the output space, agents generate actions in a **structured form** (e.g., JSON or discrete macro actions) rather than free‑form text; this improves reliability in game/GUI environments (UI‑Venus 2025).
 * **Iterative Feedback/Refinement Loops**: Agents employ mechanisms such as **self‑evolving trajectories**, **progressive interaction scaling**, or **policy rollouts with feedback** to correct mistakes, refine strategy, and adapt to new scenarios over time (AgentGym‑RL 2025; UI‑Venus 2025).
+* **Dense and Auxiliary Rewards**: A combination of dense rewards (feedback at each timestep) and auxiliary rewards (additional task-specific rewards, such as correct formatting or achieving sub-goals) accelerates learning and improves task performance, particularly in complex tasks. \cite{Agentgym-rl, 2025; rl-fine-tune-driving, 2024}
 
 ---
 
