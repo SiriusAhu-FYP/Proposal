@@ -56,7 +56,7 @@ See [Literature_Review.md](Literature_Review.md) for details.
 
 ### 3. Methodology
 - Outline this project is timely
-##### 3.1 Core Design Principles
+#### 3.1 Core Design Principles
 1. `Unified Input (GCC)`: screen-in, keyboard/mouse-out
 2. `Lightweight, Structured Perception`: 
   - a fine-tuned YOLO / OCR preprocessor between raw image/video and VLM
@@ -64,35 +64,24 @@ See [Literature_Review.md](Literature_Review.md) for details.
 3. `Constrained Action Generation`: constrained JSON from pre-defined Skill Set
 4. `Proactive Companionship`: relational core monitors game-state events and initiates interaction
 
-##### 3.2 Proposed System Architecture
+#### 3.2 Proposed System Architecture
+1. `Perception`: A Lightweight Perception Module scans the screen to produce structured text data.
+2. `Orchestration (`Conductor`)`: Analyze the complete context, understand the player’s intent, and identify proactive triggers.
+3. `Delegation (`via MCP`)`:
+    - `Functional Core`: Select skill from **Skill Set** -> **Constrained JSON** -> Execute via GCC
+    - `Relational Core`: Voice Loop + Frontend (Live2D)
+4. `Verification` (`Feedback Loop`): Quick check on new screen. ("Is the inventory now on screen?")
 
 ### 4. Project Plan
-##### Objectives
-Develop a GCC-based prototype:
-  - a) Core functions: Event spotting + Tactical guidance + Voice Loop
-  - b) Use MCP-style orchestration to implement "plug-and-play" modules
-    - with at least these 4 core modules: skills, planning, memory and reflection
+#### 4.1 Project Objectives
+1. `Engineering Objective`: Build a prototype, utilizing a modular MCP-style architecture that integrates both functional and relational cores to deliver real-time, unified AI companionship.
+2. `Validation Objective`: Conduct a phased evaluation plan to validate the system's functional competence in controlled environments, and to demonstrate that the unified agent provides a superior user experience in complex, dynamic scenarios.
 
-Define some metrics to measure the performance of the prototype
-  - e.g., pass@k (pass at k-th attempt), Invalid% (Timesteps with invalid preds / Total number of timesteps) \cite{Benchmarking-VLA-VLM} ⚠️ Many metrics available here
-
-##### Deliverables
-1. A system protype, featuring agentic modules, a GUI executor, and safety guards.
-2. Evaluation scripts
-3. User docs and demos (videos)
-
-
-#### 1.4 Design Principles & System Preview
-
-<div style="background-color:red">Put to Section 3. Project Plan, or just remove?</div>
-
-**Principles**:
-1. `Unified Input`
-2. `Structured Output with Constrained Action Selection`
-3. `Low-Coupling Orchestration`
-
-**System Preview**:
-Explain how the system works. (maybe with a diagram)
+#### 4.2 Deliverables
+1. A system prototype, featuring agentic modules, a GUI executor, and safety guards.
+2. Documentation
+3. Evaluation suite: scripts, configuration files, and collected data, etc.
+4. videos
 
 ### 5. Conclusion
 
