@@ -55,10 +55,16 @@ TODO: TBD
 See [Literature_Review.md](Literature_Review.md) for details.
 
 ### 3. Methodology
+- Outline this project is timely
+##### 3.1 Core Design Principles
+1. `Unified Input (GCC)`: screen-in, keyboard/mouse-out
+2. `Lightweight, Structured Perception`: 
+  - a fine-tuned YOLO / OCR preprocessor between raw image/video and VLM
+  - a structured text description of game state for VLM to consume
+3. `Constrained Action Generation`: constrained JSON from pre-defined Skill Set
+4. `Proactive Companionship`: relational core monitors game-state events and initiates interaction
 
-- Outline this project is timely (<span style="background-color:red">Consider whether to remove this paragraph</span>)
-  - **Unified evaluation protocols & Modular ablation frameworks** provided by \cite{ORAK, lmgame-bench}
-- **GCC availability** proved by \cite{CRADLE, ui-venus}
+##### 3.2 Proposed System Architecture
 
 ### 4. Project Plan
 ##### Objectives
@@ -94,14 +100,23 @@ Explain how the system works. (maybe with a diagram)
 ## Revise Suggestions from Supervisor
 - [x] Consider remove "timely" part, or put it to Lit. Review section
 - [x] Move 1.2 to Lit. Review section
-- [ ] Summarize some more detailed classes of these challenges
+- [x] Summarize some more detailed classes of these challenges
 - [x] Remove "Exclusion" of Scope
 - [x] Move 1.3 ("Project Objectives", "Expected Deliverables") and 1.4 to section 3 Project Plan
 - [x] Consider remove Glossary section, but keep the contents for the writing of dissertation.
 - [x] Add a "Methodology" section before "Project Plan" (not following the template). Introduce how will we implement the system, involve more theory content.
-- [ ] Add more citations, to about 30+
+- [x] Add more citations, to about 30+
 
-## Check the correctness of points in Lit. Review
-- [ ] Theme 1
-- [ ] Theme 2
-- [ ] Theme 3
+## Dive into some papers
+- [ ] CRADLE
+  - GCC interface
+- [ ] AgentOrchestra
+  - modular `conductor`
+- [ ] CodeAct
+  - structured action output
+- [ ] BacktrackAgent
+  - error recovery and safety architecture
+- [ ] PORTAL
+  - solutions for latency (zero-latency BTs) and OOD generalization
+- [ ] EmotionAWARE
+  - multi-granular emotion detection
