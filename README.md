@@ -108,6 +108,7 @@ Explain how the system works. (maybe with a diagram)
 - [x] Add more citations, to about 30+
 
 ## Dive into some papers
+<div style="background-color:red">Very important before doing code work!</div>
 - [ ] CRADLE
   - GCC interface
 - [ ] AgentOrchestra

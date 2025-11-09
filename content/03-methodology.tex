@@ -37,8 +37,8 @@ The system's data flow is a continuous loop managed by a central Orchestrator, w
     
     \item \textbf{Delegation (via MCP):} The Orchestrator delegates the identified task via the MCP bus to a specialized sub-module:
     \begin{itemize}
-    \item \textbf{The Functional Core (The ``Agent''):} Receives functional commands (e.g., ``move to quest marker''). It selects the appropriate skill from the \textbf{Skill Set} and outputs the \textbf{Constrained JSON} to the \textbf{GCC I/O Module} for keyboard/mouse execution.
-    \item \textbf{The Relational Core (The ``Companion''):} Receives conversational cues or proactive triggers (e.g., the ``danger status'' event). It generates an ``in-character'' response (e.g., ``Watch out, you're low on health!''), which is sent to the \textbf{Voice Loop Module}.
+        \item \textbf{The Functional Core (The ``Agent''):} Receives functional commands (e.g., ``move to quest marker''). It selects the appropriate skill from the \textbf{Skill Set} and outputs the \textbf{Constrained JSON} to the \textbf{GCC I/O Module} for keyboard/mouse execution.
+        \item \textbf{The Relational Core (The ``Companion''):} Receives conversational cues or proactive triggers (e.g., the ``danger status'' event). It generates an ``in-character'' response, which is sent to the \textbf{Voice Loop Module} and the \textbf{Frontend Module}. This frontend will use \textbf{Live2D}—a 2D animation technology standard in the VTuber industry—to provide a floating character with dynamic expressions and motions that match the agent's dialogue.
     \end{itemize}
     
     \item \textbf{Verification (The Feedback Loop):} After the Functional Core executes an action, a \textbf{Verifier Module} closes the loop. This module is inspired by the principles of error-checking frameworks like \textit{BacktrackAgent} \cite{BacktrackAgent}. It performs a quick check on the \emph{new} screen state to confirm the action was successful (e.g., ``Is the inventory \emph{now} on screen?''). If it fails, it reports the error back to the Orchestrator for replanning.

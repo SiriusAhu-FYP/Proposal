@@ -1,67 +1,43 @@
 \section{Project Plan}
+\label{sec:project-plan}
+This section details the execution and validation strategy for the proposed methodology. It outlines the project's core objectives, the final deliverables, a two-phased development and evaluation plan, the project timeline, and a risk analysis.
 
-\subsection{Proposed Solution / Methodology}
-% >摆你“系统流”（screen/audio→VLM→LLM/agentic→MCP-style skill bus→GUI→safety），只讲结构与模块边界，不承诺训练细节。
-
-\subsection{Experimental Design}
-% >把你在文献里对“评测协议（evaluation protocols）/指标（metrics）/场景（scenarios）”的回顾，转成计划性的评测设计（谁、在什么任务、用哪些指标判定“成功”）。这是模板专门的栏目。
-
-\subsection{Expected Results}
-% >非常适合“产品向”——列可交付物（prototype、代码、评测脚本、演示视频、文档）+ “达到即视为成功”的阈值性指标（success criteria）。
-
-\subsection{Progress Analysis and Gantt Chart}
-% >补一个甘特图与里程碑（milestones），并配风险与伦理—评分细则这里有明确加分点（Gantt、里程碑、风险/伦理完备）。
-
-\subsubsection{Risk \& Ethics}
-
-
-\paragraph{Project Objectives}
-The primary objectives of this project are as follows:
-
+\subsection{Project Objectives}
+This project is defined by two primary, high-level objectives:
 \begin{enumerate}
-    \item Develop a fully functional real-time prototype based on the GCC approach, capable of event detection, strategy suggestions, and voice loop interaction.
+    \item \textbf{Engineering Objective:} To design, build, and deploy a novel, real-time, unified AI companion prototype. This system will be built on a modular, \textbf{MCP-style} architecture that successfully integrates a functional ``Agent'' core and a proactive, ``Relational'' core.
     
-    \item Implement an MCP-style modular orchestration system that integrates skills, planning, memory, and reflection, enabling a plug-and-play architecture.
-    
-    \item Define clear, reproducible evaluation metrics to assess the system’s performance, including metrics such as \textit{pass@k}, \textit{Invalid\%}, and \textit{macro-micro performance}.
+    \item \textbf{Validation Objective:} To execute a reproducible, phased evaluation plan to first validate the system's functional competence in controlled environments, and then to prove the core hypothesis: that the unified agent provides a measurably superior user experience in complex, dynamic environments.
 \end{enumerate}
 
-\paragraph{Expected Deliverables}
-The following deliverables will be provided at the end of the project:
+\subsection{Expected Deliverables}
+The final deliverables for this project will consist of three main components:
+\begin{itemize}
+    \item \textbf{The System Prototype:} A functional source code implementation of the unified AI companion, including the central Orchestrator, all sub-modules (Functional, Relational, Safety), the perception pipeline, and the Live2D frontend.
+    \item \textbf{Documentation:} Detailed documentation of the source code, system design, and module interactions, providing an understanding of the system's architecture and implementation.
+    \item \textbf{The Evaluation Suite:} All scripts, configuration files, and collected data used for system validation, including the functional test suite and the qualitative user study surveys and (anonymized) results.
+    \item \textbf{The Video Demonstration:} A recorded demo video showcasing the prototype's key functional and relational capabilities, highlighting the system's performance and user interaction in real-time.
+\end{itemize}
 
-\begin{enumerate}
-    \item \textbf{System Prototype}: A fully functional prototype that includes:
-    \begin{itemize}
-        \item Screen capture and lightweight perception.
-        \item Agentic modules for event detection, strategy suggestion, and voice loops.
-        \item MCP-style skill bus for modular integration and execution.
-        \item GUI executor for interacting with the game interface.
-        \item Safety safeguards, including confirmation features.
-    \end{itemize}
-    
-    \item \textbf{Evaluation Scripts and Configuration}: Reproducible task scripts and configuration files that include:
-    \begin{itemize}
-        \item Metrics for performance tracking.
-        \item Logging and auditing tools for system comparison.
-    \end{itemize}
-    
-    \item \textbf{User Documentation and Demos}: Comprehensive documentation and demo materials, including:
-    \begin{itemize}
-        \item Quick start guides and configuration templates.
-        \item Demo videos showcasing system capabilities.
-    \end{itemize}
-\end{enumerate}
+\subsection{Development Phases and Evaluation}
+The project will be executed in two distinct phases to manage complexity and validate the system incrementally.
 
-% ==========
-% 1.4 Design Principles & System Preview
-% ==========
-\subsection{Design Principles \& System Preview}
-\todo{Put to Section 3. Project Plan, or just remove?}
+\paragraph{Phase 1: Functional Core Validation (Simple \& Logic-Based Games)}
+The first phase will focus on building and validating the core technical stack (Perception, Orchestrator, Functional Core, Safety). This will be tested in controlled, low-rhythm, or logic-based games (such as \textbf{2048} or \textbf{Stardew Valley}) to isolate and debug the agent's competence. A test suite of standardized, functional tasks (e.g., ``Achieve the 1024 tile,'' ``Maps to the General Store,'' ``Plant 10 seeds'') will be created. \textbf{Success in this phase} will be measured using SOTA (State-of-the-Art) metrics from the literature, including a high \textbf{Task Success Rate (TSR)} and a low \textbf{\texttt{Invalid\%}} of actions.
 
-\paragraph{Design principles.}
-This project follows four principles: \textbf{Unified Input} (ensures portability across applications), \textbf{Structured Output} (reduces invalid actions and is easy to audit), \textbf{Protocol Consistency} (ensures reproducibility and ablative evaluation), \textbf{Low-Coupling Orchestration} (MCP-style, facilitates modular insertion/removal of skills/tools).
+\paragraph{Phase 2: Unified System Validation (Complex \& High-DOF Games)}
+Once the core agent is functionally competent, the second phase will integrate the \textbf{Relational Core} (including the Live2D frontend) and transfer the full system to more complex, high-degree-of-freedom (DOF) environments like \textbf{Minecraft}. This will test the agent's ability to handle long-horizon planning and real-time threats. The core hypothesis will then be tested via an \textbf{A/B user study} (N=5-10 users). \textbf{Group A (Control)} will play with the \textbf{Functional Core only} (a ``silent tool''). \textbf{Group B (Test)} will play with the \textbf{Full Unified System}. Success will be measured using a qualitative survey to assess ``companionship,'' ``proactivity,'' and ``cognitive workload'' \cite{human-centered-eval, Cooperation-Player-AI}. A stretch goal for this phase, if time permits, is to test the OOD transferability of the agent to a highly complex RPG like \textit{Genshin Impact}.
 
-\paragraph{System preview.}
-The system flow is as follows: \textbf{screen/audio} capture, lightweight \textbf{VLM} perception, \textbf{agentic} (planning/memory/reflection) modules, \textbf{MCP-style} skill/tool routing (including OCR/retrieval/computation \textbf{tool use}), \textbf{GUI execution} (keyboard and mouse), and finally passing through the \textbf{safety} module (confirmation/rollback/emergency stop). To reduce end-to-end latency, the deployment strategy will combine the \textbf{tool-augmented MLLM} approach with \textbf{on-device inference} quantization/caching strategies as key engineering tactics \cite{tool-aug-mllm, on-device-llm}.
+\subsection{Project Timeline}
+\todo{A detailed weekly Gantt chart from December 2025 to May 2026 will be developed based on the two phases outlined above.}
 
-\todo{$\uparrow$ Not ready yet}
+\subsection{Risk and Ethics Analysis}
+This plan identifies three primary technical risks and one ethical consideration:
+
+\paragraph{Risk 1: Latency} Real-time LLM inference (>100ms) in Phase 2's combat scenarios will break immersion \cite{liu2023llm}. The mitigation is architectural: the system will use a hybrid model inspired by `PORTAL`, where high-frequency actions (like combat dodges) are handled by a zero-latency compiled Behavior Tree, reserving the LLM for high-level planning \cite{PORTAL}.
+
+\paragraph{Risk 2: Safety \& Error Accumulation} The agent may get stuck in loops or fail long-horizon tasks, especially in complex 3D environments. The mitigation is a dedicated Safety Core, inspired by `BacktrackAgent`, which includes a ``Verifier'' and ``Judger'' to detect and recover from semantic errors (e.g., "player is stuck," "mob approaching"), triggering a replan \cite{BacktrackAgent}.
+
+\paragraph{Risk 3: OOD Generalization} The agent may fail to transfer from Phase 1 (e.g., `Stardew Valley`) to Phase 2 (e.g., `Minecraft` or `Genshin Impact`), a known SOTA challenge \cite{Benchmarking-VLA-VLM}. This transfer is a core part of the research, and the risk is mitigated by using a game-agnostic `GCC` interface and a `PORTAL`-style policy generator, which has shown SOTA cross-game generalization \cite{PORTAL, CRADLE}.
+
+\paragraph{Ethics: Privacy} The system requires capturing the user's screen and voice. The mitigation is to process all data \textbf{locally on-device}. No PII (Personally Identifiable Information) will be stored or transmitted.
