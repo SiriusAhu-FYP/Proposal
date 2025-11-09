@@ -3,7 +3,7 @@
 This section details the execution and validation strategy for the proposed methodology. It outlines the project's core objectives, the final deliverables, a two-phased development and evaluation plan, the project timeline, and a risk analysis.
 
 \subsection{Project Objectives}
-This project is defined by two primary, high-level objectives:
+\noindent This project is defined by two primary, high-level objectives:
 \begin{enumerate}
     \item \textbf{Engineering Objective:} To design, build, and deploy a novel, real-time, unified AI companion prototype. This system will be built on a modular, \textbf{MCP-style} architecture that successfully integrates a functional ``Agent'' core and a proactive, ``Relational'' core.
     
@@ -11,7 +11,7 @@ This project is defined by two primary, high-level objectives:
 \end{enumerate}
 
 \subsection{Expected Deliverables}
-The final deliverables for this project will consist of three main components:
+\noindent The final deliverables for this project will consist of three main components:
 \begin{itemize}
     \item \textbf{The System Prototype:} A functional source code implementation of the unified AI companion, including the central Orchestrator, all sub-modules (Functional, Relational, Safety), the perception pipeline, and the Live2D frontend.
     \item \textbf{Documentation:} Detailed documentation of the source code, system design, and module interactions, providing an understanding of the system's architecture and implementation.
@@ -29,15 +29,31 @@ The first phase will focus on building and validating the core technical stack (
 Once the core agent is functionally competent, the second phase will integrate the \textbf{Relational Core} (including the Live2D frontend) and transfer the full system to more complex, high-degree-of-freedom (DOF) environments like \textbf{Minecraft}. This will test the agent's ability to handle long-horizon planning and real-time threats. The core hypothesis will then be tested via an \textbf{A/B user study} (N=5-10 users). \textbf{Group A (Control)} will play with the \textbf{Functional Core only} (a ``silent tool''). \textbf{Group B (Test)} will play with the \textbf{Full Unified System}. Success will be measured using a qualitative survey to assess ``companionship,'' ``proactivity,'' and ``cognitive workload'' \cite{human-centered-eval, Cooperation-Player-AI}. A stretch goal for this phase, if time permits, is to test the OOD transferability of the agent to a highly complex RPG like \textit{Genshin Impact}.
 
 \subsection{Project Timeline}
-\todo{A detailed weekly Gantt chart from December 2025 to May 2026 will be developed based on the two phases outlined above.}
+The project is scheduled for 18 active work weeks, divided into three blocks: 4 weeks in Semester 1 (Dec 2025), 4 weeks during the Winter Holiday (Jan-Feb 2026), and 10 weeks in Semester 2 (Mar-May 2026). The development plan is not sequential but parallel, centered on a core "brain" (the Orchestrator) with other modules being developed, integrated, and refined concurrently.
+
+\paragraph{Long-Running Development Tasks (Weeks 1-15)}
+Several core components will be in development for the majority of the project. The \textbf{Orchestrator \& MCP Bus} will be the first component built (v1) and will be continuously updated (v2, v3) as new modules are plugged in. The \textbf{Functional Core (RFT/\texttt{PORTAL})} and the \textbf{Perception Module (YOLO/OCR)} will be developed and trained for Phase 1 games during the holiday, and then undergo transfer-learning and refinement for Phase 2 games in Semester 2. The \textbf{Relational Core (Live2D/Voice)} will be stubbed out early to prove the concept and then fully integrated with its proactive triggers in Semester 2.
+
+\paragraph{Block 1: Core Framework (Sem 1, 4 Weeks)}
+The initial 4 weeks will be dedicated to building the ``brain''. This includes finalizing the \textbf{MCP API design} and implementing the initial \textbf{Orchestrator (v1)}. In parallel, a simple \textbf{Live2D Frontend (v1 stub)} will be connected to validate the core message-passing loop.
+
+\paragraph{Block 2: Functional Core (Winter Holiday, 4 Weeks)}
+The 4-week holiday will be focused on the first major bottleneck: the ``eyes'' and ``hands''. The \textbf{Perception Module (v1)} for \textbf{Stardew Valley} and the \textbf{GCC I/O Module} will be built. This block is primarily dedicated to the intensive \textbf{RFT training} (or \texttt{PORTAL} BT-generation) of the \textbf{Functional Core (v1)}.
+
+\paragraph{Block 3: Integration \& Validation (Sem 2, 10 Weeks)}
+The final 10-week sprint is for integration and evaluation. The \textbf{Safety Core} (\texttt{BacktrackAgent}-inspired Verifier) will be built and plugged in. The \textbf{Phase 1 (Functional) Evaluation} will be run. Concurrently, the \textbf{Perception (v2)} and \textbf{Functional (v2)} modules will be adapted for the high-DOF \textbf{Minecraft} environment. The \textbf{Relational Core (v2)} will be fully integrated with its proactive triggers. The final weeks will be dedicated to running the \textbf{Phase 2 (A/B User Study)}, followed by final code cleanup, documentation, and demo video preparation.
+
+\picHere{assets/images/gantt_chart.png}{1.0\textwidth}{\todo{An example of Gantt Chart}}{fig:gantt-chart}
+
+\todo{A detailed weekly Gantt chart visualizing these parallel tasks will be developed.}
 
 \subsection{Risk and Ethics Analysis}
 This plan identifies three primary technical risks and one ethical consideration:
 
-\paragraph{Risk 1: Latency} Real-time LLM inference (>100ms) in Phase 2's combat scenarios will break immersion \cite{liu2023llm}. The mitigation is architectural: the system will use a hybrid model inspired by `PORTAL`, where high-frequency actions (like combat dodges) are handled by a zero-latency compiled Behavior Tree, reserving the LLM for high-level planning \cite{PORTAL}.
+\paragraph{Risk 1: Latency} Real-time LLM inference (>100~ms) in Phase 2's combat scenarios will break immersion \cite{liu2023llm}. The mitigation is architectural: the system will use a hybrid model inspired by \texttt{PORTAL}, where high-frequency actions (like combat dodges) are handled by a zero-latency compiled Behavior Tree, reserving the LLM for high-level planning \cite{PORTAL}.
 
-\paragraph{Risk 2: Safety \& Error Accumulation} The agent may get stuck in loops or fail long-horizon tasks, especially in complex 3D environments. The mitigation is a dedicated Safety Core, inspired by `BacktrackAgent`, which includes a ``Verifier'' and ``Judger'' to detect and recover from semantic errors (e.g., "player is stuck," "mob approaching"), triggering a replan \cite{BacktrackAgent}.
+\paragraph{Risk 2: Safety \& Error Accumulation} The agent may get stuck in loops or fail long-horizon tasks, especially in complex 3D environments. The mitigation is a dedicated Safety Core, inspired by \texttt{BacktrackAgent}, which includes a ``Verifier'' and ``Judger'' to detect and recover from semantic errors (e.g., ``player is stuck,'' ``mob approaching''), triggering a replan \cite{BacktrackAgent}.
 
-\paragraph{Risk 3: OOD Generalization} The agent may fail to transfer from Phase 1 (e.g., `Stardew Valley`) to Phase 2 (e.g., `Minecraft` or `Genshin Impact`), a known SOTA challenge \cite{Benchmarking-VLA-VLM}. This transfer is a core part of the research, and the risk is mitigated by using a game-agnostic `GCC` interface and a `PORTAL`-style policy generator, which has shown SOTA cross-game generalization \cite{PORTAL, CRADLE}.
+\paragraph{Risk 3: OOD Generalization} The agent may fail to transfer from Phase 1 (e.g., \textbf{Stardew Valley}) to Phase 2 (e.g., \textbf{Minecraft} or \textit{Genshin Impact}), a known SOTA challenge \cite{Benchmarking-VLA-VLM}. This transfer is a core part of the research, and the risk is mitigated by using a game-agnostic \texttt{GCC} interface and a \texttt{PORTAL}-style policy generator, which has shown SOTA cross-game generalization \cite{PORTAL, CRADLE}.
 
 \paragraph{Ethics: Privacy} The system requires capturing the user's screen and voice. The mitigation is to process all data \textbf{locally on-device}. No PII (Personally Identifiable Information) will be stored or transmitted.
