@@ -113,3 +113,4 @@ See [Literature_Review.md](Literature_Review.md) for details.
 
 ## misc
 - [ ] Check the lightweight perception design: YOLO, OCR + lightweight LLM?
+- [ ] add some diagrams, tables or charts to illustrate the architecture and workflow
