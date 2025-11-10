@@ -1,7 +1,7 @@
 \section{Methodology}
 \label{sec:methodology}
 % This is the intro paragraph from your draft, which is a perfect justification.
-This project is timely. While the market demand is clear, the technological feasibility for a \textbf{reproducible, non-API-dependent} assistant has only recently emerged. Foundational research is now converging on the key methodologies required for productization. This includes the development of \textbf{unified evaluation protocols} and \textbf{modular ablation frameworks}, which are essential for ensuring that experiments are reproducible and comparable \cite{ORAK, lmgame-bench}. Furthermore, recent work has demonstrated the viability of \textbf{General Computer Control (GCC)} pathways (i.e., screen-in, keyboard/mouse-out), confirming that capable agents can operate without relying on game-specific APIs \cite{CRADLE, ui-venus}.
+This project is timely. While the market demand is clear, the technological feasibility for a \textbf{reproducible, non-API-dependent} assistant has only recently emerged. Foundational research is now converging on the key methodologies required for productization. This includes the development of \textbf{unified evaluation protocols} and \textbf{modular ablation frameworks}, which are essential for ensuring that experiments are reproducible and comparable \cite{ORAK, lmgame-bench}. Furthermore, recent work has demonstrated the viability of \textbf{GCC} pathways (i.e., screen-in, keyboard/mouse-out), confirming that capable agents can operate without relying on game-specific APIs \cite{CRADLE, ui-venus}.
 
 The proposed methodology is a \textbf{novel, hierarchical architecture} designed to fill the functional-relational gap identified in the literature. The system is architected as a central ``Orchestrator'' managing several specialized, ``plug-and-play'' sub-modules. This design is inspired by the modularity of SOTA (State-of-the-Art) frameworks like \textit{AgentOrchestra} and will be integrated via a \textbf{Model Context Protocol (MCP)}, which provides a standardized bus for robust, low-coupling communication \cite{AgentOrchestra, ORAK}.
 
@@ -9,7 +9,7 @@ The proposed methodology is a \textbf{novel, hierarchical architecture} designed
 \noindent The system's architecture is guided by four key principles:
 
 \begin{enumerate}
-    \item \textbf{Unified Input (GCC):} The agent will operate on the ``screen-in, keyboard/mouse-out'' \textbf{General Computer Control (GCC)} paradigm. This human-homomorphic interface is foundational, ensuring the agent is game-agnostic and does not rely on specialized APIs, a concept validated by the \textit{CRADLE} framework \cite{CRADLE}.
+    \item \textbf{Unified Input (GCC):} The agent will operate on the ``screen-in, keyboard/mouse-out'' \textbf{GCC} paradigm. This human-homomorphic interface is foundational, ensuring the agent is game-agnostic and does not rely on specialized APIs, a concept validated by the \textit{CRADLE} framework \cite{CRADLE}.
     
     \item \textbf{Lightweight, Structured Perception:} To avoid the bottleneck of feeding raw video to a large VLM, a \textbf{Lightweight Perception Module} (e.g., a fine-tuned YOLO model) will first process the screen. This module will locate objects of interest (e.g., health bars, mini-maps, enemies) and output a \textbf{structured text description} of the game state for the VLM to consume.
     
