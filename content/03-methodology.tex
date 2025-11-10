@@ -13,7 +13,7 @@ The proposed methodology is a \textbf{novel, hierarchical architecture} designed
     
     \item \textbf{Lightweight, Structured Perception:} To avoid the bottleneck of feeding raw video to a large VLM, a \textbf{Lightweight Perception Module} (e.g., a fine-tuned YOLO model) will first process the screen. This module will locate objects of interest (e.g., health bars, mini-maps, enemies) and output a \textbf{structured text description} of the game state for the VLM to consume.
     
-    \item \textbf{Constrained Action Generation:} The agent's output will be \textbf{Constrained JSON} from a pre-defined \textbf{Skill Set}. The LLM's role is to select a valid skill (e.g., \texttt{\{'skill\_name': `use\_potion', `target': `self'\}}), not to generate raw coordinates. This aligns with the reliability principles of ``Legal Move Constraints'' and structured outputs \cite{ORAK, CodeAct, We-Need-Structured-Output}.
+    \item \textbf{Constrained Action Generation:} The agent's output will be \textbf{Constrained JSON} from a pre-defined \textbf{Skill Set}. The LLM's role is to select a valid skill, not to generate raw coordinates. This aligns with the reliability principles of ``Legal Move Constraints'' and structured outputs \cite{ORAK, CodeAct, We-Need-Structured-Output}.
     
     \item \textbf{Proactive Companionship:} The system is designed to be a proactive partner, not just a reactive tool. This is achieved by having the Relational Core monitor game-state events (e.g., ``danger status'' identified by the Orchestrator) and initiate interaction, fulfilling the ``Relational-Functional Loop'' identified in the literature.
 \end{enumerate}
@@ -24,12 +24,13 @@ The system's data flow is a continuous loop managed by a central Orchestrator, w
 \begin{enumerate}
     \item \textbf{Perception:} The \textbf{Lightweight Perception Module} scans the screen to produce structured text data (see \autoref{lst:game-state}).
 
-\todo{Design this later}
 \begin{lstlisting}[caption={Structured game-state JSON},label={lst:game-state},basicstyle=\ttfamily]
 {
-    "health": 10,
-    "enemies_nearby": 3,
-    "player_status": "in_combat"
+    "description": "The player is in combat with slimes in a forest area. Health is low.",
+    "num_entities_nearby": 3,
+    "is_player_in_combat": true,
+    "is_player_in_danger": true,
+    ...
 }
 \end{lstlisting}
     
