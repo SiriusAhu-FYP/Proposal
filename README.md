@@ -110,3 +110,6 @@ See [Literature_Review.md](Literature_Review.md) for details.
   - solutions for latency (zero-latency BTs) and OOD generalization
 - [ ] EmotionAWARE
   - multi-granular emotion detection
+
+## misc
+- [ ] Check the lightweight perception design: YOLO, OCR + lightweight LLM?
