@@ -32,20 +32,19 @@ Once the core agent is functionally competent, the second phase will integrate t
 The project is scheduled for 18 active work weeks, divided into three blocks: 4 weeks in Semester 1 (Dec 2025), 4 weeks during the Winter Holiday (Jan-Feb 2026), and 10 weeks in Semester 2 (Mar-May 2026). The development plan is not sequential but parallel, centered on a core "brain" (the Orchestrator) with other modules being developed, integrated, and refined concurrently.
 
 \paragraph{Long-Running Development Tasks (Weeks 1-15)}
-Several core components will be in development for the majority of the project. The \textbf{Orchestrator \& MCP Bus} will be the first component built (v1) and will be continuously updated (v2, v3) as new modules are plugged in. The \textbf{Functional Core (RFT/\texttt{PORTAL})} and the \textbf{Perception Module (YOLO/OCR)} will be developed and trained for Phase 1 games during the holiday, and then undergo transfer-learning and refinement for Phase 2 games in Semester 2. The \textbf{Relational Core (Live2D/Voice)} will be stubbed out early to prove the concept and then fully integrated with its proactive triggers in Semester 2.
+Several core components will be in development for the majority of the project. The \textbf{Orchestrator \& MCP Bus} will be the first component built (v1) and will be continuously updated (v2, v3) as new modules are plugged in. The \textbf{Functional Core (RFT/PORTAL)} and the \textbf{Perception Module (YOLO/OCR)} will be developed and trained for Phase 1 games during the holiday, and then undergo transfer-learning and refinement for Phase 2 games in Semester 2. The \textbf{Relational Core (Live2D/Voice)} will be stubbed out early to prove the concept and then fully integrated with its proactive triggers in Semester 2.
 
 \paragraph{Block 1: Core Framework (Sem 1, 4 Weeks)}
-The initial 4 weeks will be dedicated to building the ``brain''. This includes finalizing the \textbf{MCP API design} and implementing the initial \textbf{Orchestrator (v1)}. In parallel, a simple \textbf{Live2D Frontend (v1 stub)} will be connected to validate the core message-passing loop.
+The initial 4 weeks will be dedicated to building the "brain." This includes finalizing the \textbf{MCP API design} and implementing the initial \textbf{Orchestrator (v1)}. In parallel, a simple \textbf{Live2D Frontend (v1 stub)} will be connected to validate the core message-passing loop.
 
 \paragraph{Block 2: Functional Core (Winter Holiday, 4 Weeks)}
-The 4-week holiday will be focused on the first major bottleneck: the ``eyes'' and ``hands''. The \textbf{Perception Module (v1)} for \textbf{Stardew Valley} and the \textbf{GCC I/O Module} will be built. This block is primarily dedicated to the intensive \textbf{RFT training} (or \texttt{PORTAL} BT-generation) of the \textbf{Functional Core (v1)}.
+The 4-week holiday will be focused on the first major bottleneck: the "eyes" and "hands." The \textbf{Perception Module (v1)} for `Stardew Valley` and the \textbf{GCC I/O Module} will be built. This block is primarily dedicated to the intensive \textbf{RFT training} (or `PORTAL` BT-generation) of the \textbf{Functional Core (v1)}.
 
 \paragraph{Block 3: Integration \& Validation (Sem 2, 10 Weeks)}
-The final 10-week sprint is for integration and evaluation. The \textbf{Safety Core} (\texttt{BacktrackAgent}-inspired Verifier) will be built and plugged in. The \textbf{Phase 1 (Functional) Evaluation} will be run. Concurrently, the \textbf{Perception (v2)} and \textbf{Functional (v2)} modules will be adapted for the high-DOF \textbf{Minecraft} environment. The \textbf{Relational Core (v2)} will be fully integrated with its proactive triggers. The final weeks will be dedicated to running the \textbf{Phase 2 (A/B User Study)}, followed by final code cleanup, documentation, and demo video preparation.
+The final 10-week sprint is for integration and evaluation. The \textbf{Safety Core} (`BacktrackAgent`-inspired Verifier) will be built and plugged in. The \textbf{Phase 1 (Functional) Evaluation} will be run. Concurrently, the \textbf{Perception (v2)} and \textbf{Functional (v2)} modules will be adapted for the high-DOF `Minecraft` environment. The \textbf{Relational Core (v2)} will be fully integrated with its proactive triggers. The final weeks will be dedicated to running the \textbf{Phase 2 (A/B User Study)}, followed by final code cleanup, documentation, and demo video preparation.
 
-\picHere{assets/images/gantt_chart.png}{1.0\textwidth}{\todo{An example of Gantt Chart}}{fig:gantt-chart}
-
-\todo{A detailed weekly Gantt chart visualizing these parallel tasks will be developed.}
+\picHere{assets/images/gantt_chart.png}{1.0\textwidth}{
+\todo{A detailed weekly Gantt chart visualizing these parallel tasks will be developed.}}{fig:gantt-chart}
 
 \subsection{Risk and Ethics Analysis}
 This plan identifies three primary technical risks and one ethical consideration:
