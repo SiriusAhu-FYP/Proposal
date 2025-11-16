@@ -19,7 +19,14 @@ The proposed methodology is a \textbf{novel, hierarchical architecture} designed
 \end{enumerate}
 
 \subsection{Proposed System Architecture}
-The system's data flow is a continuous loop managed by a central Orchestrator, which is comprised of several system-level modules (e.g., LLM communication, voice loop, GCC I/O).
+The system's data flow is a continuous loop managed by a central Orchestrator, which is comprised of several system-level modules (e.g., LLM communication, voice loop, GCC I/O). \textbf{The proposed system architecture is illustrated in \autoref{fig:system_architecture}.}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.65\textwidth]{./assets/images/Methodology-diagram-TB.png}
+    \caption{The Proposed System Architecture}
+    \label{fig:system_architecture}
+\end{figure}
 
 \begin{enumerate}
     \item \textbf{Perception:} The \textbf{Lightweight Perception Module} scans the screen to produce structured text data (see \autoref{lst:game-state}).

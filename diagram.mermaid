@@ -1,0 +1,86 @@
+---
+config:
+  layout: elk
+---
+flowchart LR
+    subgraph Inputs["Inputs"]
+        UserInput("User Voice / Text")
+        GameScreen["Game Screen (Raw Pixels)"]
+    end
+    subgraph PerceptionLayer["Perception Layer"]
+        STT["Voice Loop (STT)"]
+        LPM["Lightweight Perception (YOLO/OCR)"]
+    end
+    subgraph AgenticChain["Agentic Chain - Reasoning Loop"]
+        Plan["Planning Module"]
+        Mem["Memory (Episodic/Narrative)"]
+        Ref["Reflection Module"]
+    end
+    subgraph OrchestratorModule["Orchestrator Module - The Conductor"]
+        direction TB
+        Intent["Intent Analysis"]
+        AgenticChain
+    end
+    subgraph SpecializedCores["Specialized Cores"]
+        FC["Functional Core (Agent)"]
+        RC["Relational Core (Companion)"]
+        SC["Safety Core (Verifier)"]
+    end
+    subgraph Actuators["Actuators"]
+        GCC["GCC I/O (Mouse/Keyboard)"]
+        TTS["Voice Loop (TTS)"]
+        L2D["Live2D Frontend"]
+    end
+    subgraph Outputs["External Outputs"]
+        UserAudio(("User Audio Output"))
+        UserVisual(("User Visual Output"))
+    end
+    subgraph GameEnvironment["Game Environment"]
+        GameWorld("Game State")
+    end
+    
+    UserInput --> STT
+    GameScreen --> LPM
+    STT -- Transcribed Text --> Intent
+    LPM -- Structured Game State (JSON) --> Plan
+    Intent --> Plan
+    Plan <--> Mem & Ref
+    Plan -- MCP: Functional Command --> FC
+    Plan -- MCP: Relational/Proactive Trigger --> RC
+    FC -- Constrained JSON --> GCC
+    RC -- "In-Character Response" --> TTS
+    RC -- Animation Command --> L2D
+    TTS --> UserAudio
+    L2D --> UserVisual
+    GCC -- Executes Action in --> GameWorld
+    GameWorld -- Renders New Frame --> GameScreen
+    GameWorld -- Feedback: Resulting State --> SC
+    SC -- Success/Fail Report --> Ref
+
+    UserInput:::input
+    GameScreen:::input
+    STT:::perception
+    LPM:::perception
+    Plan:::agentic
+    Mem:::agentic
+    Ref:::agentic
+    Intent:::orchestrator
+    FC:::specialized
+    RC:::specialized
+    SC:::specialized
+    GCC:::actuator
+    TTS:::actuator
+    L2D:::actuator
+    UserAudio:::output
+    UserVisual:::output
+    GameWorld:::environment
+
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px,font-family:Arial
+    classDef input fill:#E6FFED,stroke:#3CB371,stroke-width:2px
+    classDef perception fill:#E6F7FF,stroke:#1E90FF,stroke-width:2px
+    classDef orchestrator fill:#FFF3E0,stroke:#FF9800,stroke-width:2px
+    classDef agentic fill:#F3E8FF,stroke:#9370DB,stroke-width:2px
+    classDef specialized fill:#FFEBEE,stroke:#E53935,stroke-width:2px
+    classDef actuator fill:#E0F7FA,stroke:#00ACC1,stroke-width:2px
+    classDef output fill:#fefefe,stroke:#777,stroke-width:2px,stroke-dasharray: 5 5
+    classDef environment fill:#E8F5E9,stroke:#66BB6A,stroke-width:2px,font-weight:bold
