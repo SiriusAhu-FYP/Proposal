@@ -96,21 +96,8 @@ See [Literature_Review.md](Literature_Review.md) for details.
 - [x] Add a "Methodology" section before "Project Plan" (not following the template). Introduce how will we implement the system, involve more theory content.
 - [x] Add more citations, to about 30+
 
-## Dive into some papers
-<div style="background-color:red">Very important before doing code work!</div>
-- [ ] CRADLE
-  - GCC interface
-- [ ] AgentOrchestra
-  - modular `conductor`
-- [ ] CodeAct
-  - structured action output
-- [ ] BacktrackAgent
-  - error recovery and safety architecture
-- [ ] PORTAL
-  - solutions for latency (zero-latency BTs) and OOD generalization
-- [ ] EmotionAWARE
-  - multi-granular emotion detection
-
 ## misc
-- [ ] Check the lightweight perception design: YOLO, OCR + lightweight LLM?
-- [ ] add some diagrams, tables or charts to illustrate the architecture and workflow
+- [x] Check the lightweight perception design: YOLO, OCR + lightweight LLM?
+- [x] Add some diagrams, tables or charts to illustrate the architecture and workflow
+- [ ] Use alternative tool to draw the diagrams
+- [ ] Add `Lumine` paper to Lit. Review
