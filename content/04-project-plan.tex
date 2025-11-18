@@ -11,7 +11,35 @@ This section details the execution and validation strategy for the proposed meth
 \end{enumerate}
 
 \subsection{Expected Deliverables}
-\noindent The final deliverables for this project will consist of four main components:
+To ensure the final deliverables meet rigorous engineering standards, specific performance benchmarks have been defined as the acceptance criteria. These targets, outlined in \autoref{tab:eval_metrics}, prioritize architectural viability and baseline competency.
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.4}
+    \setlength{\tabcolsep}{10pt}
+    \caption{Evaluation Metrics and Project Targets}
+    \label{tab:eval_metrics}
+    \begin{tabular}{p{0.2\textwidth} p{0.55\textwidth} p{0.2\textwidth}}
+        \hline \hline
+        \textbf{Metric} & \textbf{Definition \& Context} & \textbf{Project Target} \\ 
+        \hline
+        
+        \textbf{Task Success Rate \newline (TSR)} & 
+        The ratio of successfully completed tasks like \newline ``Collect some wood'' to total attempts. & 
+        \textbf{$> 70\%$}\\ 
+        
+        \textbf{System Latency} & 
+        Total time-to-action. Explicitly includes screen capture, network transmission, remote VLM inference, and local execution overhead. & 
+        \textbf{$< 3$ s}\\ 
+        
+        \textbf{Action Accuracy \newline (Validity)} & 
+        The percentage of generated actions that are syntactically valid and executable. & 
+        \textbf{$> 90\%$}\\ 
+        \hline \hline
+    \end{tabular}
+\end{table}
+
+\noindent Guided by these success metrics, the final deliverables for this project will consist of four main components:
 \begin{itemize}
     \item \textbf{The System Prototype:} A functional source code implementation of the unified AI companion, including the central Orchestrator, all sub-modules (Functional, Relational, Safety), the perception pipeline, and the Live2D frontend.
     \item \textbf{Documentation:} Detailed documentation of the source code, system design, and module interactions, providing an understanding of the system's architecture and implementation.

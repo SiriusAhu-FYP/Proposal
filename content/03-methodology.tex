@@ -11,7 +11,7 @@ The proposed methodology is a \textbf{novel, hierarchical architecture} designed
 \begin{enumerate}
     \item \textbf{Unified Input (GCC):} The agent will operate on the ``screen-in, keyboard/mouse-out'' \textbf{GCC} paradigm. This human-homomorphic interface is foundational, ensuring the agent is game-agnostic and does not rely on specialized APIs, a concept validated by the \textit{CRADLE} framework \cite{CRADLE}.
     
-    \item \textbf{Lightweight, Structured Perception:} To avoid the bottleneck of feeding raw video to a large VLM, a \textbf{Lightweight Perception Module} (e.g., a fine-tuned YOLO model) will first process the screen. This module will locate objects of interest (e.g., health bars, mini-maps, enemies) and output a \textbf{structured text description} of the game state for the VLM to consume.
+    \item \textbf{Lightweight, Structured Perception:} To avoid the bottleneck of feeding raw video to a large Vision Language Model (VLM), a \textbf{Lightweight Perception Module} (e.g., a fine-tuned YOLO model) will first process the screen. This module will locate objects of interest (e.g., health bars, mini-maps, enemies) and output a \textbf{structured text description} of the game state for the VLM to consume.
     
     \item \textbf{Constrained Action Generation:} The agent's output will be \textbf{Constrained JSON} from a pre-defined \textbf{Skill Set}. The LLM's role is to select a valid skill, not to generate raw coordinates. This aligns with the reliability principles of ``Legal Move Constraints'' and structured outputs \cite{ORAK, CodeAct, We-Need-Structured-Output}.
     
@@ -40,9 +40,7 @@ The system's data flow is a continuous loop managed by a central Orchestrator, w
     ...
 }
 \end{lstlisting}
-    
-    \item \textbf{Orchestration (The ``Conductor''):} The central \textbf{Orchestrator Module} (a VLM) receives this structured game-state data and the user's voice/text input. Its primary job is to analyze the complete context, understand the player's \emph{intent}, and identify \emph{proactive triggers} (e.g., ``player health is critical'').
-    
+    \item \textbf{Orchestration (The ``Conductor''):} The central \textbf{Orchestrator Module} is powered by a VLM acting as the system's multimodal reasoning engine. Selected for its ability to bridge visual contexts and linguistic inputs, it analyzes the complete situation to understand the player's \emph{intent} and identify \emph{proactive triggers} (e.g., ``player health is critical'').
     \item \textbf{Delegation (via MCP):} The Orchestrator delegates the identified task via the MCP bus to a specialized sub-module:
     \begin{itemize}
         \item \textbf{The Functional Core (The ``Agent''):} Receives functional commands (e.g., ``move to quest marker''). It selects the appropriate skill from the \textbf{Skill Set} and outputs the \textbf{Constrained JSON} to the \textbf{GCC I/O Module} for keyboard/mouse execution.
